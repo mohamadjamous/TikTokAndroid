@@ -1,4 +1,4 @@
-package com.example.tiktokandroid.ui.theme
+package com.example.tiktokandroid.notifications.presentation.view.theme
 
 import androidx.compose.ui.graphics.Color
 
