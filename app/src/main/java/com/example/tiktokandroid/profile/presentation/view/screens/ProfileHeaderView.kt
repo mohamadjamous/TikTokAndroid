@@ -11,40 +11,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.tiktokandroid.core.presentation.components.CircularGlideImage
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileHeaderView(
+    modifier: Modifier = Modifier,
+    imageUrl: String = "",
+    username: String = "",
+    following: Int = 0,
+    follower: Int = 0,
+    likes: Int = 0) {
 
-
-    Column(horizontalAlignment = Alignment.CenterHorizontally,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
-            .padding(all = 10.dp)) {
+    ) {
 
+        CircularGlideImage(imageUrl = imageUrl, size = 115)
 
         Text(
-            text = "Profile",
+            text = username,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 20.dp)
+            modifier = Modifier.padding(top = 10.dp)
         )
 
-
-        ProfileHeaderView(
-            modifier = Modifier.padding(top = 30.dp),
-            imageUrl = "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg",
-            username = "@lwis.hamilton"
-        )
-
-
-        
 
     }
+
 
 }
 
 
 @Composable
 @Preview(showSystemUi = true)
-fun ProfileViewPreview() {
-    ProfileScreen()
+fun ProfileHeaderViewPreview(){
+    ProfileHeaderView(
+        username = "username default",
+        imageUrl = "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg"
+    )
 }
