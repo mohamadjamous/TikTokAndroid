@@ -150,7 +150,8 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
 
     Column(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxSize()
+            .padding(bottom = 55.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -164,8 +165,9 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 20.dp, start = 10.dp, end = 10.dp)
                 .padding(bottom = 55.dp)
+                .padding(top = 20.dp, start = 20.dp)
+
         ){
             items(notifications.size) { index ->
                 NotificationItem(

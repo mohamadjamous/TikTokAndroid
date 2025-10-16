@@ -21,7 +21,7 @@ import com.example.tiktokandroid.notifications.data.Notification
 fun NotificationItem(modifier: Modifier = Modifier, notification: Notification) {
 
 
-    Row(modifier = modifier.fillMaxWidth(),
+    Row(modifier = modifier,
         verticalAlignment = Alignment.CenterVertically) {
 
         CircularGlideImage(imageUrl = notification.userPhotoUrl, size = 30)
