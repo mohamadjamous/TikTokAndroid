@@ -15,10 +15,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tiktokandroid.core.presentation.components.CircularGlideImage
 import com.example.tiktokandroid.core.presentation.components.SquareGlideImage
-import com.example.tiktokandroid.notifications.data.Notification
+import com.example.tiktokandroid.notifications.data.model.Notification
+import com.example.tiktokandroid.notifications.domain.viewmodel.NotificationsViewModel
 
 @Composable
-fun NotificationItem(modifier: Modifier = Modifier, notification: Notification) {
+fun NotificationItem(
+    modifier: Modifier = Modifier,
+    notification: Notification,
+    viewModel: NotificationsViewModel = NotificationsViewModel()
+) {
 
 
     Row(modifier = modifier,
@@ -44,7 +49,7 @@ fun NotificationItem(modifier: Modifier = Modifier, notification: Notification) 
         Spacer(modifier = Modifier.width(8.dp))
 
         Text(
-            text = "3d",
+            text = viewModel.timeAgoFromNow(notification.time),
             style = MaterialTheme.typography.bodySmall
         )
 

@@ -1,5 +1,4 @@
-package com.example.tiktokandroid.notifications.data
-
+package com.example.tiktokandroid.notifications.data.model
 
 data class Notification(
     val id: String,

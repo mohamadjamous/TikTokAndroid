@@ -17,7 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.tiktokandroid.notifications.data.Notification
+import com.example.tiktokandroid.notifications.data.model.Notification
+import com.example.tiktokandroid.notifications.domain.viewmodel.NotificationsViewModel
 import com.example.tiktokandroid.notifications.presentation.components.NotificationItem
 import com.example.tiktokandroid.profile.presentation.components.PostRowItem
 import com.example.tiktokandroid.profile.presentation.view.screens.ProfileHeaderView
@@ -177,11 +178,6 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
             }
         }
     }
-
-
-
-
-
 
 }
 
