@@ -76,7 +76,7 @@ fun VideoOverlay(
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(28.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     // Profile Circle
                     Box(
@@ -123,7 +123,7 @@ fun VideoOverlay(
 
 }
 
-@Preview(showSystemUi = true)
+@Preview
 @Composable
 private fun VideoOverlayPreview() {
     VideoOverlay(
