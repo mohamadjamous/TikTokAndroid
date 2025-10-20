@@ -30,7 +30,7 @@ fun CustomVideoPlayer(
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .background(Color.DarkGray),
+                .background(Color.Red),
             contentAlignment = Alignment.Center
         ) {
             Text(
