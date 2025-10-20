@@ -18,15 +18,21 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 
+/*
+
+    Things to add:
+
+        add pause play buttons on click
+        add circular progress bar when video is loading
+
+ */
+
 @OptIn(UnstableApi::class)
 @Composable
 fun CustomVideoPlayer(
     modifier: Modifier = Modifier,
     exoPlayer: ExoPlayer
 ) {
-    // Add pause play buttons on click
-
-
 
     val context = LocalContext.current
 
