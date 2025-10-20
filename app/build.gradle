@@ -82,6 +82,10 @@ dependencies {
     // Video player
     implementation("androidx.media3:media3-exoplayer:1.4.0")
 
+    // Disk cache
+//    implementation("androidx.media3:media3-datasource-cache:1.4.1")
+
+
 
 
 }

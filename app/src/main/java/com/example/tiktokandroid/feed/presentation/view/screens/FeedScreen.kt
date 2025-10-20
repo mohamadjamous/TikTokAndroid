@@ -16,6 +16,13 @@ import com.example.tiktokandroid.feed.presentation.viewmodel.FeedViewModel
 
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 
 
 @Composable
@@ -34,15 +41,11 @@ fun FeedScreen(
         modifier = modifier.fillMaxSize(),
         state = pagerState
     ) { page ->
-
         val post = videos[page]
-
         FeedView(
-            post = post,
-            onTogglePlay = {
-                // your play/pause logic here
-            },
-            modifier = Modifier.fillMaxSize()
+            post = post
         )
     }
+
+
 }
