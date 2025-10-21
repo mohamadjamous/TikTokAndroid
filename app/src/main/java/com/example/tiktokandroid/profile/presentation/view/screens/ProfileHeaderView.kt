@@ -114,7 +114,7 @@ fun ProfileHeaderView(
         CustomButton(
             modifier = Modifier.fillMaxWidth().padding(all = 20.dp),
             text = "Edit Profile",
-            action = {
+            onClick = {
 
             }
         )

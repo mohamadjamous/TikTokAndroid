@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 fun CustomButton(
     modifier: Modifier = Modifier,
     text: String,
-    action: () -> Unit,
+    onClick: () -> Unit,
     containerColor: Color = Color(0xFFE5E5EA),
     contentColor: Color = Color.Black
 ) {
@@ -25,7 +25,7 @@ fun CustomButton(
     Button(
         modifier = modifier.height(35.dp),
         shape = RoundedCornerShape(5.dp),
-        onClick = action,
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
             contentColor = contentColor
@@ -43,5 +43,5 @@ fun CustomButton(
 @Preview
 @Composable
 private fun GrayCustomButtonPreview() {
-    CustomButton(text = "edit", action = {})
+    CustomButton(text = "edit", onClick = {})
 }
