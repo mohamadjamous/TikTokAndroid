@@ -30,16 +30,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tiktokandroid.core.presentation.components.CustomButton
-import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
 import com.example.tiktokandroid.profile.presentation.components.PostRowItem
 import com.example.tiktokandroid.profile.presentation.viewmodel.ProfileViewModel
 
+
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    viewModel: ProfileViewModel = ProfileViewModel()
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
 
     val videos = viewModel.videos.collectAsState().value

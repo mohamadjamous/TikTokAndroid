@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.21'
     alias(libs.plugins.google.gms.google.services)
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -35,6 +37,10 @@ android {
     }
     buildFeatures {
         compose true
+    }
+
+    kapt {
+        correctErrorTypes = true
     }
 }
 
@@ -84,5 +90,12 @@ dependencies {
     // Video player
     implementation("androidx.media3:media3-exoplayer:1.4.0")
 
+
+    // Dagger hilt
+    implementation "com.google.dagger:hilt-android:2.57.1"
+    kapt("com.google.dagger:hilt-compiler:2.57.1")
+
+
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
 }

@@ -20,7 +20,9 @@ import com.example.tiktokandroid.feed.presentation.view.theme.TikTokAndroidTheme
 import com.example.tiktokandroid.notifications.presentation.view.screens.NotificationsScreen
 import com.example.tiktokandroid.profile.presentation.view.screens.ProfileScreen
 import com.example.tiktokandroid.uploadmedia.presentation.view.UploadScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -2,11 +2,14 @@ package com.example.tiktokandroid.feed.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.tiktokandroid.core.presentation.model.Post
+import com.example.tiktokandroid.feed.domain.repositories.FeedRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class FeedViewModel : ViewModel() {
-
+@HiltViewModel
+class FeedViewModel @Inject constructor() : ViewModel() {
 
     private val _videos = MutableStateFlow<List<Post>>(emptyList())
     val videos: StateFlow<List<Post>> get() = _videos
