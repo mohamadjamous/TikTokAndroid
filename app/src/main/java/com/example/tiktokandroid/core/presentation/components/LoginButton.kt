@@ -21,7 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,7 +33,7 @@ fun LoginButton(
     modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit,
-    leadingIcon: ImageVector,
+    leadingPainter: Painter,
     contentColor: Color = Color.Black,
     containerColor: Color = Color.White
 ) {
@@ -52,8 +54,9 @@ fun LoginButton(
         ) {
 
             Icon(
-                imageVector = leadingIcon,
+                painter = leadingPainter,
                 contentDescription = "leading icon",
+                tint = Color.Unspecified,
                 modifier = Modifier
                     .align(Alignment.CenterStart)
                     .size(20.dp)
@@ -77,6 +80,6 @@ private fun LoginButtonPreview() {
     LoginButton(
         text = "User email / username",
         onClick = {},
-        leadingIcon = Icons.Default.Person
+        leadingPainter = rememberVectorPainter(image = Icons.Default.Person)
     )
 }

@@ -1,5 +1,6 @@
 package com.example.tiktokandroid.auth.presentation.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,27 +10,36 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tiktokandroid.R
 import com.example.tiktokandroid.core.presentation.components.LoginButton
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    onEmailUsernameClick: () -> Unit,
-    onGoogleClick: () -> Unit
+    onEmailUsernameClick: () -> Unit = {},
+    onGoogleClick: () -> Unit = {}
 ) {
 
+
+
     Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+        modifier = modifier,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -50,17 +60,35 @@ fun LoginScreen(
             LoginButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Use phone / email / username",
-                leadingIcon = Icons.Default.Person,
+                leadingPainter = rememberVectorPainter(image = Icons.Outlined.Person),
                 onClick = { onEmailUsernameClick() }
             )
 
             Spacer(modifier = Modifier.height(15.dp))
 
+
             LoginButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Continue with Google",
-                leadingIcon = Icons.Default.Person,
+                leadingPainter = painterResource(R.drawable.google_icon),
                 onClick = { onGoogleClick() }
+            )
+
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Bottom bar
+        Column(
+            modifier = Modifier.fillMaxWidth().background(Color.LightGray),
+            horizontalAlignment = Alignment.CenterHorizontally
+        )
+        {
+            Text(
+                modifier = Modifier.padding(all = 10.dp),
+                text = "Don't have an account? Sign up",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Black
             )
 
         }
