@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tiktokandroid.auth.presentation.view.LoginScreen
+import com.example.tiktokandroid.auth.presentation.view.SignupScreen
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -50,15 +51,20 @@ fun LoginSignupSwitcher(
             AnimatedContent(
                 targetState = showLogin,
                 transitionSpec = {
-                    slideInHorizontally(initialOffsetX = { if (targetState) it else -it }) + fadeIn() togetherWith
-                            slideOutHorizontally(targetOffsetX = { if (targetState) -it else it }) + fadeOut()
+
+                    slideInHorizontally(
+                        initialOffsetX = { if (targetState) -it else it }
+                    ) + fadeIn() togetherWith
+                            slideOutHorizontally(
+                                targetOffsetX = { if (targetState) it else -it }
+                            ) + fadeOut()
                 },
                 label = "Login/Signup Animation"
             ) { isLogin ->
                 if (isLogin) {
                     LoginScreen(modifier = Modifier.fillMaxSize())
                 } else {
-                    LoginScreen(modifier = Modifier.fillMaxSize())
+                    SignupScreen(modifier = Modifier.fillMaxSize())
                 }
             }
         }

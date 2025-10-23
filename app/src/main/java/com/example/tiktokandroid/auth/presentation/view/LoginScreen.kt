@@ -35,8 +35,6 @@ fun LoginScreen(
     onGoogleClick: () -> Unit = {}
 ) {
 
-
-
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Top,
