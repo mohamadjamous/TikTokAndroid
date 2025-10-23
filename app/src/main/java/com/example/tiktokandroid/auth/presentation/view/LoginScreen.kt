@@ -76,22 +76,9 @@ fun LoginScreen(
 
         }
 
-        Spacer(modifier = Modifier.weight(1f))
 
-        // Bottom bar
-        Column(
-            modifier = Modifier.fillMaxWidth().background(Color.LightGray),
-            horizontalAlignment = Alignment.CenterHorizontally
-        )
-        {
-            Text(
-                modifier = Modifier.padding(all = 10.dp),
-                text = "Don't have an account? Sign up",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Black
-            )
 
-        }
+
     }
 
 }

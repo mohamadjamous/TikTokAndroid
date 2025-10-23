@@ -1,6 +1,14 @@
 package com.example.tiktokandroid.profile.presentation.view.screens
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +18,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -43,11 +53,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.tiktokandroid.auth.presentation.components.LoginSignupSwitcher
 import com.example.tiktokandroid.auth.presentation.view.LoginScreen
+import com.example.tiktokandroid.auth.presentation.view.SignupScreen
 import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
 import com.example.tiktokandroid.profile.presentation.components.PostRowItem
 import com.example.tiktokandroid.profile.presentation.viewmodel.ProfileViewModel
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,9 +70,9 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
 
-    val videos = viewModel.videos.collectAsState().value
+    val posts = viewModel.posts.collectAsState().value
 
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     var showBottomSheet by remember { mutableStateOf(false) }
 
@@ -98,6 +111,7 @@ fun ProfileScreen(
                 modifier = Modifier.padding(top = 5.dp)
             )
 
+            // user logged in
             if (false) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
@@ -118,10 +132,10 @@ fun ProfileScreen(
                             )
                         }
                     }
-                    items(videos.size) { index ->
+                    items(posts.size) { index ->
                         PostRowItem(
                             modifier = Modifier.padding(2.dp),
-                            post = videos[index]
+                            post = posts[index]
                         )
                     }
                 }
@@ -156,7 +170,8 @@ fun ProfileScreen(
                         containerColor = TikTokRed,
                         contentColor = Color.White,
                         onClick = {
-                            showBottomSheet = true
+                            showBottomSheet = !showBottomSheet
+                            scope.launch { sheetState.expand() }
                         }
                     )
                 }
@@ -169,10 +184,16 @@ fun ProfileScreen(
 
             // Bottom sheet
             ModalBottomSheet(
-                onDismissRequest = { showBottomSheet = false },
+                onDismissRequest = {
+                    showBottomSheet = false
+                },
                 sheetState = sheetState,
-                containerColor = Color.White
-                )
+                containerColor = Color.White,
+                modifier = Modifier
+                    .padding(top = 50.dp)
+                    .fillMaxSize()
+                    .navigationBarsPadding()
+            )
             {
                 // Sheet content
                 Column(
@@ -181,13 +202,21 @@ fun ProfileScreen(
                 ) {
 
                     // Top bar
-                    Row(modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    )
                     {
 
                         IconButton(
                             onClick = {
-                                showBottomSheet = false
+                                scope
+                                    .launch { sheetState.hide() }
+                                    .invokeOnCompletion {
+                                        if (!sheetState.isVisible) {
+                                            showBottomSheet = false
+                                        }
+                                    }
                             }
                         ) {
                             Icon(
@@ -199,8 +228,16 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    // Content
-                    LoginScreen()
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.White)
+                    ) {
+                        LoginSignupSwitcher()
+                    }
+
+
                 }
             }
 
