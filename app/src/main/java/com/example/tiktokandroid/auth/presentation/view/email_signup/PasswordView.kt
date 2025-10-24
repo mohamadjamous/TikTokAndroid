@@ -24,6 +24,7 @@ import com.example.tiktokandroid.auth.presentation.viewmodel.SignupViewModel
 import com.example.tiktokandroid.core.presentation.components.BackButton
 import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.core.presentation.components.CustomTextField
+import com.example.tiktokandroid.core.presentation.components.PasswordTextField
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
 
 @Composable
@@ -58,7 +59,12 @@ fun PasswordView(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-
+        PasswordTextField(
+            modifier = Modifier.padding(start = 30.dp, end = 20.dp),
+            onTextChange = {
+                input = it
+            }
+        )
 
         Spacer(modifier = Modifier.weight(1f))
 
@@ -71,6 +77,11 @@ fun PasswordView(
             contentColor = Color.White,
             loading = loading,
             onClick = {
+
+//                if (valid){
+//                    // store password in viewmodel
+//                    onContinueClick()
+//                }
 
             }
         )

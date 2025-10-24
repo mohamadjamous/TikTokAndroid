@@ -54,6 +54,7 @@ fun EmailView(
             is AuthUiState.Success -> {
                 loading = false
                 isError = false
+                // store email in viewmodel
                 onContinueClick()
             }
             is AuthUiState.Error -> {
@@ -119,6 +120,9 @@ fun EmailView(
             onClick = {
                 if (viewModel.validateEmail(email = input)){
                     viewModel.checkEmail(input)
+                }else{
+                    isError = true
+                    loading = false
                 }
             }
         )

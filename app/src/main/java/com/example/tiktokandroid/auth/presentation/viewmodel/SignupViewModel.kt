@@ -8,11 +8,13 @@ import com.example.tiktokandroid.auth.domain.usecases.CheckEmailUserCase
 import com.example.tiktokandroid.auth.domain.usecases.SignupUseCase
 import com.example.tiktokandroid.core.presentation.model.Country
 import com.example.tiktokandroid.core.presentation.model.CountryJsonResponse
+import com.example.tiktokandroid.core.presentation.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -34,6 +36,10 @@ class SignupViewModel @Inject constructor(
 
     private val _errorMessage = MutableStateFlow("")
     val errorMessage = _errorMessage.asStateFlow()
+
+
+    private val _user = MutableStateFlow<User>(User(id = "", email = "", username = "", dob = ""))
+    val user: StateFlow<User> get() = _user
 
     init {
         loadCountries()
