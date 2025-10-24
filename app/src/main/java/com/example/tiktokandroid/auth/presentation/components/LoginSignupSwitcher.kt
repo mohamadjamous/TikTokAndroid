@@ -33,7 +33,8 @@ import com.example.tiktokandroid.feed.presentation.view.theme.TikTokLightGray
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun LoginSignupSwitcher(
-    modifier : Modifier = Modifier
+    modifier : Modifier = Modifier,
+    navigateToEmailSignup: () -> Unit = {}
 ) {
     var showLogin by remember { mutableStateOf(true) }
 
@@ -65,7 +66,9 @@ fun LoginSignupSwitcher(
                 if (isLogin) {
                     LoginScreen(modifier = Modifier.fillMaxSize())
                 } else {
-                    SignupScreen(modifier = Modifier.fillMaxSize())
+                    SignupScreen(modifier = Modifier.fillMaxSize(),
+                        navigateToEmailSignup = navigateToEmailSignup
+                    )
                 }
             }
         }

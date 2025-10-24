@@ -67,7 +67,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
+    navigateToEmailSignup: () -> Unit = {}
 ) {
 
     val posts = viewModel.posts.collectAsState().value
@@ -234,7 +235,9 @@ fun ProfileScreen(
                             .fillMaxSize()
                             .background(Color.White)
                     ) {
-                        LoginSignupSwitcher()
+                        LoginSignupSwitcher(
+                            navigateToEmailSignup = navigateToEmailSignup
+                        )
                     }
 
 

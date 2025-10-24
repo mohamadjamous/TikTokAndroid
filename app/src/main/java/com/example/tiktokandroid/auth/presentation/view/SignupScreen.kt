@@ -43,7 +43,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun SignupScreen(
     modifier: Modifier = Modifier,
-    viewModel : SignupViewModel = hiltViewModel()
+    viewModel : SignupViewModel = hiltViewModel(),
+    navigateToEmailSignup: () -> Unit = {}
 ) {
 
     val countries by viewModel.countries.collectAsState()
@@ -116,7 +117,7 @@ fun SignupScreen(
                 text = "Continue with Email",
                 leadingPainter = rememberVectorPainter(image = Icons.Filled.Email),
                 onClick = {
-                    //    onEmailUsernameClick()
+                    navigateToEmailSignup()
                 }
             )
 

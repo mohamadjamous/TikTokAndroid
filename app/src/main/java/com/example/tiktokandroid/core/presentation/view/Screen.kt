@@ -6,5 +6,6 @@ sealed class Screen(val rout: String) {
     object Upload: Screen("upload")
     object Notifications: Screen("notifications")
     object Profile: Screen("profile")
+    object EmailSignup: Screen("email_signup")
 }
 
