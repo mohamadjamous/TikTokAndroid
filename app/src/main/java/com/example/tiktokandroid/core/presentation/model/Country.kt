@@ -9,5 +9,5 @@ data class Country(
         get() = "$iso +$code"
 
     val itemText: String
-        get() = "$name $code"
+        get() = "$name +$code"
 }

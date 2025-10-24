@@ -8,6 +8,7 @@ import com.example.tiktokandroid.core.presentation.model.CountryJsonResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -28,7 +29,8 @@ class SignupViewModel @Inject constructor(
     }
 
     private fun loadCountries() {
-        viewModelScope.launch {
+
+        viewModelScope.launch(context = Dispatchers.IO) {
 
             val countriesList = parseCountriesJson()
 

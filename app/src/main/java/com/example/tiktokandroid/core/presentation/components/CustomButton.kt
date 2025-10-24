@@ -11,13 +11,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.tiktokandroid.feed.presentation.view.theme.TikTokLightGray
 
 @Composable
 fun CustomButton(
     modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit,
-    containerColor: Color = Color(0xFFE5E5EA),
+    containerColor: Color = TikTokLightGray,
     contentColor: Color = Color.Black
 ) {
 

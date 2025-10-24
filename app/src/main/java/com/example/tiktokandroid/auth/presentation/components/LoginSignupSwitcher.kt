@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tiktokandroid.auth.presentation.view.LoginScreen
 import com.example.tiktokandroid.auth.presentation.view.SignupScreen
+import com.example.tiktokandroid.feed.presentation.view.theme.TikTokLightGray
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -73,7 +74,7 @@ fun LoginSignupSwitcher(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.LightGray),
+                .background(TikTokLightGray),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
