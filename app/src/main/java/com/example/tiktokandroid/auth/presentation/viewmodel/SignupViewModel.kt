@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tiktokandroid.auth.data.model.AuthUiState
+import com.example.tiktokandroid.auth.data.model.SignupUiState
 import com.example.tiktokandroid.auth.domain.usecases.CheckEmailUserCase
 import com.example.tiktokandroid.auth.domain.usecases.SignupUseCase
 import com.example.tiktokandroid.core.presentation.model.Country
 import com.example.tiktokandroid.core.presentation.model.CountryJsonResponse
-import com.example.tiktokandroid.core.presentation.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
@@ -37,9 +37,15 @@ class SignupViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow("")
     val errorMessage = _errorMessage.asStateFlow()
 
+    private val _password = MutableStateFlow("")
+    val password: StateFlow<String> = _password.asStateFlow()
 
-    private val _user = MutableStateFlow<User>(User(id = "", email = "", username = "", dob = ""))
-    val user: StateFlow<User> get() = _user
+    private val _isPasswordValid = MutableStateFlow(false)
+    val isPasswordValid: StateFlow<Boolean> = _isPasswordValid.asStateFlow()
+
+
+    private val _userState = MutableStateFlow(SignupUiState())
+    val userState: StateFlow<SignupUiState> = _userState.asStateFlow()
 
     init {
         loadCountries()
@@ -121,6 +127,53 @@ class SignupViewModel @Inject constructor(
                 onFailure = { AuthUiState.Error(it.message ?: "Unknown error") }
             )
         }
+    }
+
+    private fun isPasswordValid(password: String): Boolean {
+        val hasMinLength = password.length >= 8
+        val hasNumber = password.any { it.isDigit() }
+        val hasUpperCase = password.any { it.isUpperCase() }
+        val hasLowerCase = password.any { it.isLowerCase() }
+        val hasSpecial = password.any { !it.isLetterOrDigit() }
+
+        return hasMinLength && hasNumber && hasUpperCase && hasLowerCase && hasSpecial
+    }
+
+    /**
+     * Update user state email
+     */
+    fun onEmailChange(newEmail: String) {
+        _userState.value = _userState.value.copy(email = newEmail)
+    }
+
+    /**
+     * Update user state password
+     */
+    fun onPasswordChange(newPassword: String) {
+        _password.value = newPassword
+        _isPasswordValid.value = isPasswordValid(newPassword)
+        _userState.value = _userState.value.copy(password = newPassword)
+    }
+
+    /**
+     * Update user state password
+     */
+    fun onDobChange(newDob: String) {
+        _userState.value = _userState.value.copy(dob = newDob)
+    }
+
+    /**
+     * Update user state username
+     */
+    fun onUsernameChange(newUsername: String) {
+        _userState.value = _userState.value.copy(username = newUsername)
+    }
+
+    /**
+     * Update user state phone number
+     */
+    fun onPhoneNumberChange(newNumber: String) {
+        _userState.value = _userState.value.copy(phoneNumber = newNumber)
     }
 
 }

@@ -20,12 +20,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tiktokandroid.auth.data.model.EmailAuthScreen
+import com.example.tiktokandroid.auth.presentation.viewmodel.SignupViewModel
 
 @Composable
 fun EmailSignupScreen(
     modifier: Modifier = Modifier,
-    onBackPressed: () -> Unit = {}
+    onBackPressed: () -> Unit = {},
+    viewModel: SignupViewModel = hiltViewModel()
 ) {
 
     var currentScreen by remember { mutableStateOf(EmailAuthScreen.Email) }
@@ -57,22 +60,25 @@ fun EmailSignupScreen(
                     EmailAuthScreen.Email -> EmailView(
                         onContinueClick = { currentScreen = EmailAuthScreen.Password },
                         onBackPressed = onBackPressed,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        viewModel = viewModel
                     )
 
                     EmailAuthScreen.Password -> PasswordView(
-                        onContinueClick = { currentScreen = EmailAuthScreen.Email },
+                        onContinueClick = { currentScreen = EmailAuthScreen.DOB },
                         onBackPressed = { currentScreen = EmailAuthScreen.Email },
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        viewModel = viewModel
                     )
 
-                    EmailAuthScreen.Username -> {
+                    EmailAuthScreen.DOB -> DobView(
+                        onContinueClick = { currentScreen = EmailAuthScreen.Username },
+                        onBackPressed = { currentScreen = EmailAuthScreen.Password },
+                        modifier = Modifier.fillMaxSize(),
+                        viewModel = viewModel
+                    )
 
-                    }
-
-                    EmailAuthScreen.DOB -> {
-
-                    }
+                    EmailAuthScreen.Username -> UserNameView()
                 }
             }
         }

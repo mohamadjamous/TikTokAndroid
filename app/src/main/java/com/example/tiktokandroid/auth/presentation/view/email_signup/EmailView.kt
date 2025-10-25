@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,10 +34,10 @@ fun EmailView(
     modifier: Modifier = Modifier,
     onBackPressed: () -> Unit = {},
     onContinueClick: () -> Unit = {},
-    viewModel: SignupViewModel = hiltViewModel()
+    viewModel: SignupViewModel
 ) {
 
-    var input by rememberSaveable { mutableStateOf("") }
+    var email by rememberSaveable { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
     var isError by rememberSaveable { mutableStateOf(false) }
 
@@ -54,7 +53,8 @@ fun EmailView(
             is AuthUiState.Success -> {
                 loading = false
                 isError = false
-                // store email in viewmodel
+                // update user email
+                viewModel.onEmailChange(email)
                 onContinueClick()
             }
             is AuthUiState.Error -> {
@@ -103,7 +103,7 @@ fun EmailView(
             modifier = Modifier.padding(start = 30.dp, end = 20.dp),
             hint = "Email address",
             onTextChange = {
-                input = it
+                email = it
             }
         )
 
@@ -118,8 +118,8 @@ fun EmailView(
             contentColor = Color.White,
             loading = loading,
             onClick = {
-                if (viewModel.validateEmail(email = input)){
-                    viewModel.checkEmail(input)
+                if (viewModel.validateEmail(email = email)){
+                    viewModel.checkEmail(email)
                 }else{
                     isError = true
                     loading = false
@@ -134,5 +134,7 @@ fun EmailView(
 @Preview(showSystemUi = true)
 @Composable
 private fun EmailSignupScreenPreview() {
-    EmailView()
+    EmailView(
+        viewModel = hiltViewModel()
+    )
 }
