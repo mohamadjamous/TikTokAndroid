@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.createGraph
+import com.example.tiktokandroid.auth.presentation.view.SettingsScreen
 import com.example.tiktokandroid.auth.presentation.view.email_signup.EmailSignupScreen
 import com.example.tiktokandroid.core.presentation.view.Screen
 import com.example.tiktokandroid.explore.presentation.view.screens.ExploreScreen
@@ -36,12 +37,25 @@ fun RootNavGraph(navController: NavHostController) {
                         navController.navigate(
                             Screen.EmailSignup.rout
                         )
+                    },
+                    navigateToSettings = {
+                        navController.navigate(
+                            Screen.Settings.rout
+                        )
                     }
                 )
             }
 
             composable(route = Screen.EmailSignup.rout) {
                 EmailSignupScreen(
+                    onBackPressed = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(route = Screen.Settings.rout) {
+                SettingsScreen(
                     onBackPressed = {
                         navController.popBackStack()
                     }

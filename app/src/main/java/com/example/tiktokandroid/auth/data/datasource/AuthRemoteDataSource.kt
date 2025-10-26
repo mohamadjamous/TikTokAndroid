@@ -5,6 +5,7 @@ import com.example.tiktokandroid.core.presentation.model.User
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -13,7 +14,7 @@ import javax.inject.Inject
 class AuthRemoteDataSource @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) {
 
     suspend fun emailSignup(

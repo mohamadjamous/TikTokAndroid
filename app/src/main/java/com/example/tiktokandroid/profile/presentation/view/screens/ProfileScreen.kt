@@ -39,6 +39,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,7 +69,8 @@ import kotlinx.coroutines.launch
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel(),
-    navigateToEmailSignup: () -> Unit = {}
+    navigateToEmailSignup: () -> Unit = {},
+    navigateToSettings: () -> Unit = {}
 ) {
 
     val posts = viewModel.posts.collectAsState().value
@@ -79,6 +81,16 @@ fun ProfileScreen(
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val partialHeight = screenHeight * 0.75f
+
+    var loggedIn by remember { mutableStateOf(false) }
+
+
+    val currentUser by viewModel.currentUser
+
+   LaunchedEffect(currentUser) {
+       loggedIn = currentUser != null
+   }
+
 
     Box(modifier = modifier.fillMaxSize()) {
 
@@ -102,7 +114,9 @@ fun ProfileScreen(
 
                 Spacer(Modifier.weight(1f))
 
-                IconButton(onClick = { }) {
+                IconButton(onClick = {
+                    navigateToSettings()
+                }) {
                     Icon(Icons.Filled.Menu, contentDescription = "More options")
                 }
 
@@ -113,7 +127,7 @@ fun ProfileScreen(
             )
 
             // user logged in
-            if (false) {
+            if (loggedIn) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
                     modifier = modifier

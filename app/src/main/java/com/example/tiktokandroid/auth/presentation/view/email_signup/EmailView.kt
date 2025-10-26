@@ -113,7 +113,7 @@ fun EmailView(
         CustomButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(start = 20.dp, end = 20.dp, bottom = 65.dp),
             text = "Continue",
             containerColor = TikTokRed,
             contentColor = Color.White,
