@@ -10,11 +10,13 @@ class AuthRepository @Inject constructor(
 
     suspend fun signup(
         email: String,
+        password: String,
         dob: String,
         username: String
     ): Result<User> {
-        return dataSource.signup(
+        return dataSource.emailSignup(
             email,
+            password,
             dob,
             username
         )

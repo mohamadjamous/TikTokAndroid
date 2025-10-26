@@ -1,6 +1,8 @@
 package com.example.tiktokandroid.auth.presentation.viewmodel
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tiktokandroid.auth.data.model.AuthUiState
@@ -101,7 +103,7 @@ class SignupViewModel @Inject constructor(
     /**
      * Check if email does not exist already in firebase firestore
      */
-    fun checkEmail(email : String){
+    fun checkEmail(email: String) {
 
         viewModelScope.launch {
             _uiState.value = AuthUiState.Loading
@@ -117,16 +119,28 @@ class SignupViewModel @Inject constructor(
     /**
      * Create new user account
      */
-    fun emailSignup(email: String, password: String, username: String, dob: String) {
+    fun emailSignup() {
 
         viewModelScope.launch {
             _uiState.value = AuthUiState.Loading
-            val result = signupUseCase(email, dob, username)
+            val result = signupUseCase(
+                _userState.value.email,
+                _userState.value.password,
+                _userState.value.dob,
+                _userState.value.username
+            )
             _uiState.value = result.fold(
                 onSuccess = { AuthUiState.Success(it) },
-                onFailure = { AuthUiState.Error(it.message ?: "Unknown error") }
+                onFailure = {
+                    AuthUiState.Error(it.message ?: "Unknown error")
+
+                }
             )
         }
+    }
+
+    fun resetUiState() {
+        _uiState.value = AuthUiState.Idle
     }
 
     private fun isPasswordValid(password: String): Boolean {
@@ -175,5 +189,44 @@ class SignupViewModel @Inject constructor(
     fun onPhoneNumberChange(newNumber: String) {
         _userState.value = _userState.value.copy(phoneNumber = newNumber)
     }
+
+    /**
+     * Generates default username
+     */
+    fun generateUsername(): String {
+        val emailPrefix =
+            _userState.value.email.substringBefore("@").replace("[^A-Za-z0-9]".toRegex(), "")
+
+        // Convert DOB string to format YYYYMMDD (assumes dob input is like "5 October, 1995" or "05-10-1995")
+        val dobFormatted = _userState.value.dob
+            .replace("[^0-9]".toRegex(), "") // remove non-numeric characters
+            .padStart(8, '0') // ensure at least 8 digits
+
+        // Generate a short random number to make it unique
+        val randomSuffix = (100..999).random()
+
+        val username = "${emailPrefix}_${dobFormatted}_$randomSuffix"
+
+        return username.lowercase()
+    }
+
+
+    /**
+     * Function to restart the app after signup
+     * or login
+     */
+    fun restartApp(context: Context) {
+        val intent = context.packageManager
+            .getLaunchIntentForPackage(context.packageName)
+            ?.apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            }
+        context.startActivity(intent)
+        if (context is Activity) {
+            context.finish()
+        }
+        Runtime.getRuntime().exit(0) // optional, ensures process restart
+    }
+
 
 }

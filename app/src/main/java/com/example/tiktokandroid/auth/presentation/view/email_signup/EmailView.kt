@@ -56,6 +56,7 @@ fun EmailView(
                 // update user email
                 viewModel.onEmailChange(email)
                 onContinueClick()
+                viewModel.resetUiState()
             }
             is AuthUiState.Error -> {
                 loading = false

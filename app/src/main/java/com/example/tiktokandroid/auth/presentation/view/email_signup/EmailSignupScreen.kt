@@ -78,7 +78,11 @@ fun EmailSignupScreen(
                         viewModel = viewModel
                     )
 
-                    EmailAuthScreen.Username -> UserNameView()
+                    EmailAuthScreen.Username -> UserNameView(
+                        onBackPressed = { currentScreen = EmailAuthScreen.DOB },
+                        modifier = Modifier.fillMaxSize(),
+                        viewModel = viewModel
+                    )
                 }
             }
         }

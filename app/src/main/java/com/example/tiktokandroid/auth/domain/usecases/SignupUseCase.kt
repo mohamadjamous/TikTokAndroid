@@ -9,9 +9,10 @@ class SignupUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         email: String,
+        password: String,
         dob: String,
         username: String
     ): Result<User> {
-        return repository.signup(email, dob, username)
+        return repository.signup(email, password,dob, username)
     }
 }
