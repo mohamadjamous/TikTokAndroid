@@ -32,6 +32,8 @@ fun EmailSignupScreen(
 ) {
 
     var currentScreen by remember { mutableStateOf(EmailAuthScreen.Email) }
+    var isForward by remember { mutableStateOf(true) }
+
 
     Column(
         modifier = modifier
@@ -47,39 +49,64 @@ fun EmailSignupScreen(
             AnimatedContent(
                 targetState = currentScreen,
                 transitionSpec = {
-                    slideInHorizontally(
-                        initialOffsetX = { if (targetState.ordinal > initialState.ordinal) it else -it }
-                    ) + fadeIn() togetherWith
-                            slideOutHorizontally(
-                                targetOffsetX = { if (targetState.ordinal > initialState.ordinal) -it else it }
-                            ) + fadeOut()
+                    // Use the externally tracked direction
+                    if (isForward) {
+                        // Forward transition
+                        slideInHorizontally(initialOffsetX = { fullWidth -> fullWidth }) + fadeIn() togetherWith
+                                slideOutHorizontally(targetOffsetX = { fullWidth -> -fullWidth }) + fadeOut()
+                    } else {
+                        // Backward transition
+                        slideInHorizontally(initialOffsetX = { fullWidth -> -fullWidth }) + fadeIn() togetherWith
+                                slideOutHorizontally(targetOffsetX = { fullWidth -> fullWidth }) + fadeOut()
+                    }
                 },
                 label = "Auth Flow Animation"
             ) { screen ->
                 when (screen) {
                     EmailAuthScreen.Email -> EmailView(
-                        onContinueClick = { currentScreen = EmailAuthScreen.Password },
-                        onBackPressed = onBackPressed,
+                        onContinueClick = {
+                            isForward = true
+                            currentScreen = EmailAuthScreen.Password
+                        },
+                        onBackPressed = {
+                            isForward = false
+                            onBackPressed
+                        },
                         modifier = Modifier.fillMaxSize(),
                         viewModel = viewModel
                     )
 
                     EmailAuthScreen.Password -> PasswordView(
-                        onContinueClick = { currentScreen = EmailAuthScreen.DOB },
-                        onBackPressed = { currentScreen = EmailAuthScreen.Email },
+                        onContinueClick = {
+                            isForward = true
+                            currentScreen = EmailAuthScreen.DOB
+                        },
+                        onBackPressed = {
+                            isForward = false
+                            currentScreen = EmailAuthScreen.Email
+                        },
                         modifier = Modifier.fillMaxSize(),
                         viewModel = viewModel
                     )
 
                     EmailAuthScreen.DOB -> DobView(
-                        onContinueClick = { currentScreen = EmailAuthScreen.Username },
-                        onBackPressed = { currentScreen = EmailAuthScreen.Password },
+                        onContinueClick = {
+                            isForward = true
+                            currentScreen = EmailAuthScreen.Username
+                        },
+                        onBackPressed = {
+                            isForward = false
+                            currentScreen = EmailAuthScreen.Password
+                        },
                         modifier = Modifier.fillMaxSize(),
                         viewModel = viewModel
                     )
 
                     EmailAuthScreen.Username -> UserNameView(
-                        onBackPressed = { currentScreen = EmailAuthScreen.DOB },
+                        onBackPressed = {
+                            isForward = false
+                            currentScreen = EmailAuthScreen.DOB
+                        },
                         modifier = Modifier.fillMaxSize(),
                         viewModel = viewModel
                     )
