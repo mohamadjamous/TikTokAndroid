@@ -1,20 +1,13 @@
 package com.example.tiktokandroid.auth.presentation.view.phone_signup
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,21 +20,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tiktokandroid.auth.data.model.AuthUiState
-import com.example.tiktokandroid.auth.presentation.view.email_signup.EmailView
 import com.example.tiktokandroid.auth.presentation.viewmodel.SignupViewModel
 import com.example.tiktokandroid.core.presentation.components.BackButton
-import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.core.presentation.components.CustomLoadingView
-import com.example.tiktokandroid.core.presentation.components.CustomTextField
 import com.example.tiktokandroid.core.presentation.components.OtpTextField
+import com.example.tiktokandroid.core.presentation.components.ResendCodeTimer
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
 import kotlinx.coroutines.delay
 
@@ -51,16 +41,52 @@ fun OTPView(
     onBackPressed: () -> Unit = {},
     onContinueClick: () -> Unit = {},
     number: String = "",
-    viewModel: SignupViewModel,
-    verificationId: String = ""
+    viewModel: SignupViewModel
 ) {
 
     var otp by rememberSaveable { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
     var isError by rememberSaveable { mutableStateOf(false) }
+    var startTimer by remember { mutableStateOf(false) }
 
-    val otpUiState by viewModel.otpUiState.collectAsState()
 
+    val otpUiState by viewModel.otpState.collectAsState()
+    val sendCodeState by viewModel.sendCodeState.collectAsState()
+
+    val context = LocalContext.current
+
+    // On Composition
+    LaunchedEffect(key1 = Unit) {
+        viewModel.sendOtpCode(number = number)
+    }
+
+    LaunchedEffect(sendCodeState) {
+        when (sendCodeState) {
+            is AuthUiState.Idle -> {
+
+            }
+
+            is AuthUiState.Loading -> {
+                loading = true
+                isError = false
+            }
+
+            is AuthUiState.Success -> {
+                loading = false
+                isError = false
+
+                Toast.makeText(context, "OTP code was sent", Toast.LENGTH_SHORT).show()
+                startTimer
+                // update user phone number
+                viewModel.resetUiState()
+            }
+
+            is AuthUiState.Error -> {
+                loading = false
+                isError = true
+            }
+        }
+    }
 
     LaunchedEffect(otpUiState) {
         when (otpUiState) {
@@ -70,6 +96,7 @@ fun OTPView(
 
             is AuthUiState.Loading -> {
                 loading = true
+                isError = false
             }
 
             is AuthUiState.Success -> {
@@ -88,6 +115,8 @@ fun OTPView(
             }
         }
     }
+
+
 
 
     Box(
@@ -149,7 +178,7 @@ fun OTPView(
                 modifier = Modifier.padding(start = 30.dp, end = 20.dp),
                 onOtpComplete = { otpCode ->
                     otp = otpCode
-                    viewModel.verifyOtp(verificationId, otpCode)
+                    viewModel.verifyOtp(otpCode)
                 }
             )
 
@@ -157,41 +186,17 @@ fun OTPView(
 
             ResendCodeTimer(
                 modifier = Modifier.padding(start = 30.dp),
-                totalTimeSeconds = 60
-            ) {
-                // Enable "Resend Code" button here
-
-            }
+                totalTimeSeconds = 60,
+                start = startTimer,
+                onTimerFinish = {
+                    startTimer = false
+                }
+            )
 
 
         }
     }
 
-}
-
-
-@Composable
-fun ResendCodeTimer(
-    totalTimeSeconds: Int = 60,
-    modifier: Modifier = Modifier,
-    onTimerFinish: (() -> Unit)? = null
-) {
-    var remainingTime by remember { mutableStateOf(totalTimeSeconds) }
-
-    LaunchedEffect(Unit) {
-        while (remainingTime > 0) {
-            delay(1000L)
-            remainingTime -= 1
-        }
-        onTimerFinish?.invoke()
-    }
-
-    Text(
-        modifier = modifier,
-        text = "Resend code ${remainingTime}s",
-        fontSize = 15.sp,
-        color = Color.Gray
-    )
 }
 
 

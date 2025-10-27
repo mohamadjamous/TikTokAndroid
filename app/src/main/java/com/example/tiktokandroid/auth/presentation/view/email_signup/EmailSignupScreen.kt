@@ -108,6 +108,7 @@ fun EmailSignupScreen(
                             currentScreen = EmailAuthScreen.DOB
                         },
                         modifier = Modifier.fillMaxSize(),
+                        emailSignup = true,
                         viewModel = viewModel
                     )
                 }

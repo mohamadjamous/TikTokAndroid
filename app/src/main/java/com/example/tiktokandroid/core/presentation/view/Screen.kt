@@ -8,5 +8,8 @@ sealed class Screen(val rout: String) {
     object Profile: Screen("profile")
     object EmailSignup: Screen("email_signup")
     object Settings: Screen("settings")
+    object PhoneNumberSignup : Screen("phone_signup/{phoneNumber}") {
+        fun createRoute(phoneNumber: String) = "phone_signup/$phoneNumber"
+    }
 }
 

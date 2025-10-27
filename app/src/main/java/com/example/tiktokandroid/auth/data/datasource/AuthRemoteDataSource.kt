@@ -2,22 +2,30 @@ package com.example.tiktokandroid.auth.data.datasource
 
 import android.content.Context
 import com.example.tiktokandroid.core.presentation.model.User
+import com.example.tiktokandroid.feed.presentation.view.MainActivity
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.FirebaseException
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.coroutines.resume
 
 class AuthRemoteDataSource @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
     @ApplicationContext private val context: Context
 ) {
+
 
     suspend fun emailSignup(
         email: String,
@@ -115,6 +123,91 @@ class AuthRemoteDataSource @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun sendOtpCode(phoneNumber: String): Result<String> {
+        return suspendCancellableCoroutine { continuation ->
+
+            val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    // Instant verification on some devices (auto verify)
+                    continuation.resume(Result.success("AUTO_VERIFIED"))
+                }
+
+                override fun onVerificationFailed(e: FirebaseException) {
+                    continuation.resume(Result.failure(e))
+                }
+
+                override fun onCodeSent(
+                    verificationId: String,
+                    token: PhoneAuthProvider.ForceResendingToken
+                ) {
+                    continuation.resume(Result.success(verificationId))
+                }
+            }
+
+            val options = PhoneAuthOptions.newBuilder(firebaseAuth)
+                .setPhoneNumber(phoneNumber)
+                .setTimeout(60L, TimeUnit.SECONDS)
+                .setActivity(MainActivity.instance) // 👈 must be an Activity context
+                .setCallbacks(callbacks)
+                .build()
+
+            PhoneAuthProvider.verifyPhoneNumber(options)
+        }
+    }
+
+    suspend fun phoneNumberSignup(
+        phoneNumber: String,
+        dob: String,
+        username: String
+    ): Result<User> {
+        return try {
+            val firebaseUser = firebaseAuth.currentUser ?: throw Exception("User not authenticated")
+
+            // Convert DOB string to Timestamp
+            val formatter = SimpleDateFormat("d MMMM, yyyy", Locale.ENGLISH)
+            val date = formatter.parse(dob) ?: throw Exception("Invalid date format")
+            val dobTimestamp = Timestamp(date)
+
+            // Save user info in Firestore
+            val userMap = mapOf(
+                "uid" to firebaseUser.uid,
+                "phone" to phoneNumber,
+                "username" to username,
+                "email" to "",
+                "dob" to dobTimestamp
+            )
+
+            firestore.collection("users")
+                .document(firebaseUser.uid)
+                .set(userMap)
+                .await()
+
+            // Save locally in SharedPreferences
+            val sharedPref = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+            with(sharedPref.edit()) {
+                putString("uid", firebaseUser.uid)
+                putString("phone", phoneNumber)
+                putString("username", username)
+                putLong("dob", dobTimestamp.seconds)
+                apply()
+            }
+
+            Result.success(
+                User(
+                    id = firebaseUser.uid,
+                    phone = phoneNumber,
+                    username = username,
+                    email = "",
+                    dob = dob
+                )
+            )
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
 
 
 }

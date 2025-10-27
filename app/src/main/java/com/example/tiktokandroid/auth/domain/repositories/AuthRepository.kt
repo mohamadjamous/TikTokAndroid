@@ -8,7 +8,7 @@ class AuthRepository @Inject constructor(
     private val dataSource: AuthRemoteDataSource
 ) {
 
-    suspend fun signup(
+    suspend fun emailSignup(
         email: String,
         password: String,
         dob: String,
@@ -17,6 +17,18 @@ class AuthRepository @Inject constructor(
         return dataSource.emailSignup(
             email,
             password,
+            dob,
+            username
+        )
+    }
+
+    suspend fun phoneNumberSignup(
+        phoneNumber: String,
+        dob: String,
+        username: String
+    ): Result<User> {
+        return dataSource.phoneNumberSignup(
+            phoneNumber,
             dob,
             username
         )
@@ -38,5 +50,9 @@ class AuthRepository @Inject constructor(
     }
     suspend fun verifyOtp(verificationId: String, otp: String): Result<Boolean> {
         return dataSource.verifyOtp(verificationId, otp)
+    }
+
+    suspend fun sendOtpCode(phone: String): Result<String> {
+        return dataSource.sendOtpCode(phone)
     }
 }

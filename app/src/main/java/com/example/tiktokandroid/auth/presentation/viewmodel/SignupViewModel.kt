@@ -12,6 +12,7 @@ import com.example.tiktokandroid.auth.data.model.AuthUiState
 import com.example.tiktokandroid.auth.data.model.SignupUiState
 import com.example.tiktokandroid.auth.domain.usecases.CheckEmailUserCase
 import com.example.tiktokandroid.auth.domain.usecases.CheckPhoneNumberUseCase
+import com.example.tiktokandroid.auth.domain.usecases.SendOTPCodeUseCase
 import com.example.tiktokandroid.auth.domain.usecases.SignupUseCase
 import com.example.tiktokandroid.auth.domain.usecases.VerifyOTPUseCase
 import com.example.tiktokandroid.core.presentation.model.Country
@@ -34,7 +35,8 @@ class SignupViewModel @Inject constructor(
     private val signupUseCase: SignupUseCase,
     private val checkEmailUserCase: CheckEmailUserCase,
     private val checkPhoneNumberUseCase: CheckPhoneNumberUseCase,
-    private val verifyOtpUseCase: VerifyOTPUseCase
+    private val verifyOtpUseCase: VerifyOTPUseCase,
+    private val sendOTPCodeUseCase: SendOTPCodeUseCase,
 ) : ViewModel() {
 
     private val _countries = MutableStateFlow<List<Country>>(emptyList())
@@ -56,8 +58,17 @@ class SignupViewModel @Inject constructor(
     private val _userState = MutableStateFlow(SignupUiState())
     val userState: StateFlow<SignupUiState> = _userState.asStateFlow()
 
-    private val _otpUiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
-    val otpUiState = _otpUiState.asStateFlow()
+    private val _phoneState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
+    val phoneState = _phoneState.asStateFlow()
+
+    private val _otpState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
+    val otpState = _otpState.asStateFlow()
+
+    private val _sendCodeState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
+    val sendCodeState = _sendCodeState.asStateFlow()
+
+    var verificationId by mutableStateOf<String?>(null)
+        private set
 
     init {
         loadCountries()
@@ -151,6 +162,9 @@ class SignupViewModel @Inject constructor(
 
     fun resetUiState() {
         _uiState.value = AuthUiState.Idle
+        _phoneState.value = AuthUiState.Idle
+        _otpState.value = AuthUiState.Idle
+        _sendCodeState.value = AuthUiState.Idle
     }
 
     private fun isPasswordValid(password: String): Boolean {
@@ -244,9 +258,9 @@ class SignupViewModel @Inject constructor(
      */
     fun checkPhoneNumber(number: String) {
         viewModelScope.launch {
-            _uiState.value = AuthUiState.Loading
+            _phoneState.value = AuthUiState.Loading
             val result = checkPhoneNumberUseCase(number)
-            _uiState.value = result.fold(
+            _phoneState.value = result.fold(
                 onSuccess = { AuthUiState.Success(it) },
                 onFailure = { AuthUiState.Error(it.message ?: "Unknown error") }
             )
@@ -259,13 +273,45 @@ class SignupViewModel @Inject constructor(
         return regex.matches(number)
     }
 
-    fun verifyOtp(verificationId: String, otp: String) {
+    fun verifyOtp(otp: String) {
         viewModelScope.launch {
-            _otpUiState.value = AuthUiState.Loading
-            val result = verifyOtpUseCase(verificationId, otp)
-            _otpUiState.value = result.fold(
+            _otpState.value = AuthUiState.Loading
+            val result = verificationId?.let { verifyOtpUseCase(it, otp) }
+            _otpState.value = result?.fold(
                 onSuccess = { AuthUiState.Success(it) },
                 onFailure = { AuthUiState.Error(it.message ?: "Unknown error") }
+            )!!
+        }
+    }
+
+    fun sendOtpCode(number: String) {
+        viewModelScope.launch {
+            _sendCodeState.value = AuthUiState.Loading
+            val result = sendOTPCodeUseCase(number)
+            _sendCodeState.value = result.fold(
+                onSuccess = {
+                    verificationId = it
+                    AuthUiState.Success(it)
+                },
+                onFailure = { AuthUiState.Error(it.message ?: "Unknown error") }
+            )
+        }
+    }
+
+    fun phoneNumberSignup() {
+        viewModelScope.launch {
+            _uiState.value = AuthUiState.Loading
+            val result = signupUseCase(
+                _userState.value.phoneNumber,
+                _userState.value.dob,
+                _userState.value.username
+            )
+            _uiState.value = result.fold(
+                onSuccess = { AuthUiState.Success(it) },
+                onFailure = {
+                    AuthUiState.Error(it.message ?: "Unknown error")
+
+                }
             )
         }
     }

@@ -34,7 +34,8 @@ import com.example.tiktokandroid.feed.presentation.view.theme.TikTokLightGray
 @Composable
 fun LoginSignupSwitcher(
     modifier : Modifier = Modifier,
-    navigateToEmailSignup: () -> Unit = {}
+    navigateToEmailSignup: () -> Unit = {},
+    navigateToPhoneSignup: (String) -> Unit = {},
 ) {
     var showLogin by remember { mutableStateOf(true) }
 
@@ -67,7 +68,8 @@ fun LoginSignupSwitcher(
                     LoginScreen(modifier = Modifier.fillMaxSize())
                 } else {
                     SignupScreen(modifier = Modifier.fillMaxSize(),
-                        navigateToEmailSignup = navigateToEmailSignup
+                        navigateToEmailSignup = navigateToEmailSignup,
+                        navigateToPhoneSignup = navigateToPhoneSignup
                     )
                 }
             }

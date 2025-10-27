@@ -45,59 +45,72 @@ fun CustomLoadingView(
     )
 
     Box(
-        modifier = modifier
-            .size(size + 32.dp) // add some padding around the loader
-            .background(color = Color.LightGray, shape = RoundedCornerShape(16.dp))
-            .clip(RoundedCornerShape(16.dp)),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.6f))
+            .then(modifier),
         contentAlignment = Alignment.Center
     ) {
-        Box(modifier = modifier.size(size), contentAlignment = Alignment.Center) {
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                val radiusX = (size.toPx() / 2 - ballSize.toPx() / 2) * 0.3f  // closer horizontally
-                val radiusY = radiusX / 2  // vertical still smaller for 3D
+
+        Box(
+            modifier = modifier
+                .size(size + 32.dp)
+                .background(color = Color.LightGray, shape = RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(16.dp)),
+            contentAlignment = Alignment.Center
+        )
+        {
+            Box(modifier = modifier.size(size), contentAlignment = Alignment.Center) {
+                Canvas(modifier = Modifier.fillMaxSize()) {
+                    val radiusX =
+                        (size.toPx() / 2 - ballSize.toPx() / 2) * 0.3f  // closer horizontally
+                    val radiusY = radiusX / 2  // vertical still smaller for 3D
 
 
-                // Convert rotation to radians
-                val angle1 = Math.toRadians(rotation.toDouble())
-                val angle2 = Math.toRadians((rotation + 180) % 360.0)
+                    // Convert rotation to radians
+                    val angle1 = Math.toRadians(rotation.toDouble())
+                    val angle2 = Math.toRadians((rotation + 180) % 360.0)
 
-                // Ball 1
-                val x1 = center.x + radiusX * cos(angle1)
-                val y1 = center.y + radiusY * sin(angle1)
-                val scale1 = 0.5f + 0.5f * (1 + sin(angle1))  // scale for depth
+                    // Ball 1
+                    val x1 = center.x + radiusX * cos(angle1)
+                    val y1 = center.y + radiusY * sin(angle1)
+                    val scale1 = 0.5f + 0.5f * (1 + sin(angle1))  // scale for depth
 
-                // Ball 2
-                val x2 = center.x + radiusX * cos(angle2)
-                val y2 = center.y + radiusY * sin(angle2)
-                val scale2 = 0.5f + 0.5f * (1 + sin(angle2))
+                    // Ball 2
+                    val x2 = center.x + radiusX * cos(angle2)
+                    val y2 = center.y + radiusY * sin(angle2)
+                    val scale2 = 0.5f + 0.5f * (1 + sin(angle2))
 
-                // Draw behind first
-                if (scale1 < scale2) {
-                    drawCircle(
-                        color = primaryColor,
-                        radius = ((ballSize.toPx() / 2) * scale1).toFloat(),
-                        center = Offset(x1.toFloat(), y1.toFloat())
-                    )
-                    drawCircle(
-                        color = secondaryColor,
-                        radius = ((ballSize.toPx() / 2) * scale2).toFloat(),
-                        center = Offset(x2.toFloat(), y2.toFloat())
-                    )
-                } else {
-                    drawCircle(
-                        color = secondaryColor,
-                        radius = ((ballSize.toPx() / 2) * scale2).toFloat(),
-                        center = Offset(x2.toFloat(), y2.toFloat())
-                    )
-                    drawCircle(
-                        color = primaryColor,
-                        radius = ((ballSize.toPx() / 2) * scale1).toFloat(),
-                        center = Offset(x1.toFloat(), y1.toFloat())
-                    )
+                    // Draw behind first
+                    if (scale1 < scale2) {
+                        drawCircle(
+                            color = primaryColor,
+                            radius = ((ballSize.toPx() / 2) * scale1).toFloat(),
+                            center = Offset(x1.toFloat(), y1.toFloat())
+                        )
+                        drawCircle(
+                            color = secondaryColor,
+                            radius = ((ballSize.toPx() / 2) * scale2).toFloat(),
+                            center = Offset(x2.toFloat(), y2.toFloat())
+                        )
+                    } else {
+                        drawCircle(
+                            color = secondaryColor,
+                            radius = ((ballSize.toPx() / 2) * scale2).toFloat(),
+                            center = Offset(x2.toFloat(), y2.toFloat())
+                        )
+                        drawCircle(
+                            color = primaryColor,
+                            radius = ((ballSize.toPx() / 2) * scale1).toFloat(),
+                            center = Offset(x1.toFloat(), y1.toFloat())
+                        )
+                    }
                 }
             }
         }
+
     }
+
 }
 
 @Preview(showSystemUi = true)

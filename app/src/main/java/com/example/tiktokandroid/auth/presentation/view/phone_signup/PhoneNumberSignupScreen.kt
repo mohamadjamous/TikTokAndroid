@@ -22,8 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tiktokandroid.auth.data.model.EmailAuthScreen
+import com.example.tiktokandroid.auth.data.model.PhoneAuthScreen
 import com.example.tiktokandroid.auth.presentation.view.email_signup.DobView
-import com.example.tiktokandroid.auth.presentation.view.email_signup.EmailView
 import com.example.tiktokandroid.auth.presentation.view.email_signup.PasswordView
 import com.example.tiktokandroid.auth.presentation.view.email_signup.UserNameView
 import com.example.tiktokandroid.auth.presentation.viewmodel.SignupViewModel
@@ -32,10 +32,11 @@ import com.example.tiktokandroid.auth.presentation.viewmodel.SignupViewModel
 fun PhoneNumberSignupScreen(
     modifier: Modifier = Modifier,
     onBackPressed: () -> Unit = {},
-    viewModel: SignupViewModel = hiltViewModel()
+    viewModel: SignupViewModel = hiltViewModel(),
+    phoneNumber : String = ""
 ) {
 
-    var currentScreen by remember { mutableStateOf(EmailAuthScreen.Email) }
+    var currentScreen by remember { mutableStateOf(PhoneAuthScreen.OTP) }
     var isForward by remember { mutableStateOf(true) }
 
 
@@ -44,6 +45,9 @@ fun PhoneNumberSignupScreen(
             .fillMaxSize()
             .background(Color.White)
     ) {
+
+        println("PhoneNumberValue: $phoneNumber")
+
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -66,54 +70,48 @@ fun PhoneNumberSignupScreen(
                 },
                 label = "Auth Flow Animation"
             ) { screen ->
+
                 when (screen) {
-                    EmailAuthScreen.Email -> EmailView(
+
+                    PhoneAuthScreen.OTP -> OTPView(
                         onContinueClick = {
                             isForward = true
-                            currentScreen = EmailAuthScreen.Password
+                            currentScreen = PhoneAuthScreen.DOB
                         },
                         onBackPressed = {
                             isForward = false
-                            onBackPressed
+                            onBackPressed()
+                        },
+                        modifier = Modifier.fillMaxSize(),
+                        viewModel = viewModel,
+                        number = phoneNumber
+                    )
+
+
+                    PhoneAuthScreen.DOB -> DobView(
+                        onContinueClick = {
+                            isForward = true
+                            currentScreen = PhoneAuthScreen.Username
+                        },
+                        onBackPressed = {
+                            isForward = false
                         },
                         modifier = Modifier.fillMaxSize(),
                         viewModel = viewModel
                     )
 
-                    EmailAuthScreen.Password -> PasswordView(
-                        onContinueClick = {
-                            isForward = true
-                            currentScreen = EmailAuthScreen.DOB
-                        },
+
+                    PhoneAuthScreen.Username -> UserNameView(
                         onBackPressed = {
                             isForward = false
-                            currentScreen = EmailAuthScreen.Email
+                            currentScreen = PhoneAuthScreen.DOB
                         },
                         modifier = Modifier.fillMaxSize(),
+                        emailSignup = false,
                         viewModel = viewModel
                     )
 
-                    EmailAuthScreen.DOB -> DobView(
-                        onContinueClick = {
-                            isForward = true
-                            currentScreen = EmailAuthScreen.Username
-                        },
-                        onBackPressed = {
-                            isForward = false
-                            currentScreen = EmailAuthScreen.Password
-                        },
-                        modifier = Modifier.fillMaxSize(),
-                        viewModel = viewModel
-                    )
 
-                    EmailAuthScreen.Username -> UserNameView(
-                        onBackPressed = {
-                            isForward = false
-                            currentScreen = EmailAuthScreen.DOB
-                        },
-                        modifier = Modifier.fillMaxSize(),
-                        viewModel = viewModel
-                    )
                 }
             }
         }

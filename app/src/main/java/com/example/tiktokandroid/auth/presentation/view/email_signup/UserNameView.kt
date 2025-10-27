@@ -34,6 +34,7 @@ import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
 fun UserNameView(
     modifier: Modifier = Modifier,
     onBackPressed: () -> Unit = {},
+    emailSignup : Boolean = false,
     viewModel: SignupViewModel
 ) {
 
@@ -137,11 +138,11 @@ fun UserNameView(
                 if (username.isEmpty()) {
                     // generate default username
                     viewModel.onUsernameChange(newUsername = viewModel.generateUsername())
-                    viewModel.emailSignup()
                 } else {
                     viewModel.onUsernameChange(newUsername = username)
-                    viewModel.emailSignup()
                 }
+
+                if (emailSignup) viewModel.emailSignup() else viewModel.phoneNumberSignup()
             }
         )
     }

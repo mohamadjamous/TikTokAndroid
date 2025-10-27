@@ -70,6 +70,7 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel(),
     navigateToEmailSignup: () -> Unit = {},
+    navigateToPhoneSignup: (String) -> Unit = {},
     navigateToSettings: () -> Unit = {}
 ) {
 
@@ -250,7 +251,8 @@ fun ProfileScreen(
                             .background(Color.White)
                     ) {
                         LoginSignupSwitcher(
-                            navigateToEmailSignup = navigateToEmailSignup
+                            navigateToEmailSignup = navigateToEmailSignup,
+                            navigateToPhoneSignup = navigateToPhoneSignup
                         )
                     }
 

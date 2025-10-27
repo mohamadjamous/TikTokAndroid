@@ -2,11 +2,14 @@ package com.example.tiktokandroid.feed.presentation.view.graphs
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.createGraph
+import androidx.navigation.navArgument
 import com.example.tiktokandroid.auth.presentation.view.SettingsScreen
 import com.example.tiktokandroid.auth.presentation.view.email_signup.EmailSignupScreen
+import com.example.tiktokandroid.auth.presentation.view.phone_signup.PhoneNumberSignupScreen
 import com.example.tiktokandroid.core.presentation.view.Screen
 import com.example.tiktokandroid.explore.presentation.view.screens.ExploreScreen
 import com.example.tiktokandroid.feed.presentation.view.screens.FeedScreen
@@ -42,6 +45,9 @@ fun RootNavGraph(navController: NavHostController) {
                         navController.navigate(
                             Screen.Settings.rout
                         )
+                    },
+                    navigateToPhoneSignup = { phoneNumber ->
+                        navController.navigate(Screen.PhoneNumberSignup.createRoute(phoneNumber))
                     }
                 )
             }
@@ -56,6 +62,19 @@ fun RootNavGraph(navController: NavHostController) {
 
             composable(route = Screen.Settings.rout) {
                 SettingsScreen(
+                    onBackPressed = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(
+                route = Screen.PhoneNumberSignup.rout,
+                arguments = listOf(navArgument("phoneNumber") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val phoneNumber = backStackEntry.arguments?.getString("phoneNumber") ?: ""
+                PhoneNumberSignupScreen(
+                    phoneNumber = phoneNumber,
                     onBackPressed = {
                         navController.popBackStack()
                     }

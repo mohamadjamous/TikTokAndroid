@@ -13,6 +13,14 @@ class SignupUseCase @Inject constructor(
         dob: String,
         username: String
     ): Result<User> {
-        return repository.signup(email, password,dob, username)
+        return repository.emailSignup(email, password,dob, username)
+    }
+
+    suspend operator fun invoke(
+        phoneNumber: String,
+        dob: String,
+        username: String
+    ): Result<User> {
+        return repository.phoneNumberSignup(phoneNumber, dob, username)
     }
 }
