@@ -28,4 +28,15 @@ class AuthRepository @Inject constructor(
         return dataSource.checkEmail(
             email)
     }
+
+
+    suspend fun checkPhoneNumber(
+        number: String
+    ): Result<Boolean> {
+        return dataSource.checkPhoneNumber(
+            number)
+    }
+    suspend fun verifyOtp(verificationId: String, otp: String): Result<Boolean> {
+        return dataSource.verifyOtp(verificationId, otp)
+    }
 }

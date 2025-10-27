@@ -3,12 +3,17 @@ package com.example.tiktokandroid.auth.presentation.viewmodel
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tiktokandroid.auth.data.model.AuthUiState
 import com.example.tiktokandroid.auth.data.model.SignupUiState
 import com.example.tiktokandroid.auth.domain.usecases.CheckEmailUserCase
+import com.example.tiktokandroid.auth.domain.usecases.CheckPhoneNumberUseCase
 import com.example.tiktokandroid.auth.domain.usecases.SignupUseCase
+import com.example.tiktokandroid.auth.domain.usecases.VerifyOTPUseCase
 import com.example.tiktokandroid.core.presentation.model.Country
 import com.example.tiktokandroid.core.presentation.model.CountryJsonResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +32,9 @@ import java.io.InputStreamReader
 class SignupViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val signupUseCase: SignupUseCase,
-    private val checkEmailUserCase: CheckEmailUserCase
+    private val checkEmailUserCase: CheckEmailUserCase,
+    private val checkPhoneNumberUseCase: CheckPhoneNumberUseCase,
+    private val verifyOtpUseCase: VerifyOTPUseCase
 ) : ViewModel() {
 
     private val _countries = MutableStateFlow<List<Country>>(emptyList())
@@ -48,6 +55,9 @@ class SignupViewModel @Inject constructor(
 
     private val _userState = MutableStateFlow(SignupUiState())
     val userState: StateFlow<SignupUiState> = _userState.asStateFlow()
+
+    private val _otpUiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
+    val otpUiState = _otpUiState.asStateFlow()
 
     init {
         loadCountries()
@@ -101,7 +111,7 @@ class SignupViewModel @Inject constructor(
 
 
     /**
-     * Check if email does not exist already in firebase firestore
+     * Check if email exists already in firebase firestore
      */
     fun checkEmail(email: String) {
 
@@ -226,6 +236,38 @@ class SignupViewModel @Inject constructor(
             context.finish()
         }
         Runtime.getRuntime().exit(0) // optional, ensures process restart
+    }
+
+
+    /**
+     * Check if phone number exists in fire store
+     */
+    fun checkPhoneNumber(number: String) {
+        viewModelScope.launch {
+            _uiState.value = AuthUiState.Loading
+            val result = checkPhoneNumberUseCase(number)
+            _uiState.value = result.fold(
+                onSuccess = { AuthUiState.Success(it) },
+                onFailure = { AuthUiState.Error(it.message ?: "Unknown error") }
+            )
+        }
+    }
+
+    fun isPhoneNumberValid(number: String): Boolean {
+        // Regex to match + followed by 1-3 digits country code and then 4-14 digits
+        val regex = Regex("""^\+\d{1,3}\d{4,14}$""")
+        return regex.matches(number)
+    }
+
+    fun verifyOtp(verificationId: String, otp: String) {
+        viewModelScope.launch {
+            _otpUiState.value = AuthUiState.Loading
+            val result = verifyOtpUseCase(verificationId, otp)
+            _otpUiState.value = result.fold(
+                onSuccess = { AuthUiState.Success(it) },
+                onFailure = { AuthUiState.Error(it.message ?: "Unknown error") }
+            )
+        }
     }
 
 

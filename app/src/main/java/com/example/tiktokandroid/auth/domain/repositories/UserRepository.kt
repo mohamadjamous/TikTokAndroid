@@ -14,6 +14,7 @@ class UserRepository @Inject constructor(
         val email = sharedPref.getString("email", "") ?: ""
         val username = sharedPref.getString("username", "") ?: ""
         val dob = sharedPref.getLong("dob", 0L)
-        return User(uid, username, dob.toString(), email)
+        val phone = sharedPref.getString("phone", "") ?: ""
+        return User(uid, username, dob.toString(), email, phone = phone)
     }
 }

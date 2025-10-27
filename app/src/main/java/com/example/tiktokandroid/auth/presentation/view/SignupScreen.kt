@@ -1,5 +1,6 @@
 package com.example.tiktokandroid.auth.presentation.view
 
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,12 +18,18 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,10 +38,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import com.example.tiktokandroid.R
+import com.example.tiktokandroid.auth.data.model.AuthUiState
 import com.example.tiktokandroid.auth.presentation.viewmodel.SignupViewModel
 import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.core.presentation.components.LoginButton
 import com.example.tiktokandroid.core.presentation.components.PhoneNumberTextField
+import com.example.tiktokandroid.core.presentation.model.Country
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
 import kotlinx.coroutines.launch
 
@@ -43,11 +52,47 @@ import kotlinx.coroutines.launch
 @Composable
 fun SignupScreen(
     modifier: Modifier = Modifier,
-    viewModel : SignupViewModel = hiltViewModel(),
+    viewModel: SignupViewModel = hiltViewModel(),
     navigateToEmailSignup: () -> Unit = {}
 ) {
 
     val countries by viewModel.countries.collectAsState()
+    var phone by rememberSaveable { mutableStateOf("") }
+    var country by remember { mutableStateOf(Country()) }
+    var loading by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf(false) }
+
+    val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+
+
+    LaunchedEffect(state) {
+        when (state) {
+            is AuthUiState.Idle -> { /* Show initial screen */
+            }
+
+            is AuthUiState.Loading -> {
+                error = false
+                loading = true
+            }
+
+            is AuthUiState.Success -> {
+                loading = false
+                error = false
+
+                Toast.makeText(context, "Continue phone setup", Toast.LENGTH_SHORT).show()
+
+                viewModel.resetUiState()
+            }
+
+            is AuthUiState.Error -> {
+                loading = false
+                error = true
+            }
+        }
+    }
+
+
 
     Column(
         modifier = modifier,
@@ -71,10 +116,29 @@ fun SignupScreen(
         ) {
 
 
+            if (error) {
+
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = "phone number is not valid",
+                    color = TikTokRed
+                )
+
+                Spacer(modifier = Modifier.height(15.dp))
+            }
+
             PhoneNumberTextField(
-                modifier = Modifier.fillMaxWidth()
-                .height(90.dp),
-                countries = countries
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(90.dp),
+                countries = countries,
+                onTextChange = {
+                    phone = it
+                },
+                onCountryChange = {
+                    country = it
+                }
             )
 
             CustomButton(
@@ -85,7 +149,19 @@ fun SignupScreen(
                 text = "Continue",
                 containerColor = TikTokRed,
                 contentColor = Color.White,
+                loading = loading,
                 onClick = {
+
+                    val number = "+${country.code}$phone"
+
+                    if (viewModel.isPhoneNumberValid(number = number)) {
+                        viewModel.checkPhoneNumber(
+                            number = "${country.code} + $phone"
+                        )
+                    } else {
+                        error = true
+                        loading = false
+                    }
 
                 }
             )

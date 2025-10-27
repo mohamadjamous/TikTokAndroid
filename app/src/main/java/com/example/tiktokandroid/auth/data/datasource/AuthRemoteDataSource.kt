@@ -2,8 +2,10 @@ package com.example.tiktokandroid.auth.data.datasource
 
 import android.content.Context
 import com.example.tiktokandroid.core.presentation.model.User
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
@@ -57,7 +59,7 @@ class AuthRemoteDataSource @Inject constructor(
             }
 
             // Return success
-            Result.success(User(id = firebaseUser.uid, email = email, username = username, dob = dob))
+            Result.success(User(id = firebaseUser.uid, email = email, username = username, dob = dob, phone = ""))
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -81,4 +83,38 @@ class AuthRemoteDataSource @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun checkPhoneNumber(
+        number: String
+    ): Result<Boolean> {
+
+        return try {
+            val querySnapshot = firestore
+                .collection("users")
+                .whereEqualTo("phone", number)
+                .get()
+                .await()
+
+            val exists = !querySnapshot.isEmpty
+            Result.success(exists)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun verifyOtp(verificationId: String, otp: String): Result<Boolean> {
+        return try {
+            val credential = PhoneAuthProvider.getCredential(verificationId, otp)
+            val authResult = firebaseAuth.signInWithCredential(credential).await()
+            if (authResult.user != null) {
+                Result.success(true)
+            } else {
+                Result.failure(Throwable("OTP verification failed"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
 }
