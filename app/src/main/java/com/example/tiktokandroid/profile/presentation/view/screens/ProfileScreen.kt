@@ -71,7 +71,8 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
     navigateToEmailSignup: () -> Unit = {},
     navigateToPhoneSignup: (String) -> Unit = {},
-    navigateToSettings: () -> Unit = {}
+    navigateToSettings: () -> Unit = {},
+    navigateToEmailPhoneLogin: () -> Unit = {}
 ) {
 
     val posts = viewModel.posts.collectAsState().value
@@ -88,9 +89,9 @@ fun ProfileScreen(
 
     val currentUser by viewModel.currentUser
 
-   LaunchedEffect(currentUser) {
-       loggedIn = currentUser != null
-   }
+    LaunchedEffect(currentUser) {
+        loggedIn = currentUser != null
+    }
 
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -252,7 +253,8 @@ fun ProfileScreen(
                     ) {
                         LoginSignupSwitcher(
                             navigateToEmailSignup = navigateToEmailSignup,
-                            navigateToPhoneSignup = navigateToPhoneSignup
+                            navigateToPhoneSignup = navigateToPhoneSignup,
+                            navigateToEmailPhoneLogin = navigateToEmailPhoneLogin
                         )
                     }
 

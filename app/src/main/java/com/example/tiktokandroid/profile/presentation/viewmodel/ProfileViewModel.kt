@@ -1,6 +1,5 @@
 package com.example.tiktokandroid.profile.presentation.viewmodel
 
-import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -25,7 +24,7 @@ class ProfileViewModel @Inject constructor(
 
 
     init {
-        loadStoredUser()
+        fetchStoredUser()
         fetchUserPosts()
     }
 
@@ -52,7 +51,7 @@ class ProfileViewModel @Inject constructor(
 
 
 
-    fun loadStoredUser() {
+    fun fetchStoredUser() {
         _currentUser.value = userRepository.getStoredUser()
         println("Debug: ${_currentUser.value?.id}")
         println("Debug: ${_currentUser.value?.username}")

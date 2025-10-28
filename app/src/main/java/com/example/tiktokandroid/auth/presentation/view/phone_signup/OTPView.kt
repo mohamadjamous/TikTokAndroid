@@ -129,11 +129,6 @@ fun OTPView(
         contentAlignment = Alignment.Center
     ) {
 
-        if (loading) {
-            CustomLoadingView()
-        }
-
-
         Column(
             modifier = modifier.fillMaxSize()
         )
@@ -206,6 +201,11 @@ fun OTPView(
 
 
         }
+
+        if (loading) {
+            CustomLoadingView()
+        }
+
     }
 
 }

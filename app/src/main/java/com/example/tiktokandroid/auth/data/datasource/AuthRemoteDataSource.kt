@@ -209,6 +209,53 @@ class AuthRemoteDataSource @Inject constructor(
     }
 
 
+    suspend fun phoneLogin(phoneNumber: String): Result<User> {
+        return try {
+            val firebaseUser = firebaseAuth.currentUser
+                ?: throw Exception("User not authenticated")
+
+            val userDoc = firestore.collection("users")
+                .document(firebaseUser.uid)
+                .get()
+                .await()
+
+            if (!userDoc.exists()) {
+                throw Exception("User not found in Firestore")
+            }
+
+            val username = userDoc.getString("username") ?: ""
+            val dobTimestamp = userDoc.getTimestamp("dob")
+            val dob = dobTimestamp?.toDate()?.let {
+                SimpleDateFormat("d MMMM, yyyy", Locale.ENGLISH).format(it)
+            } ?: ""
+
+            val sharedPref = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+            with(sharedPref.edit()) {
+                putString("uid", firebaseUser.uid)
+                putString("phone", phoneNumber)
+                putString("username", username)
+                putString("dob", dob)
+                putString("email", "")
+                apply() // or commit()
+            }
+
+            Result.success(
+                User(
+                    id = firebaseUser.uid,
+                    phone = phoneNumber,
+                    username = username,
+                    email = "",
+                    dob = dob
+                )
+            )
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+
+
+
 
 
 }

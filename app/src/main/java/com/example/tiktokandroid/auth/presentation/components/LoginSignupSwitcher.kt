@@ -36,6 +36,7 @@ fun LoginSignupSwitcher(
     modifier : Modifier = Modifier,
     navigateToEmailSignup: () -> Unit = {},
     navigateToPhoneSignup: (String) -> Unit = {},
+    navigateToEmailPhoneLogin: () -> Unit = {},
 ) {
     var showLogin by remember { mutableStateOf(true) }
 
@@ -65,7 +66,10 @@ fun LoginSignupSwitcher(
                 label = "Login/Signup Animation"
             ) { isLogin ->
                 if (isLogin) {
-                    LoginScreen(modifier = Modifier.fillMaxSize())
+                    LoginScreen(modifier = Modifier.fillMaxSize(),
+                        onEmailUsernameClick = {
+                            navigateToEmailPhoneLogin()
+                        })
                 } else {
                     SignupScreen(modifier = Modifier.fillMaxSize(),
                         navigateToEmailSignup = navigateToEmailSignup,

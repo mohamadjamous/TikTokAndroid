@@ -9,6 +9,7 @@ import androidx.navigation.createGraph
 import androidx.navigation.navArgument
 import com.example.tiktokandroid.auth.presentation.view.SettingsScreen
 import com.example.tiktokandroid.auth.presentation.view.email_signup.EmailSignupScreen
+import com.example.tiktokandroid.auth.presentation.view.login.EmailPhoneLoginScreen
 import com.example.tiktokandroid.auth.presentation.view.phone_signup.PhoneNumberSignupScreen
 import com.example.tiktokandroid.core.presentation.view.Screen
 import com.example.tiktokandroid.explore.presentation.view.screens.ExploreScreen
@@ -48,6 +49,9 @@ fun RootNavGraph(navController: NavHostController) {
                     },
                     navigateToPhoneSignup = { phoneNumber ->
                         navController.navigate(Screen.PhoneNumberSignup.createRoute(phoneNumber))
+                    },
+                    navigateToEmailPhoneLogin = {
+                        navController.navigate(Screen.EmailPhoneLogin.rout)
                     }
                 )
             }
@@ -80,6 +84,15 @@ fun RootNavGraph(navController: NavHostController) {
                     }
                 )
             }
+
+            composable(route = Screen.EmailPhoneLogin.rout) {
+                EmailPhoneLoginScreen(
+                    onBackPressed = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
         }
 
 

@@ -55,4 +55,8 @@ class AuthRepository @Inject constructor(
     suspend fun sendOtpCode(phone: String): Result<String> {
         return dataSource.sendOtpCode(phone)
     }
+
+    suspend fun phoneLogin(number: String): Result<User> {
+        return dataSource.phoneLogin(number)
+    }
 }
