@@ -48,6 +48,7 @@ fun OTPView(
     var loading by remember { mutableStateOf(false) }
     var isError by rememberSaveable { mutableStateOf(false) }
     var startTimer by remember { mutableStateOf(false) }
+    var enabled by remember { mutableStateOf(false) }
 
 
     val otpUiState by viewModel.otpState.collectAsState()
@@ -76,7 +77,8 @@ fun OTPView(
                 isError = false
 
                 Toast.makeText(context, "OTP code was sent", Toast.LENGTH_SHORT).show()
-                startTimer
+                startTimer = true
+                enabled = false
                 // update user phone number
                 viewModel.resetUiState()
             }
@@ -84,6 +86,9 @@ fun OTPView(
             is AuthUiState.Error -> {
                 loading = false
                 isError = true
+
+                startTimer = true
+                enabled = false
             }
         }
     }
@@ -188,8 +193,14 @@ fun OTPView(
                 modifier = Modifier.padding(start = 30.dp),
                 totalTimeSeconds = 60,
                 start = startTimer,
+                enabled = enabled,
                 onTimerFinish = {
                     startTimer = false
+                    enabled = true
+                },
+                onClick = {
+                    // Resend otp action
+                    viewModel.sendOtpCode(number = number)
                 }
             )
 
