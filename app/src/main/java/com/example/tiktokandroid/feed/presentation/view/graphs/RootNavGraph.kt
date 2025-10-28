@@ -16,6 +16,7 @@ import com.example.tiktokandroid.explore.presentation.view.screens.ExploreScreen
 import com.example.tiktokandroid.feed.presentation.view.screens.FeedScreen
 import com.example.tiktokandroid.notifications.presentation.view.screens.NotificationsScreen
 import com.example.tiktokandroid.profile.presentation.view.screens.ProfileScreen
+import com.example.tiktokandroid.uploadmedia.presentation.view.PostScreen
 import com.example.tiktokandroid.uploadmedia.presentation.view.UploadScreen
 
 @Composable
@@ -30,7 +31,13 @@ fun RootNavGraph(navController: NavHostController) {
                 ExploreScreen()
             }
             composable(route = Screen.Upload.rout) {
-                UploadScreen()
+                UploadScreen(
+                    navigateToPostScreen = {
+                      navController.navigate(
+                          route = Screen.Post.rout
+                      )
+                    }
+                )
             }
             composable(route = Screen.Notifications.rout) {
                 NotificationsScreen()
@@ -87,6 +94,14 @@ fun RootNavGraph(navController: NavHostController) {
 
             composable(route = Screen.EmailPhoneLogin.rout) {
                 EmailPhoneLoginScreen(
+                    onBackPressed = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(route = Screen.Post.rout) {
+                PostScreen (
                     onBackPressed = {
                         navController.popBackStack()
                     }

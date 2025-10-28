@@ -12,5 +12,6 @@ sealed class Screen(val rout: String) {
         fun createRoute(phoneNumber: String) = "phone_signup/$phoneNumber"
     }
     object EmailPhoneLogin: Screen("login")
+    object Post: Screen("post")
 }
 
