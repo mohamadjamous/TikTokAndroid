@@ -9,7 +9,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tiktokandroid.auth.data.model.AuthUiState
+import com.example.tiktokandroid.auth.domain.usecases.CheckEmailUserCase
 import com.example.tiktokandroid.auth.domain.usecases.CheckPhoneNumberUseCase
+import com.example.tiktokandroid.auth.domain.usecases.EmailLoginUseCase
 import com.example.tiktokandroid.auth.domain.usecases.PhoneLoginUseCase
 import com.example.tiktokandroid.auth.domain.usecases.SendOTPCodeUseCase
 import com.example.tiktokandroid.auth.domain.usecases.VerifyOTPUseCase
@@ -33,6 +35,8 @@ class LoginViewModel @Inject constructor(
     private val verifyOtpUseCase: VerifyOTPUseCase,
     private val sendOTPCodeUseCase: SendOTPCodeUseCase,
     private val phoneLoginUseCase: PhoneLoginUseCase,
+    private val checkEmailUserCase: CheckEmailUserCase,
+    private val emailLoginUseCase: EmailLoginUseCase,
 ) : ViewModel() {
 
     private val _countries = MutableStateFlow<List<Country>>(emptyList())
@@ -52,6 +56,10 @@ class LoginViewModel @Inject constructor(
 
     var verificationId by mutableStateOf<String?>(null)
         private set
+
+
+    private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Idle)
+    val uiState : StateFlow<AuthUiState> get() = _uiState
 
     init {
         loadCountries()
@@ -168,6 +176,44 @@ class LoginViewModel @Inject constructor(
                 onSuccess = {
                     AuthUiState.Success(it)
                 },
+                onFailure = { AuthUiState.Error(it.message ?: "Unknown error") }
+            )
+        }
+    }
+
+    /**
+     * Validate email address
+     */
+    fun validateEmail(email: String): Boolean {
+        if (email.isEmpty()) return false
+
+        // Simple regex for email validation
+        val emailPattern = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}\$")
+
+        return emailPattern.matches(email)
+    }
+
+    /**
+     * Check if email exists already in firebase firestore
+     */
+    fun checkEmail(email: String) {
+
+        viewModelScope.launch {
+            _uiState.value = AuthUiState.Loading
+            val result = checkEmailUserCase(email)
+            _uiState.value = result.fold(
+                onSuccess = { AuthUiState.Success(it) },
+                onFailure = { AuthUiState.Error(it.message ?: "Unknown error") }
+            )
+        }
+    }
+
+    fun emailLogin(email: String, password: String) {
+        viewModelScope.launch {
+            _loginState.value = AuthUiState.Loading
+            val result = emailLoginUseCase(email, password)
+            _loginState.value = result.fold(
+                onSuccess = { AuthUiState.Success(it) },
                 onFailure = { AuthUiState.Error(it.message ?: "Unknown error") }
             )
         }

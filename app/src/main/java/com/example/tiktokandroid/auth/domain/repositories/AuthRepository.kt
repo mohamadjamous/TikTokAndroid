@@ -59,4 +59,8 @@ class AuthRepository @Inject constructor(
     suspend fun phoneLogin(number: String): Result<User> {
         return dataSource.phoneLogin(number)
     }
+
+   suspend fun emailLogin(email: String,password: String): Result<User> {
+        return dataSource.emailLogin(email, password)
+    }
 }

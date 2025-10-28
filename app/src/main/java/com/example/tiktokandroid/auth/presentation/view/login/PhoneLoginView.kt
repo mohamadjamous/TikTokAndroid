@@ -205,7 +205,8 @@ fun PhoneLoginView(
                     top = 20.dp,
                     bottom = 55.dp
                 )
-        ) {
+        )
+        {
 
             if (isPhoneView) {
 

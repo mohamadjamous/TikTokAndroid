@@ -124,8 +124,7 @@ fun PhoneNumberTextField(
                                             focusedIndicatorColor = Color.Transparent,
                                             unfocusedIndicatorColor = Color.Transparent
                                         ),
-                                        shape = RoundedCornerShape(8.dp),
-                                        keyboardOptions = KeyboardOptions(autoCorrectEnabled = false, keyboardType = KeyboardType.Number)
+                                        shape = RoundedCornerShape(8.dp)
                                     )
 
                                     // Filtered Country List
@@ -183,7 +182,8 @@ fun PhoneNumberTextField(
                     cursorColor = Color.Black,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
-                )
+                ),
+                keyboardOptions = KeyboardOptions(autoCorrectEnabled = false, keyboardType = KeyboardType.Number)
             )
         }
     }

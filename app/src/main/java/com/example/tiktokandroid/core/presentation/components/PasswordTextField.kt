@@ -45,6 +45,7 @@ import com.example.tiktokandroid.auth.data.model.PasswordValidator
 fun PasswordTextField(
     modifier: Modifier = Modifier,
     hint: String = "Password",
+    showPasswordLevels : Boolean = true,
     onTextChange: (String) -> Unit = {},
     onValidityChange: (isValid: Boolean, strength: PasswordStrength) -> Unit = { _, _ -> }
 ) {
@@ -62,6 +63,7 @@ fun PasswordTextField(
 
     Column(modifier = modifier) {
         TextField(
+            modifier = Modifier.fillMaxWidth(),
             value = password,
             onValueChange = {
                 password = it
@@ -86,35 +88,52 @@ fun PasswordTextField(
             },
             singleLine = true,
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent
+                focusedContainerColor = Color(0xFFF5F5F5),
+                unfocusedContainerColor = Color(0xFFF5F5F5),
+                disabledContainerColor = Color(0xFFF5F5F5),
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
             ),
-            shape = RectangleShape // ensures no rounded corners
+            shape = RoundedCornerShape(8.dp)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Strength row (visual)
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Password strength: ${strength.name}", style = MaterialTheme.typography.bodySmall)
-            Spacer(modifier = Modifier.width(8.dp))
-            val color = when (strength) {
-                PasswordStrength.Weak -> Color.Red
-                PasswordStrength.Medium -> Color(0xFFFFA000) // amber
-                PasswordStrength.Strong -> Color(0xFF4CAF50)
-            }
-            Box(modifier = Modifier
-                .height(8.dp)
-                .width(80.dp)
-                .background(color = color, shape = RoundedCornerShape(4.dp)))
-        }
 
-        // Recommended checklist
-        Column(modifier = Modifier.padding(top = 8.dp)) {
-            ChecklistItem("At least ${8} characters", PasswordValidator.isMinLength(password))
-            ChecklistItem("Contains lower & upper case", PasswordValidator.hasLower(password) && PasswordValidator.hasUpper(password))
-            ChecklistItem("Contains a number", PasswordValidator.hasDigit(password))
-            ChecklistItem("Contains a special character", PasswordValidator.hasSpecial(password))
+        if(showPasswordLevels) {
+            // Strength row (visual)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "Password strength: ${strength.name}",
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                val color = when (strength) {
+                    PasswordStrength.Weak -> Color.Red
+                    PasswordStrength.Medium -> Color(0xFFFFA000) // amber
+                    PasswordStrength.Strong -> Color(0xFF4CAF50)
+                }
+                Box(
+                    modifier = Modifier
+                        .height(8.dp)
+                        .width(80.dp)
+                        .background(color = color, shape = RoundedCornerShape(4.dp))
+                )
+            }
+
+            // Recommended checklist
+            Column(modifier = Modifier.padding(top = 8.dp)) {
+                ChecklistItem("At least ${8} characters", PasswordValidator.isMinLength(password))
+                ChecklistItem(
+                    "Contains lower & upper case",
+                    PasswordValidator.hasLower(password) && PasswordValidator.hasUpper(password)
+                )
+                ChecklistItem("Contains a number", PasswordValidator.hasDigit(password))
+                ChecklistItem(
+                    "Contains a special character",
+                    PasswordValidator.hasSpecial(password)
+                )
+            }
         }
     }
 }

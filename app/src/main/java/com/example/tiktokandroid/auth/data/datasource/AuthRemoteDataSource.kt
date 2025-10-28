@@ -253,8 +253,54 @@ class AuthRemoteDataSource @Inject constructor(
         }
     }
 
+    suspend fun emailLogin(email: String, password: String): Result<User> {
 
+        return try {
+            // Sign in with Firebase Auth
+            val authResult = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            val firebaseUser = authResult.user ?: throw Exception("User not found after login")
 
+            // Fetch user info from Firestore
+            val userDoc = firestore.collection("users")
+                .document(firebaseUser.uid)
+                .get()
+                .await()
+
+            if (!userDoc.exists()) {
+                throw Exception("User not found in Firestore")
+            }
+
+            val username = userDoc.getString("username") ?: ""
+            val dobTimestamp = userDoc.getTimestamp("dob")
+            val dob = dobTimestamp?.toDate()?.let {
+                SimpleDateFormat("d MMMM, yyyy", Locale.ENGLISH).format(it)
+            } ?: ""
+
+            // Save to SharedPreferences
+            val sharedPref = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+            with(sharedPref.edit()) {
+                putString("uid", firebaseUser.uid)
+                putString("email", email)
+                putString("username", username)
+                putString("dob", dob)
+                putString("phone", "")
+                apply()
+            }
+
+            // Return success result
+            Result.success(
+                User(
+                    id = firebaseUser.uid,
+                    email = email,
+                    username = username,
+                    dob = dob,
+                    phone = ""
+                )
+            )
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
 
 
