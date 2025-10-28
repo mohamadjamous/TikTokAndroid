@@ -138,11 +138,13 @@ fun UserNameView(
                 if (username.isEmpty()) {
                     // generate default username
                     viewModel.onUsernameChange(newUsername = viewModel.generateUsername())
+                    if (emailSignup) viewModel.emailSignup() else viewModel.phoneNumberSignup()
                 } else {
                     viewModel.onUsernameChange(newUsername = username)
+                    if (emailSignup) viewModel.emailSignup() else viewModel.phoneNumberSignup()
                 }
 
-                if (emailSignup) viewModel.emailSignup() else viewModel.phoneNumberSignup()
+
             }
         )
     }

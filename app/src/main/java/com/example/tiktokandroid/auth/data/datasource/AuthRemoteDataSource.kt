@@ -96,6 +96,7 @@ class AuthRemoteDataSource @Inject constructor(
         number: String
     ): Result<Boolean> {
 
+        println("NumberBeingChecked: $number")
         return try {
             val querySnapshot = firestore
                 .collection("users")

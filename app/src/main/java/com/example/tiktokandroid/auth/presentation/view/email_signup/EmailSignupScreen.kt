@@ -70,7 +70,7 @@ fun EmailSignupScreen(
                         },
                         onBackPressed = {
                             isForward = false
-                            onBackPressed
+                            onBackPressed()
                         },
                         modifier = Modifier.fillMaxSize(),
                         viewModel = viewModel

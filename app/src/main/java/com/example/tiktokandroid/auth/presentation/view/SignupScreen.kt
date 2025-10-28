@@ -59,6 +59,7 @@ fun SignupScreen(
     var country by remember { mutableStateOf(Country()) }
     var loading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("phone number is not valid") }
 
     val state by viewModel.uiState.collectAsState()
     val phoneState by viewModel.phoneState.collectAsState()
@@ -86,6 +87,7 @@ fun SignupScreen(
             is AuthUiState.Error -> {
                 loading = false
                 error = true
+                errorMessage = "phone number is not valid"
             }
         }
     }
@@ -104,13 +106,20 @@ fun SignupScreen(
                 loading = false
                 error = false
 
-                navigateToPhoneSignup(fullPhoneNumber)
+                if (((phoneState as AuthUiState.Success).data as? Boolean) == false) {
+                    navigateToPhoneSignup(fullPhoneNumber)
+                }else{
+                    error = true
+                    errorMessage = "phone number exists"
+                }
+
                 viewModel.resetUiState()
             }
 
             is AuthUiState.Error -> {
                 loading = false
                 error = true
+                errorMessage = "phone number is not valid"
             }
         }
     }
@@ -148,7 +157,7 @@ fun SignupScreen(
                     Text(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        text = "phone number is not valid",
+                        text = errorMessage,
                         color = TikTokRed
                     )
 
@@ -182,12 +191,11 @@ fun SignupScreen(
                         fullPhoneNumber = "+${country.code}$phone"
 
                         if (viewModel.isPhoneNumberValid(number = fullPhoneNumber)) {
-                            viewModel.checkPhoneNumber(
-                                number = "${country.code} + $phone"
-                            )
+                            viewModel.checkPhoneNumber(number = fullPhoneNumber)
                         } else {
                             error = true
                             loading = false
+                            errorMessage = "phone number is not valid"
                         }
 
                     }
