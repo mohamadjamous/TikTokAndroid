@@ -1,12 +1,20 @@
 package com.example.tiktokandroid.uploadmedia.presentation.view
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +29,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -45,8 +54,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.example.tiktokandroid.core.presentation.components.BackButton
+import com.example.tiktokandroid.core.presentation.components.CustomButton
+import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -66,15 +80,48 @@ fun UploadScreen(
             videoList = loadDeviceVideos(context)
         }
     }
+    val videoPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        Manifest.permission.READ_MEDIA_VIDEO
+    } else {
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    }
+
+    var hasPermission by remember { mutableStateOf(
+        ContextCompat.checkSelfPermission(context, videoPermission) == PackageManager.PERMISSION_GRANTED
+    )}
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { granted -> hasPermission = granted }
+    )
+
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = { Text("Upload") },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             )
-        },
+            {
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Text(
+                        text = "Upload",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+            },
         containerColor = Color.White
     ) { innerPadding ->
         Box(
@@ -83,12 +130,26 @@ fun UploadScreen(
                 .padding(innerPadding),
             contentAlignment = Alignment.Center
         ) {
-            Button(
-                onClick = { showBottomSheet = true },
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text("Select Video")
-            }
+
+            CustomButton(
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(65.dp)
+                    .padding(top = 20.dp),
+                text = "Select Video",
+                containerColor = TikTokRed,
+                contentColor = Color.White,
+                onClick = {
+                    if (hasPermission) {
+                        showBottomSheet = true
+                        videoList = loadDeviceVideos(context)
+                    } else {
+                        // Ask permission on click
+                        permissionLauncher.launch(videoPermission)
+                        Toast.makeText(context, "Allow storage permissions to upload media", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            )
         }
 
         // Bottom sheet for showing videos

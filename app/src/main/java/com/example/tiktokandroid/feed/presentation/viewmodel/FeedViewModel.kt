@@ -39,7 +39,7 @@ class FeedViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun fetchPosts() {
-        posts = videoURLs.take(11).map { url ->
+        posts = videoURLs.take(13).map { url ->
             Post(
                 id = java.util.UUID.randomUUID().toString(),
                 videoUrl = url
