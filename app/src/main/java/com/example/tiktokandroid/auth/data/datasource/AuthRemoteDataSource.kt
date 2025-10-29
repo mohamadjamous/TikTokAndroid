@@ -56,15 +56,6 @@ class AuthRemoteDataSource @Inject constructor(
                 .set(userMap)
                 .await()
 
-            // Save locally in SharedPreferences
-            val sharedPref = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-            with(sharedPref.edit()) {
-                putString("uid", firebaseUser.uid)
-                putString("email", email)
-                putString("username", username)
-                putLong("dob", dobTimestamp.seconds) // store as seconds
-                apply()
-            }
 
             // Return success
             Result.success(
@@ -191,16 +182,6 @@ class AuthRemoteDataSource @Inject constructor(
                 .document(firebaseUser.uid)
                 .set(userMap)
                 .await()
-
-            // Save locally in SharedPreferences
-            val sharedPref = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-            with(sharedPref.edit()) {
-                putString("uid", firebaseUser.uid)
-                putString("phone", phoneNumber)
-                putString("username", username)
-                putLong("dob", dobTimestamp.seconds)
-                apply()
-            }
 
             Result.success(
                 User(

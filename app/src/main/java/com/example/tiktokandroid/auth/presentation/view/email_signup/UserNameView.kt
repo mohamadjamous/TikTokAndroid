@@ -28,6 +28,8 @@ import com.example.tiktokandroid.auth.presentation.viewmodel.SignupViewModel
 import com.example.tiktokandroid.core.presentation.components.BackButton
 import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.core.presentation.components.CustomTextField
+import com.example.tiktokandroid.core.presentation.model.User
+import com.example.tiktokandroid.core.sharedpreferences.UserPreferences
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
 import com.example.tiktokandroid.utils.Common
 
@@ -59,8 +61,16 @@ fun UserNameView(
                 loading = false
                 isError = false
 
-                // update user email
-                Common.restartApp(context = context)
+                val user = ((state as AuthUiState.Success).data as User)
+                UserPreferences(context).saveUser(
+                    user.id,
+                    user.username,
+                    user.dob,
+                    user.phone,
+                    user.email
+                )
+
+                Common.restartApp(context)
                 viewModel.resetUiState()
             }
 
