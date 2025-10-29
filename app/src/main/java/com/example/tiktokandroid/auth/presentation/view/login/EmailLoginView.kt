@@ -33,6 +33,8 @@ import com.example.tiktokandroid.core.presentation.components.CustomTextField
 import com.example.tiktokandroid.core.presentation.components.PasswordTextField
 import com.example.tiktokandroid.core.presentation.components.PhoneNumberTextField
 import com.example.tiktokandroid.core.presentation.model.Country
+import com.example.tiktokandroid.core.presentation.model.User
+import com.example.tiktokandroid.core.sharedpreferences.UserPreferences
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
 import com.example.tiktokandroid.utils.Common
 
@@ -114,10 +116,16 @@ fun EmailLoginView(
                 error = false
                 loading = false
 
-                // restart app
-                Common.restartApp(context)
+                val user = ((loginState as AuthUiState.Success).data as User)
+                UserPreferences(context).saveUser(
+                    user.id,
+                    user.username,
+                    user.dob,
+                    user.phone,
+                    user.email
+                )
 
-                // update user phone number
+                Common.restartApp(context)
                 viewModel.resetUiState()
             }
 

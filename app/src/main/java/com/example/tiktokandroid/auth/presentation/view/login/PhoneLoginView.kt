@@ -189,7 +189,6 @@ fun PhoneLoginView(
                     user.email
                 )
 
-//                Toast.makeText(context, "App will restart", Toast.LENGTH_SHORT).show()
                 Common.restartApp(context)
                 viewModel.resetUiState()
             }

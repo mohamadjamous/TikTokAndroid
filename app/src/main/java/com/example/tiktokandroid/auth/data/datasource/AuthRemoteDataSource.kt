@@ -218,7 +218,6 @@ class AuthRemoteDataSource @Inject constructor(
 
 
     suspend fun phoneLogin(phoneNumber: String): Result<User> {
-        println("PhoneNumberValue: $phoneNumber")
 
         return try {
             val firebaseUser = firebaseAuth.currentUser
@@ -230,7 +229,6 @@ class AuthRemoteDataSource @Inject constructor(
                 .get()
                 .await()
 
-            println("UserDoc: ${userDoc.id}")
 
             if (!userDoc.exists()) {
                 throw Exception("User not found in Firestore")
@@ -241,10 +239,6 @@ class AuthRemoteDataSource @Inject constructor(
             val dob = dobTimestamp?.toDate()?.let {
                 SimpleDateFormat("d MMMM, yyyy", Locale.ENGLISH).format(it)
             } ?: ""
-
-            println("UserInfo: ${firebaseUser.uid}")
-            println("UserInfo: $username")
-            println("UserInfo: $dob")
 
             // Return the user object
             Result.success(
@@ -285,17 +279,6 @@ class AuthRemoteDataSource @Inject constructor(
             val dob = dobTimestamp?.toDate()?.let {
                 SimpleDateFormat("d MMMM, yyyy", Locale.ENGLISH).format(it)
             } ?: ""
-
-            // Save to SharedPreferences
-            val sharedPref = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-            with(sharedPref.edit()) {
-                putString("uid", firebaseUser.uid)
-                putString("email", email)
-                putString("username", username)
-                putString("dob", dob)
-                putString("phone", "")
-                apply()
-            }
 
             // Return success result
             Result.success(
