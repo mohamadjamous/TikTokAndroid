@@ -29,6 +29,7 @@ import com.example.tiktokandroid.core.presentation.components.BackButton
 import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.core.presentation.components.CustomTextField
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.utils.Common
 
 @Composable
 fun UserNameView(
@@ -59,7 +60,7 @@ fun UserNameView(
                 isError = false
 
                 // update user email
-                viewModel.restartApp(context = context)
+                Common.restartApp(context = context)
                 viewModel.resetUiState()
             }
 

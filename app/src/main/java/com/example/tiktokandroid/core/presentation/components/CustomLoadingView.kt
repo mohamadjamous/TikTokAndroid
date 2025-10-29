@@ -29,7 +29,7 @@ import kotlin.math.sin
 fun CustomLoadingView(
     modifier: Modifier = Modifier,
     size: Dp = 65.dp,
-    ballSize: Dp = 13.dp,
+    ballSize: Dp = 10.dp,
     primaryColor: Color = Color.Red,
     secondaryColor: Color = Color.White,
     duration: Int = 800

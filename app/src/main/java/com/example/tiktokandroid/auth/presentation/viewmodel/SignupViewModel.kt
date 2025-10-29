@@ -17,6 +17,7 @@ import com.example.tiktokandroid.auth.domain.usecases.SignupUseCase
 import com.example.tiktokandroid.auth.domain.usecases.VerifyOTPUseCase
 import com.example.tiktokandroid.core.presentation.model.Country
 import com.example.tiktokandroid.core.presentation.model.CountryJsonResponse
+import com.example.tiktokandroid.utils.Common
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
@@ -37,6 +38,7 @@ class SignupViewModel @Inject constructor(
     private val checkPhoneNumberUseCase: CheckPhoneNumberUseCase,
     private val verifyOtpUseCase: VerifyOTPUseCase,
     private val sendOTPCodeUseCase: SendOTPCodeUseCase,
+    private val common: Common
 ) : ViewModel() {
 
     private val _countries = MutableStateFlow<List<Country>>(emptyList())
@@ -108,17 +110,6 @@ class SignupViewModel @Inject constructor(
     }
 
 
-    /**
-     * Validate email address
-     */
-    fun validateEmail(email: String): Boolean {
-        if (email.isEmpty()) return false
-
-        // Simple regex for email validation
-        val emailPattern = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}\$")
-
-        return emailPattern.matches(email)
-    }
 
 
     /**
@@ -236,24 +227,6 @@ class SignupViewModel @Inject constructor(
 
 
     /**
-     * Function to restart the app after signup
-     * or login
-     */
-    fun restartApp(context: Context) {
-        val intent = context.packageManager
-            .getLaunchIntentForPackage(context.packageName)
-            ?.apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            }
-        context.startActivity(intent)
-        if (context is Activity) {
-            context.finish()
-        }
-        Runtime.getRuntime().exit(0) // optional, ensures process restart
-    }
-
-
-    /**
      * Check if phone number exists in fire store
      */
     fun checkPhoneNumber(number: String) {
@@ -267,11 +240,7 @@ class SignupViewModel @Inject constructor(
         }
     }
 
-    fun isPhoneNumberValid(number: String): Boolean {
-        // Regex to match + followed by 1-3 digits country code and then 4-14 digits
-        val regex = Regex("""^\+\d{1,3}\d{4,14}$""")
-        return regex.matches(number)
-    }
+
 
     fun verifyOtp(otp: String) {
         viewModelScope.launch {
@@ -315,6 +284,9 @@ class SignupViewModel @Inject constructor(
             )
         }
     }
+
+    fun isPhoneNumberValid(number: String) = common.isPhoneNumberValid(number)
+    fun validateEmail(email: String) = common.validateEmail(email)
 
 
 }

@@ -67,7 +67,15 @@ class AuthRemoteDataSource @Inject constructor(
             }
 
             // Return success
-            Result.success(User(id = firebaseUser.uid, email = email, username = username, dob = dob, phone = ""))
+            Result.success(
+                User(
+                    id = firebaseUser.uid,
+                    email = email,
+                    username = username,
+                    dob = dob,
+                    phone = ""
+                )
+            )
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -210,14 +218,19 @@ class AuthRemoteDataSource @Inject constructor(
 
 
     suspend fun phoneLogin(phoneNumber: String): Result<User> {
+        println("PhoneNumberValue: $phoneNumber")
+
         return try {
             val firebaseUser = firebaseAuth.currentUser
                 ?: throw Exception("User not authenticated")
 
+            // 🔹 Fetch user document from Firestore
             val userDoc = firestore.collection("users")
                 .document(firebaseUser.uid)
                 .get()
                 .await()
+
+            println("UserDoc: ${userDoc.id}")
 
             if (!userDoc.exists()) {
                 throw Exception("User not found in Firestore")
@@ -229,16 +242,11 @@ class AuthRemoteDataSource @Inject constructor(
                 SimpleDateFormat("d MMMM, yyyy", Locale.ENGLISH).format(it)
             } ?: ""
 
-            val sharedPref = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-            with(sharedPref.edit()) {
-                putString("uid", firebaseUser.uid)
-                putString("phone", phoneNumber)
-                putString("username", username)
-                putString("dob", dob)
-                putString("email", "")
-                apply() // or commit()
-            }
+            println("UserInfo: ${firebaseUser.uid}")
+            println("UserInfo: $username")
+            println("UserInfo: $dob")
 
+            // Return the user object
             Result.success(
                 User(
                     id = firebaseUser.uid,
@@ -249,9 +257,11 @@ class AuthRemoteDataSource @Inject constructor(
                 )
             )
         } catch (e: Exception) {
+            println("ErrorMessage: ${e.message}")
             Result.failure(e)
         }
     }
+
 
     suspend fun emailLogin(email: String, password: String): Result<User> {
 
@@ -301,7 +311,6 @@ class AuthRemoteDataSource @Inject constructor(
             Result.failure(e)
         }
     }
-
 
 
 }

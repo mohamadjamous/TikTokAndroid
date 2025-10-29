@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -17,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tiktokandroid.auth.presentation.viewmodel.SettingsViewModel
 import com.example.tiktokandroid.core.presentation.components.BackButton
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.utils.Common
 
 @Composable
 fun SettingsScreen(
@@ -25,6 +27,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
 
+    val context = LocalContext.current
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -54,6 +57,7 @@ fun SettingsScreen(
             Text(
                 modifier = Modifier.clickable{
                     viewModel.logout()
+                    Common.restartApp(context)
                 },
                 text = "Logout",
                 color = TikTokRed,

@@ -34,6 +34,7 @@ import com.example.tiktokandroid.core.presentation.components.PasswordTextField
 import com.example.tiktokandroid.core.presentation.components.PhoneNumberTextField
 import com.example.tiktokandroid.core.presentation.model.Country
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.utils.Common
 
 
 @Composable
@@ -114,7 +115,7 @@ fun EmailLoginView(
                 loading = false
 
                 // restart app
-                viewModel.restartApp(context)
+                Common.restartApp(context)
 
                 // update user phone number
                 viewModel.resetUiState()

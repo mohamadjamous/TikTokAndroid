@@ -37,7 +37,10 @@ import com.example.tiktokandroid.core.presentation.components.OtpTextField
 import com.example.tiktokandroid.core.presentation.components.PhoneNumberTextField
 import com.example.tiktokandroid.core.presentation.components.ResendCodeTimer
 import com.example.tiktokandroid.core.presentation.model.Country
+import com.example.tiktokandroid.core.presentation.model.User
+import com.example.tiktokandroid.core.sharedpreferences.UserPreferences
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.utils.Common
 
 @Composable
 fun PhoneLoginView(
@@ -163,9 +166,9 @@ fun PhoneLoginView(
     }
 
     LaunchedEffect(loginState) {
-        when (otpUiState) {
+        when (loginState) {
             is AuthUiState.Idle -> {
-
+                // Do nothing
             }
 
             is AuthUiState.Loading -> {
@@ -177,11 +180,19 @@ fun PhoneLoginView(
                 loadingScreen = false
                 error = false
 
-                // restart app
-                viewModel.restartApp(context)
+                val user = ((loginState as AuthUiState.Success).data as User)
+                UserPreferences(context).saveUser(
+                    user.id,
+                    user.username,
+                    user.dob,
+                    user.phone,
+                    user.email
+                )
+
+//                Toast.makeText(context, "App will restart", Toast.LENGTH_SHORT).show()
+                Common.restartApp(context)
                 viewModel.resetUiState()
             }
-
             is AuthUiState.Error -> {
                 loadingScreen = false
                 error = true
@@ -189,6 +200,7 @@ fun PhoneLoginView(
             }
         }
     }
+
 
     Box(
         modifier = modifier.fillMaxSize(),
