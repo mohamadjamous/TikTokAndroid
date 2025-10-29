@@ -1,20 +1,27 @@
 package com.example.tiktokandroid.core.presentation.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,7 +36,8 @@ fun CustomButton(
     containerColor: Color = TikTokDarkGray,
     contentColor: Color = Color.Black,
     loading: Boolean = false,
-    height: Int = 50
+    height: Int = 50,
+    leadingIcon: ImageVector? = null
 ) {
     Box(
         modifier = modifier
@@ -56,11 +64,28 @@ fun CustomButton(
                 )
             } else {
 
-                Text(
-                    text = text,
-                    fontWeight = FontWeight.Bold,
-                    color = contentColor
-                )
+                Row {
+
+                    if (leadingIcon != null) {
+                        Icon(
+                            modifier = Modifier.size(20.dp),
+                            imageVector = leadingIcon,
+                            contentDescription = ""
+                        )
+
+
+                        Spacer(
+                            modifier = Modifier.width(5.dp)
+                        )
+                    }
+
+                    Text(
+                        text = text,
+                        fontWeight = FontWeight.Bold,
+                        color = contentColor
+                    )
+
+                }
             }
         }
     }

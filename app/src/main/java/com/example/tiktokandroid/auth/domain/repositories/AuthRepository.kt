@@ -1,6 +1,8 @@
 package com.example.tiktokandroid.auth.domain.repositories
 
+import android.net.Uri
 import com.example.tiktokandroid.auth.data.datasource.AuthRemoteDataSource
+import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.core.presentation.model.User
 import javax.inject.Inject
 
@@ -63,4 +65,6 @@ class AuthRepository @Inject constructor(
    suspend fun emailLogin(email: String,password: String): Result<User> {
         return dataSource.emailLogin(email, password)
     }
+
+
 }

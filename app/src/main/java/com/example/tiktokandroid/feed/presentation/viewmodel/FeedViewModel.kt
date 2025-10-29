@@ -2,7 +2,6 @@ package com.example.tiktokandroid.feed.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.tiktokandroid.core.presentation.model.Post
-import com.example.tiktokandroid.feed.domain.repositories.FeedRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,9 +1,11 @@
 package com.example.tiktokandroid.core.presentation.view
 
+import android.net.Uri
+
 sealed class Screen(val rout: String) {
     object Home: Screen("home")
     object Friends: Screen("friends")
-    object Upload: Screen("upload")
+    object Upload : Screen("upload")
     object Notifications: Screen("notifications")
     object Profile: Screen("profile")
     object EmailSignup: Screen("email_signup")
@@ -12,6 +14,10 @@ sealed class Screen(val rout: String) {
         fun createRoute(phoneNumber: String) = "phone_signup/$phoneNumber"
     }
     object EmailPhoneLogin: Screen("login")
-    object Post: Screen("post")
+
+    object Post: Screen("post/{videoUri}"){
+            fun createRoute(videoUri: String) = "post/$videoUri"
+    }
+
 }
 

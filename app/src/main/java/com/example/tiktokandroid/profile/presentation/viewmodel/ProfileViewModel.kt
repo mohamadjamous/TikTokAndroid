@@ -1,10 +1,8 @@
 package com.example.tiktokandroid.profile.presentation.viewmodel
 
-import android.content.SharedPreferences
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.tiktokandroid.auth.domain.repositories.UserRepository
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.core.presentation.model.User
 import com.example.tiktokandroid.core.sharedpreferences.UserPreferences

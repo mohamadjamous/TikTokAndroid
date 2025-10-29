@@ -1,5 +1,6 @@
 package com.example.tiktokandroid.feed.presentation.view.graphs
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -32,10 +33,9 @@ fun RootNavGraph(navController: NavHostController) {
             }
             composable(route = Screen.Upload.rout) {
                 UploadScreen(
-                    navigateToPostScreen = {
-                      navController.navigate(
-                          route = Screen.Post.rout
-                      )
+                    navigateToPostScreen = { videoUri ->
+                        val encodedUri = Uri.encode(videoUri.toString())
+                        navController.navigate(Screen.Post.createRoute(encodedUri))
                     }
                 )
             }
@@ -100,13 +100,21 @@ fun RootNavGraph(navController: NavHostController) {
                 )
             }
 
-            composable(route = Screen.Post.rout) {
-                PostScreen (
+            composable(
+                route = Screen.Post.rout,
+                arguments = listOf(navArgument("videoUri") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val videoUriString = backStackEntry.arguments?.getString("videoUri")
+                val videoUri = videoUriString?.let { Uri.parse(Uri.decode(it)) }
+
+                PostScreen(
                     onBackPressed = {
                         navController.popBackStack()
-                    }
+                    },
+                    videoUri = videoUri
                 )
             }
+
 
         }
 

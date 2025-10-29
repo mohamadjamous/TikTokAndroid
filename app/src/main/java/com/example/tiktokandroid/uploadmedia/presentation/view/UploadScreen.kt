@@ -66,7 +66,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun UploadScreen(
     modifier: Modifier = Modifier,
-    navigateToPostScreen: () -> Unit = {}
+    navigateToPostScreen: (Uri) -> Unit = {}
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -176,7 +176,7 @@ fun UploadScreen(
                         VideoListItem(videoUri) {
                             // When user selects a video
                             showBottomSheet = false
-                            navigateToPostScreen()
+                            navigateToPostScreen(videoUri)
                         }
                     }
                 }

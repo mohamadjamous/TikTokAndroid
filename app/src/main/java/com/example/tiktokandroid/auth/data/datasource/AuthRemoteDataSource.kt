@@ -1,9 +1,10 @@
 package com.example.tiktokandroid.auth.data.datasource
 
 import android.content.Context
+import android.net.Uri
+import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.core.presentation.model.User
 import com.example.tiktokandroid.feed.presentation.view.MainActivity
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.FirebaseException
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -11,11 +12,13 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -23,6 +26,7 @@ import kotlin.coroutines.resume
 class AuthRemoteDataSource @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
+    private val firebaseStorage: FirebaseStorage,
     @ApplicationContext private val context: Context
 ) {
 
@@ -275,6 +279,8 @@ class AuthRemoteDataSource @Inject constructor(
             Result.failure(e)
         }
     }
+
+
 
 
 }
