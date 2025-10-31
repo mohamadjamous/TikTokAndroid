@@ -1,17 +1,28 @@
 package com.example.tiktokandroid.feed.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.tiktokandroid.auth.data.model.AuthUiState
 import com.example.tiktokandroid.core.presentation.model.Post
+import com.example.tiktokandroid.feed.data.model.FeedUiState
+import com.example.tiktokandroid.feed.domain.usecases.FetchPostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 @HiltViewModel
-class FeedViewModel @Inject constructor() : ViewModel() {
+class FeedViewModel @Inject constructor(
+    private val fetchPostsUseCase: FetchPostsUseCase
+) : ViewModel() {
 
     private val _videos = MutableStateFlow<List<Post>>(emptyList())
-    val videos: StateFlow<List<Post>> get() = _videos
+    val videos get() = _videos
+
+    private val _uiState = MutableStateFlow<FeedUiState>(FeedUiState.Idle)
+    val uiState get() = _uiState
 
 
     private val videoURLs = listOf(
@@ -38,14 +49,15 @@ class FeedViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun fetchPosts() {
-        posts = videoURLs.take(13).map { url ->
-            Post(
-                id = java.util.UUID.randomUUID().toString(),
-                videoUrl = url
+        viewModelScope.launch {
+            _uiState.value = FeedUiState.Loading
+            val result = fetchPostsUseCase.fetchPosts()
+            _videos.value = result.getOrNull() ?: emptyList()
+            _uiState.value = result.fold(
+                onSuccess = { FeedUiState.Success(it) },
+                onFailure = { FeedUiState.Error(it.message ?: "Unknown error") }
             )
         }
-
-        _videos.value = posts
     }
 
 }

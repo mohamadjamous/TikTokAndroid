@@ -1,6 +1,7 @@
 package com.example.tiktokandroid.feed.presentation.view.screens
 
 import androidx.annotation.OptIn
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.VerticalPager
@@ -13,7 +14,9 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,6 +35,9 @@ import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.example.tiktokandroid.auth.data.model.AuthUiState
+import com.example.tiktokandroid.core.presentation.components.CustomLoadingView
+import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.feed.presentation.components.FeedView
 
 
@@ -45,6 +51,30 @@ fun FeedScreen(
     val pagerState = rememberPagerState(pageCount = { videos.size })
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+
+    var loading by remember { mutableStateOf(false) }
+    val state = viewModel.uiState.collectAsState().value
+
+    LaunchedEffect(state) {
+        when (state) {
+            is FeedUiState.Idle -> { /* Show initial screen */
+            }
+
+            is FeedUiState.Loading -> {
+                loading = true
+            }
+
+            is FeedUiState.Success -> {
+                loading = false
+
+
+            }
+
+            is FeedUiState.Error -> {
+                loading = false
+            }
+        }
+    }
 
     // Cache setup
     val cacheDir = File(context.cacheDir, "media_cache")
@@ -112,14 +142,26 @@ fun FeedScreen(
     }
 
 
-    VerticalPager(
-        state = pagerState,
-        modifier = modifier
-            .fillMaxSize()
-            .padding(bottom = 55.dp)
-    ) { page ->
-        val player = activePlayers[page]
-        player?.let { FeedView(post = videos[page], player = it) }
+    Box(
+        modifier = modifier.fillMaxSize()
+    ) {
+
+
+        VerticalPager(
+            state = pagerState,
+            modifier = modifier
+                .fillMaxSize()
+                .padding(bottom = 55.dp)
+        ) { page ->
+            val player = activePlayers[page]
+            player?.let { FeedView(post = videos[page], player = it) }
+        }
+
+
+        if (loading) {
+            CustomLoadingView()
+        }
+
     }
 
 
