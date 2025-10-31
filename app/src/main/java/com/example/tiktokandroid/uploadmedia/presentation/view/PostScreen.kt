@@ -77,6 +77,7 @@ fun PostScreen(
                 error = false
 
                 onBackPressed()
+                Toast.makeText(context, "Video uploaded successfully!", Toast.LENGTH_LONG).show()
                 viewModel.resetUiState()
             }
 
