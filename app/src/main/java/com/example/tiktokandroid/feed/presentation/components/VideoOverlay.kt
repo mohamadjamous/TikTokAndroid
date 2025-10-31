@@ -33,7 +33,8 @@ import com.example.tiktokandroid.core.presentation.model.Post
 @Composable
 fun VideoOverlay(
     modifier: Modifier = Modifier,
-    onTogglePlay: () -> Unit) {
+    onTogglePlay: () -> Unit,
+    post: Post = Post()) {
 
     Box(
         modifier = modifier
@@ -59,14 +60,14 @@ fun VideoOverlay(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "carlos.name",
+                        text = post.username,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 16.sp,
                         color = Color.White
                     )
 
                     Text(
-                        text = "Rocket ship prepare for take off",
+                        text = post.description,
                         fontSize = 14.sp,
                         color = Color.White
                     )
@@ -88,13 +89,13 @@ fun VideoOverlay(
                     // Like Button
                     IconTextButton(
                         icon = Icons.Filled.Favorite,
-                        count = 27
+                        count = post.likes.toInt()
                     )
 
                     // Comment Button
                     IconTextButton(
                         icon = Icons.Filled.ChatBubble,
-                        count = 27
+                        count = post.comments.toInt()
                     )
 
                     // Bookmark Button

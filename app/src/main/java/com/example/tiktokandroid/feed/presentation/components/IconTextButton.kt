@@ -42,7 +42,7 @@ fun IconTextButton(
             fontSize = 12.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.offset(y = (-8).dp)
+            modifier = Modifier.offset(y = (-9).dp)
         )
     }
 }

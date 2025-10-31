@@ -21,7 +21,8 @@ fun FeedView(
             modifier = Modifier.fillMaxSize(),
             onTogglePlay = {
                 if (player.isPlaying) player.pause() else player.play()
-            }
+            },
+            post = post
         )
     }
 }
