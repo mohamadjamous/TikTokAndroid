@@ -55,24 +55,33 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.tiktokandroid.core.presentation.components.BackButton
 import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.uploadmedia.presentation.viewmodel.UploadViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 @Composable
 fun UploadScreen(
     modifier: Modifier = Modifier,
-    navigateToPostScreen: (Uri) -> Unit = {}
+    navigateToPostScreen: (Uri) -> Unit = {},
+    navigateToProfileScreen: () -> Unit = {},
+    viewModel: UploadViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showBottomSheet by remember { mutableStateOf(false) }
     var videoList by remember { mutableStateOf<List<Uri>>(emptyList()) }
+    val currentUser by viewModel.currentUser
+    var loggedIn by remember { mutableStateOf(false) }
+
+    LaunchedEffect(currentUser) {
+        loggedIn = currentUser != null
+    }
 
     // Load videos when sheet opens
     LaunchedEffect(showBottomSheet) {
@@ -86,9 +95,14 @@ fun UploadScreen(
         Manifest.permission.READ_EXTERNAL_STORAGE
     }
 
-    var hasPermission by remember { mutableStateOf(
-        ContextCompat.checkSelfPermission(context, videoPermission) == PackageManager.PERMISSION_GRANTED
-    )}
+    var hasPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                videoPermission
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -121,7 +135,7 @@ fun UploadScreen(
                     Spacer(modifier = Modifier.weight(1f))
                 }
             }
-            },
+        },
         containerColor = Color.White
     ) { innerPadding ->
         Box(
@@ -140,13 +154,23 @@ fun UploadScreen(
                 containerColor = TikTokRed,
                 contentColor = Color.White,
                 onClick = {
-                    if (hasPermission) {
-                        showBottomSheet = true
-                        videoList = loadDeviceVideos(context)
+
+                    if (loggedIn) {
+
+                        if (hasPermission) {
+                            showBottomSheet = true
+                            videoList = loadDeviceVideos(context)
+                        } else {
+                            // Ask permission on click
+                            permissionLauncher.launch(videoPermission)
+                            Toast.makeText(
+                                context,
+                                "Allow storage permissions to upload media",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     } else {
-                        // Ask permission on click
-                        permissionLauncher.launch(videoPermission)
-                        Toast.makeText(context, "Allow storage permissions to upload media", Toast.LENGTH_SHORT).show()
+                        navigateToProfileScreen()
                     }
                 }
             )

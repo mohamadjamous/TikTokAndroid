@@ -38,7 +38,7 @@ val navigationItems = listOf(
     ),
 
     NavigationItem(
-        title = "Notifications",
+        title = "Inbox",
         selectedIcon = Icons.Filled.Favorite,
         defaultIcon = Icons.Outlined.FavoriteBorder,
         route = Screen.Notifications.rout

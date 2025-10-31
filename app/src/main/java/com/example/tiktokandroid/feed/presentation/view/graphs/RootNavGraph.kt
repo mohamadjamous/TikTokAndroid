@@ -36,6 +36,9 @@ fun RootNavGraph(navController: NavHostController) {
                     navigateToPostScreen = { videoUri ->
                         val encodedUri = Uri.encode(videoUri.toString())
                         navController.navigate(Screen.Post.createRoute(encodedUri))
+                    },
+                    navigateToProfileScreen = {
+                        navController.navigate(Screen.Profile.rout)
                     }
                 )
             }
