@@ -28,8 +28,8 @@ import kotlin.math.sin
 @Composable
 fun CustomLoadingView(
     modifier: Modifier = Modifier,
-    size: Dp = 65.dp,
-    ballSize: Dp = 10.dp,
+    size: Dp = 60.dp,
+    ballSize: Dp = 9.dp,
     primaryColor: Color = Color.Red,
     secondaryColor: Color = Color.White,
     duration: Int = 800
@@ -45,7 +45,7 @@ fun CustomLoadingView(
     )
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color.Black.copy(alpha = 0.6f))
             .then(modifier),
@@ -63,7 +63,7 @@ fun CustomLoadingView(
             Box(modifier = modifier.size(size), contentAlignment = Alignment.Center) {
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val radiusX =
-                        (size.toPx() / 2 - ballSize.toPx() / 2) * 0.3f  // closer horizontally
+                        (size.toPx() / 2 - ballSize.toPx() / 2) * 0.2f  // closer horizontally
                     val radiusY = radiusX / 2  // vertical still smaller for 3D
 
 

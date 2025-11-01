@@ -9,7 +9,10 @@ class FeedRepository @Inject constructor(
     private val dataSource: FeedRemoteDataSource
 ) {
 
-    suspend fun fetchPosts() : Result<List<Post>>{
-        return dataSource.fetchPosts()
+    suspend fun fetchPosts(
+        num: Int,
+        lastVisibleId: String?
+    ) : Result<List<Post>>{
+        return dataSource.fetchPosts(num  = num, lastVisibleId = lastVisibleId)
     }
 }

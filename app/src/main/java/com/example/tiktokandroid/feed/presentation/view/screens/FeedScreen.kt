@@ -1,8 +1,13 @@
 package com.example.tiktokandroid.feed.presentation.view.screens
 
 import androidx.annotation.OptIn
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.runtime.Composable
@@ -17,6 +22,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,6 +44,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.tiktokandroid.auth.data.model.AuthUiState
 import com.example.tiktokandroid.core.presentation.components.CustomLoadingView
+import com.example.tiktokandroid.core.presentation.components.LoadingEffect
 import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.feed.presentation.components.FeedView
 
@@ -54,6 +62,7 @@ fun FeedScreen(
 
     var loading by remember { mutableStateOf(false) }
     val state = viewModel.uiState.collectAsState().value
+    val loadMoreVideos = viewModel.loadMoreVideos.value
 
     LaunchedEffect(state) {
         when (state) {
@@ -78,8 +87,7 @@ fun FeedScreen(
 
     // Cache setup
     val cacheDir = File(context.cacheDir, "media_cache")
-    val cache =
-        remember { SimpleCache(cacheDir, LeastRecentlyUsedCacheEvictor(100L * 1024 * 1024)) }
+    val cache = remember { SimpleCache(cacheDir, LeastRecentlyUsedCacheEvictor(100L * 1024 * 1024)) }
     val httpDataSourceFactory = DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true)
     val cacheDataSourceFactory = CacheDataSource.Factory()
         .setCache(cache)
@@ -146,15 +154,36 @@ fun FeedScreen(
         modifier = modifier.fillMaxSize()
     ) {
 
+        Column(modifier = Modifier.fillMaxSize()
+            .padding(bottom = 55.dp)) {
 
-        VerticalPager(
-            state = pagerState,
-            modifier = modifier
-                .fillMaxSize()
-                .padding(bottom = 55.dp)
-        ) { page ->
-            val player = activePlayers[page]
-            player?.let { FeedView(post = videos[page], player = it) }
+            VerticalPager(
+                state = pagerState,
+                modifier = modifier
+                    .fillMaxSize()
+                    .weight(5f)
+            ) { page ->
+                val player = activePlayers[page]
+                player?.let { FeedView(post = videos[page], player = it) }
+
+                // Load more when reaching the last item of current batch
+                if (page == videos.lastIndex - 0) { // trigger 1 item before end
+                    viewModel.fetchMorePosts()
+                }
+            }
+
+            if (loadMoreVideos) {
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(bottom = 50.dp)
+                        .background(Color.Black)
+                        .weight(1f),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    LoadingEffect()
+                }
+            }
         }
 
 

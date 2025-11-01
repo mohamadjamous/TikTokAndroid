@@ -1,5 +1,6 @@
 package com.example.tiktokandroid.feed.presentation.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -44,19 +45,48 @@ class FeedViewModel @Inject constructor(
     var posts: List<Post> = emptyList()
         private set
 
+    private var lastVisiblePostId: String? = null
+    private var isLoadingMore = false
+
+    private val _loadMoreVideos = mutableStateOf(false)
+    val loadMoreVideos = _loadMoreVideos
+
     init {
-        fetchPosts()
+        fetchInitialPosts()
     }
 
-    private fun fetchPosts() {
+    fun fetchInitialPosts() {
         viewModelScope.launch {
             _uiState.value = FeedUiState.Loading
             val result = fetchPostsUseCase.fetchPosts()
-            _videos.value = result.getOrNull() ?: emptyList()
+            val posts = result.getOrNull() ?: emptyList()
+
+            _videos.value = posts
+            lastVisiblePostId = posts.lastOrNull()?.id
+
             _uiState.value = result.fold(
                 onSuccess = { FeedUiState.Success(it) },
                 onFailure = { FeedUiState.Error(it.message ?: "Unknown error") }
             )
+        }
+    }
+
+    fun fetchMorePosts() {
+        if (isLoadingMore || lastVisiblePostId == null) return
+
+        viewModelScope.launch {
+            isLoadingMore = true
+            _loadMoreVideos.value = true
+
+            val result = fetchPostsUseCase.fetchPosts(num = 3, lastVisibleId = lastVisiblePostId)
+            val newPosts = result.getOrNull() ?: emptyList()
+
+            // Append to current list
+            _videos.value = _videos.value + newPosts
+            lastVisiblePostId = newPosts.lastOrNull()?.id
+
+            _loadMoreVideos.value = false
+            isLoadingMore = false
         }
     }
 

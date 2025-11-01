@@ -9,30 +9,22 @@ class FeedRemoteDataSource @Inject constructor(
     private val firestore: FirebaseFirestore
 ) {
 
-    suspend fun fetchPosts(num: Int = 5, lastVisibleId: String? = null): Result<List<Post>> {
+    suspend fun fetchPosts(num: Int, lastVisibleId: String? = null): Result<List<Post>> {
 
         return try {
-            val firestore = firestore
-            var query = firestore.collection("posts")
-                .orderBy("id") // or "timestamp" if you have one
+            val collectionRef = firestore.collection("posts")
+                .orderBy("id")
                 .limit(num.toLong())
 
-            // If this is a pagination request, start after the last post ID
-            if (lastVisibleId != null) {
-                val lastDocSnapshot = firestore.collection("posts")
-                    .document(lastVisibleId)
-                    .get()
-                    .await()
-
-                if (lastDocSnapshot.exists()) {
-                    query = query.startAfter(lastDocSnapshot)
-                }
+            val query = if (lastVisibleId != null) {
+                val lastDoc = firestore.collection("posts").document(lastVisibleId).get().await()
+                if (lastDoc.exists()) collectionRef.startAfter(lastDoc) else collectionRef
+            } else {
+                collectionRef
             }
 
             val snapshot = query.get().await()
-            val posts = snapshot.documents.mapNotNull { doc ->
-                doc.toObject(Post::class.java)
-            }
+            val posts = snapshot.documents.mapNotNull { it.toObject(Post::class.java) }
 
             Result.success(posts)
         } catch (e: Exception) {
