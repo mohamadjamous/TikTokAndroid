@@ -1,22 +1,33 @@
 package com.example.tiktokandroid.feed.presentation.viewmodel
 
+import android.content.Context
+import androidx.annotation.OptIn
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.cache.CacheDataSource
 import com.example.tiktokandroid.auth.data.model.AuthUiState
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.feed.domain.usecases.FetchPostsUseCase
+import com.example.tiktokandroid.feed.presentation.view.screens.MediaCacheSingleton
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+@UnstableApi
 @HiltViewModel
 class FeedViewModel @Inject constructor(
-    private val fetchPostsUseCase: FetchPostsUseCase
+    private val fetchPostsUseCase: FetchPostsUseCase,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _videos = MutableStateFlow<List<Post>>(emptyList())
@@ -51,8 +62,12 @@ class FeedViewModel @Inject constructor(
     private val _loadMoreVideos = mutableStateOf(false)
     val loadMoreVideos = _loadMoreVideos
 
+    var cacheDataSourceFactory : CacheDataSource.Factory? = null
+        private set
+
     init {
         fetchInitialPosts()
+        createSimpleCache()
     }
 
     fun fetchInitialPosts() {
@@ -88,6 +103,17 @@ class FeedViewModel @Inject constructor(
             _loadMoreVideos.value = false
             isLoadingMore = false
         }
+    }
+
+
+    @OptIn(UnstableApi::class)
+    fun createSimpleCache(){
+        val cache = MediaCacheSingleton.getInstance(context)
+        val httpDataSourceFactory = DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true)
+        cacheDataSourceFactory = CacheDataSource.Factory()
+            .setCache(cache)
+            .setUpstreamDataSourceFactory(DefaultDataSource.Factory(context, httpDataSourceFactory))
+            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
     }
 
 }

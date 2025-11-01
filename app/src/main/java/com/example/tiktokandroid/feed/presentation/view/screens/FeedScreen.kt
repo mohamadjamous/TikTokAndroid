@@ -1,5 +1,6 @@
 package com.example.tiktokandroid.feed.presentation.view.screens
 
+import android.content.Context
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +43,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.media3.database.StandaloneDatabaseProvider
 import com.example.tiktokandroid.auth.data.model.AuthUiState
 import com.example.tiktokandroid.core.presentation.components.CustomLoadingView
 import com.example.tiktokandroid.core.presentation.components.LoadingEffect
@@ -86,13 +88,7 @@ fun FeedScreen(
     }
 
     // Cache setup
-    val cacheDir = File(context.cacheDir, "media_cache")
-    val cache = remember { SimpleCache(cacheDir, LeastRecentlyUsedCacheEvictor(100L * 1024 * 1024)) }
-    val httpDataSourceFactory = DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true)
-    val cacheDataSourceFactory = CacheDataSource.Factory()
-        .setCache(cache)
-        .setUpstreamDataSourceFactory(DefaultDataSource.Factory(context, httpDataSourceFactory))
-        .setFlags(CacheDataSource.FLAG_BLOCK_ON_CACHE)
+
 
     val loadControl = DefaultLoadControl.Builder()
         .setBufferDurationsMs(500, 5000, 250, 500)
@@ -103,7 +99,7 @@ fun FeedScreen(
     val activePlayers = remember { mutableMapOf<Int, ExoPlayer>() }
     if (videos.isNotEmpty() && activePlayers[0] == null) {
         val firstPlayer = ExoPlayer.Builder(context)
-            .setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory))
+            .setMediaSourceFactory(DefaultMediaSourceFactory(viewModel.cacheDataSourceFactory!!))
             .setLoadControl(loadControl)
             .build()
             .apply {
@@ -132,7 +128,7 @@ fun FeedScreen(
             if (activePlayers[index] == null) {
                 val post = videos[index]
                 val player = ExoPlayer.Builder(context)
-                    .setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory))
+                    .setMediaSourceFactory(DefaultMediaSourceFactory(viewModel.cacheDataSourceFactory!!))
                     .setLoadControl(loadControl)
                     .build()
                     .apply {
@@ -227,4 +223,19 @@ fun FeedScreen(
     }
 
 
+}
+
+@OptIn(androidx.media3.common.util.UnstableApi::class)
+object MediaCacheSingleton {
+    private var simpleCache: SimpleCache? = null
+
+    fun getInstance(context: Context): SimpleCache {
+        if (simpleCache == null) {
+            val cacheDir = File(context.cacheDir, "media_cache")
+            val evictor = LeastRecentlyUsedCacheEvictor(50L * 1024L * 1024L) // 50 MB
+            val databaseProvider = StandaloneDatabaseProvider(context)
+            simpleCache = SimpleCache(cacheDir, evictor, databaseProvider)
+        }
+        return simpleCache!!
+    }
 }

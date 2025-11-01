@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tiktokandroid.core.presentation.components.CircularGlideImage
 import com.example.tiktokandroid.core.presentation.components.CustomButton
+import com.example.tiktokandroid.feed.presentation.view.theme.TikTokLightGray
 
 @Composable
 fun ProfileHeaderView(
@@ -115,6 +116,7 @@ fun ProfileHeaderView(
         CustomButton(
             modifier = Modifier
                 .fillMaxWidth().padding(all = 20.dp),
+            containerColor = TikTokLightGray,
             text = "Edit Profile",
             height = 35,
             onClick = {
