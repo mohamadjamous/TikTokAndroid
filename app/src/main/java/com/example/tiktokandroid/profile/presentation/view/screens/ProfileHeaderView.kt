@@ -18,16 +18,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tiktokandroid.core.presentation.components.CircularGlideImage
 import com.example.tiktokandroid.core.presentation.components.CustomButton
+import com.example.tiktokandroid.core.presentation.model.User
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokLightGray
 
 @Composable
 fun ProfileHeaderView(
     modifier: Modifier = Modifier,
-    imageUrl: String = "",
-    username: String = "",
-    following: Int = 0,
-    followers: Int = 0,
-    likes: Int = 0
+    user: User? = null
 ) {
 
     Column(
@@ -35,10 +32,10 @@ fun ProfileHeaderView(
         modifier = modifier.fillMaxSize()
     ) {
 
-        CircularGlideImage(imageUrl = imageUrl, size = 115)
+        CircularGlideImage(imageUrl = user?.profileImageUrl ?: "", size = 115)
 
         Text(
-            text = username,
+            text = user?.username ?: "",
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 10.dp)
@@ -61,7 +58,7 @@ fun ProfileHeaderView(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "$following",
+                        text = "${user?.following ?: 0}",
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.bodyLarge
                     )
@@ -78,7 +75,7 @@ fun ProfileHeaderView(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "$followers",
+                        text = "${user?.followers ?: 0}",
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.bodyLarge
                     )
@@ -94,7 +91,7 @@ fun ProfileHeaderView(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "$likes",
+                        text = "${user?.likes ?: 0}",
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.bodyLarge
                     )
@@ -115,7 +112,8 @@ fun ProfileHeaderView(
 
         CustomButton(
             modifier = Modifier
-                .fillMaxWidth().padding(all = 20.dp),
+                .fillMaxWidth()
+                .padding(all = 20.dp),
             containerColor = TikTokLightGray,
             text = "Edit Profile",
             height = 35,
@@ -134,8 +132,5 @@ fun ProfileHeaderView(
 @Composable
 @Preview(showSystemUi = true)
 fun ProfileHeaderViewPreview() {
-    ProfileHeaderView(
-        username = "username default",
-        imageUrl = "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg"
-    )
+    ProfileHeaderView()
 }

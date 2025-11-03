@@ -15,6 +15,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Date
 
 @HiltViewModel
 class PostViewModel @Inject constructor(
@@ -36,6 +37,10 @@ class PostViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.value = PostUiState.Loading
+
+            // Set current date
+            post.datePosted = Date().time
+
             val result = postUseCase(post, videoUri)
             _uiState.value = result.fold(
                 onSuccess = { PostUiState.Success(it) },

@@ -58,6 +58,8 @@ import com.example.tiktokandroid.auth.presentation.components.LoginSignupSwitche
 import com.example.tiktokandroid.auth.presentation.view.LoginScreen
 import com.example.tiktokandroid.auth.presentation.view.SignupScreen
 import com.example.tiktokandroid.core.presentation.components.CustomButton
+import com.example.tiktokandroid.core.presentation.components.LoadingEffect
+import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
 import com.example.tiktokandroid.profile.presentation.components.PostRowItem
 import com.example.tiktokandroid.profile.presentation.viewmodel.ProfileViewModel
@@ -83,14 +85,34 @@ fun ProfileScreen(
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val partialHeight = screenHeight * 0.75f
-
     var loggedIn by remember { mutableStateOf(false) }
-
-
+    var error by remember { mutableStateOf(false) }
+    var loading by remember { mutableStateOf(false) }
+    val uiState = viewModel.uiState.value
     val currentUser by viewModel.currentUser
 
     LaunchedEffect(currentUser) {
         loggedIn = currentUser != null
+    }
+
+    LaunchedEffect(uiState) {
+        when (uiState) {
+            is FeedUiState.Error -> {
+                error = true
+                loading = false
+            }
+
+            FeedUiState.Idle -> {}
+            FeedUiState.Loading -> {
+                error = false
+                loading = true
+            }
+
+            is FeedUiState.Success -> {
+                error = false
+                loading = false
+            }
+        }
     }
 
 
@@ -105,7 +127,8 @@ fun ProfileScreen(
                     .padding(top = 20.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
-            ) {
+            )
+            {
                 Spacer(Modifier.weight(1.3f))
 
                 Text(
@@ -130,6 +153,7 @@ fun ProfileScreen(
 
             // user logged in
             if (loggedIn) {
+
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(3),
                     modifier = modifier
@@ -137,6 +161,7 @@ fun ProfileScreen(
                         .padding(bottom = 55.dp),
                     contentPadding = PaddingValues(bottom = 50.dp)
                 ) {
+                    // Profile header spans all columns
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -144,18 +169,50 @@ fun ProfileScreen(
                         ) {
                             ProfileHeaderView(
                                 modifier = Modifier.padding(top = 30.dp),
-                                imageUrl = "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg",
-                                username = "@lwis.hamilton"
+                                user = currentUser
                             )
                         }
                     }
-                    items(posts.size) { index ->
-                        PostRowItem(
-                            modifier = Modifier.padding(2.dp),
-                            post = posts[index]
-                        )
+
+                    // Loading state
+                    if (loading) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                LoadingEffect()
+                            }
+                        }
+                    }
+
+                    // Error state
+                    if (error) {
+                        item(span = { GridItemSpan(maxLineSpan) }) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("Error fetching posts", color = Color.Red)
+                            }
+                        }
+                    }
+
+                    // Posts grid
+                    if (!loading && !error) {
+                        items(posts.size) { index ->
+                            PostRowItem(
+                                modifier = Modifier.padding(2.dp),
+                                post = posts[index]
+                            )
+                        }
                     }
                 }
+
 
             } else {
 

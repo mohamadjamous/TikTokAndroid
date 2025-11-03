@@ -20,6 +20,7 @@ private val firebaseStorage: FirebaseStorage,
 ) {
 
     suspend fun uploadPost(post: Post, videoUri: Uri): Result<Post> {
+
         return try {
 
             // Upload video to Firebase Storage

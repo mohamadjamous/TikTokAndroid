@@ -12,5 +12,6 @@ data class Post(
     val comments: Long = 0,
     val allowComments: Boolean = true,
     val username: String = "", // <-- should be String, not Long
-    val description: String = ""
+    val description: String = "",
+    var datePosted: Long = 0
 )

@@ -42,7 +42,11 @@ class UserPreferences @Inject constructor(
             username = username,
             dob = dob,
             phone = phone,
-            email = email
+            email = email,
+            following = 0,
+            followers = 0,
+            likes = 0,
+            profileImageUrl = "",
         )
     }
 
