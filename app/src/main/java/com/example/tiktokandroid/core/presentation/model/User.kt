@@ -8,5 +8,9 @@ data class User(
     val username: String,
     val dob: String,
     val email: String,
-    val phone: String
+    val phone: String,
+    val following: Int,
+    val followers: Int,
+    val likes: Int,
+    val profileImageUrl: String,
 )

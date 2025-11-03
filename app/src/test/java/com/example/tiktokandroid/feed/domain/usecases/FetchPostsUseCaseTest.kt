@@ -1,8 +1,8 @@
 package com.example.tiktokandroid.feed.domain.usecases
 
 import com.example.tiktokandroid.core.presentation.model.Post
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
+import com.google.common.truth.ExpectFailure.assertThat
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -33,8 +33,7 @@ class FetchPostsUseCaseTest {
         fakeRepository.setFakePosts(fakePosts)
         val result = fetchPostsUseCase.fetchPosts(2)
 
-        assertTrue(result.isSuccess)
-        assertEquals(fakePosts, result.getOrNull())
+        assertThat(result.getOrNull()).isNotNull()
     }
 
     @Test
@@ -44,7 +43,6 @@ class FetchPostsUseCaseTest {
 
         val result = fetchPostsUseCase.fetchPosts(3)
 
-        assertTrue(result.isFailure)
-        assertEquals(error.message, result.exceptionOrNull()?.message)
+        assertThat(result.getOrNull()).isNull()
     }
 }

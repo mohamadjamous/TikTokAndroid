@@ -68,7 +68,11 @@ class AuthRemoteDataSource @Inject constructor(
                     email = email,
                     username = username,
                     dob = dob,
-                    phone = ""
+                    phone = "",
+                    following = 0,
+                    followers = 0,
+                    likes = 0,
+                    profileImageUrl = "",
                 )
             )
         } catch (e: Exception) {
@@ -193,7 +197,11 @@ class AuthRemoteDataSource @Inject constructor(
                     phone = phoneNumber,
                     username = username,
                     email = "",
-                    dob = dob
+                    dob = dob,
+                    following = 0,
+                    followers = 0,
+                    likes = 0,
+                    profileImageUrl = "",
                 )
             )
         } catch (e: Exception) {
@@ -219,22 +227,14 @@ class AuthRemoteDataSource @Inject constructor(
                 throw Exception("User not found in Firestore")
             }
 
-            val username = userDoc.getString("username") ?: ""
-            val dobTimestamp = userDoc.getTimestamp("dob")
-            val dob = dobTimestamp?.toDate()?.let {
-                SimpleDateFormat("d MMMM, yyyy", Locale.ENGLISH).format(it)
-            } ?: ""
+            val user = userDoc.toObject(User::class.java)
 
-            // Return the user object
-            Result.success(
-                User(
-                    id = firebaseUser.uid,
-                    phone = phoneNumber,
-                    username = username,
-                    email = "",
-                    dob = dob
-                )
-            )
+            if (user != null) {
+                Result.success(user)
+            } else {
+                Result.failure(Exception("Failed to parse user"))
+            }
+
         } catch (e: Exception) {
             println("ErrorMessage: ${e.message}")
             Result.failure(e)
@@ -259,28 +259,22 @@ class AuthRemoteDataSource @Inject constructor(
                 throw Exception("User not found in Firestore")
             }
 
-            val username = userDoc.getString("username") ?: ""
-            val dobTimestamp = userDoc.getTimestamp("dob")
-            val dob = dobTimestamp?.toDate()?.let {
-                SimpleDateFormat("d MMMM, yyyy", Locale.ENGLISH).format(it)
-            } ?: ""
+            if (!userDoc.exists()) {
+                throw Exception("User not found in Firestore")
+            }
 
-            // Return success result
-            Result.success(
-                User(
-                    id = firebaseUser.uid,
-                    email = email,
-                    username = username,
-                    dob = dob,
-                    phone = ""
-                )
-            )
+            val user = userDoc.toObject(User::class.java)
+
+            if (user != null) {
+                Result.success(user)
+            } else {
+                Result.failure(Exception("Failed to parse user"))
+            }
+
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
-
-
 
 
 }
