@@ -1,12 +1,11 @@
 package com.example.tiktokandroid.feed.domain.usecases
 
-import androidx.compose.runtime.snapshots.SnapshotId
 import com.example.tiktokandroid.core.presentation.model.Post
-import com.example.tiktokandroid.feed.domain.repositories.FeedRepository
+import com.example.tiktokandroid.feed.domain.interfaces.IFeedRepository
 import javax.inject.Inject
 
 class FetchPostsUseCase @Inject constructor(
-    private val repository: FeedRepository
+    private val repository: IFeedRepository
 ){
 
     suspend fun fetchPosts(

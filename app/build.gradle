@@ -100,4 +100,20 @@ dependencies {
 
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
+
+    // Dependencies for testing
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.mockito:mockito-core:2.11.0'
+    testImplementation 'android.arch.core:core-testing:1.1.1'
+    testImplementation "com.google.truth:truth:1.1"
+
+    // For Robolectric tests.
+    testImplementation("com.google.dagger:hilt-android-testing:2.28-alpha")
+
+    // For instrumented tests.
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.28-alpha")
+
+//    kaptTest("com.google.dagger:hilt-android-compiler:2.40.5")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+
 }
