@@ -1,11 +1,11 @@
-# 🎬 TikTokAndroid
+# TikTokAndroid
 
 A fully functional **TikTok-like Android app** built with **Kotlin**, following **Clean Architecture** and **MVVM** principles.  
 It leverages **Jetpack Compose**, **Firebase**, and **modern Android development** tools to deliver a smooth, real-time short-video experience.
 
 ---
 
-## 🚀 Features
+## Features
 
 - 🎥 Watch and upload short videos  
 - ❤️ Like, comment, and follow users  
@@ -19,7 +19,7 @@ It leverages **Jetpack Compose**, **Firebase**, and **modern Android development
 
 ---
 
-## 🧠 Architecture Overview
+## Architecture Overview
 
 This project is structured following **Clean Architecture + MVVM**:
 
@@ -35,7 +35,7 @@ di/ → Dagger Hilt modules and dependency graph
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Category | Technology |
 |-----------|-------------|
@@ -50,7 +50,7 @@ di/ → Dagger Hilt modules and dependency graph
 
 ---
 
-## 🧩 Modules
+## Modules
 
 - **core** — Shared utilities, constants, and base classes  
 - **data** — Repositories, mappers, DTOs  
@@ -60,14 +60,14 @@ di/ → Dagger Hilt modules and dependency graph
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 <img width="1920" height="1080" alt="tiktokandroidpng" src="https://github.com/user-attachments/assets/888b1a17-22fa-4c2b-9346-04d86b6b41a1" />
 
 
 ---
 
-## 🧾 Setup Instructions
+## Setup Instructions
 
 1. **Clone the repository**
    ```bash
