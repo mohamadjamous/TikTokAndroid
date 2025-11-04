@@ -62,6 +62,9 @@ fun RootNavGraph(navController: NavHostController) {
                     },
                     navigateToEmailPhoneLogin = {
                         navController.navigate(Screen.EmailPhoneLogin.rout)
+                    },
+                    onClickVideo = { post, index ->
+//                        navController.navigate("$CREATOR_VIDEO_ROUTE/${viewModel.userId}/$index")
                     }
                 )
             }

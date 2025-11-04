@@ -23,9 +23,14 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
@@ -36,6 +41,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -48,8 +57,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -59,9 +74,13 @@ import com.example.tiktokandroid.auth.presentation.view.LoginScreen
 import com.example.tiktokandroid.auth.presentation.view.SignupScreen
 import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.core.presentation.components.LoadingEffect
+import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.profile.data.model.ProfilePagerTabs
 import com.example.tiktokandroid.profile.presentation.components.PostRowItem
+import com.example.tiktokandroid.profile.presentation.components.tabs.LikeVideoTab
+import com.example.tiktokandroid.profile.presentation.components.tabs.PublicVideoTab
 import com.example.tiktokandroid.profile.presentation.viewmodel.ProfileViewModel
 import kotlinx.coroutines.launch
 
@@ -74,7 +93,8 @@ fun ProfileScreen(
     navigateToEmailSignup: () -> Unit = {},
     navigateToPhoneSignup: (String) -> Unit = {},
     navigateToSettings: () -> Unit = {},
-    navigateToEmailPhoneLogin: () -> Unit = {}
+    navigateToEmailPhoneLogin: () -> Unit = {},
+    onClickVideo: (video: Post, index: Int) -> Unit
 ) {
 
     val posts = viewModel.posts.collectAsState().value
@@ -90,6 +110,14 @@ fun ProfileScreen(
     var loading by remember { mutableStateOf(false) }
     val uiState = viewModel.uiState.value
     val currentUser by viewModel.currentUser
+
+    val tabs = ProfilePagerTabs.values().asList()
+    val pagerState = rememberPagerState(pageCount = { tabs.size })
+
+    val scrollState = rememberScrollState()
+
+    val coroutineScope = rememberCoroutineScope()
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
     LaunchedEffect(currentUser) {
         loggedIn = currentUser != null
@@ -151,7 +179,7 @@ fun ProfileScreen(
                 modifier = Modifier.padding(top = 5.dp)
             )
 
-            // user logged in
+            // User logged in
             if (loggedIn) {
 
                 LazyVerticalGrid(
@@ -202,17 +230,68 @@ fun ProfileScreen(
                         }
                     }
 
-                    // Posts grid
-                    if (!loading && !error) {
-                        items(posts.size) { index ->
-                            PostRowItem(
-                                modifier = Modifier.padding(2.dp),
-                                post = posts[index]
-                            )
+
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                        ) {
+                            TabRow(
+                                selectedTabIndex = pagerState.currentPage,
+                                indicator = {
+                                    val modifier = Modifier
+                                        .tabIndicatorOffset(it[pagerState.currentPage])
+                                        .padding(horizontal = screenWidth / 5.5f)
+
+                                    TabRowDefaults.Indicator(
+                                        modifier = modifier,
+                                        color = Black
+                                    )
+                                },
+                                divider = { Divider(thickness = 0.5.dp, color = Color.Gray) },
+                            ) {
+                                tabs.forEachIndexed { index, item ->
+                                    val isSelected = pagerState.currentPage == index
+                                    Tab(
+                                        selected = isSelected,
+                                        onClick = {
+                                            coroutineScope.launch {
+                                                pagerState.animateScrollToPage(index)
+                                            }
+                                        },
+                                        selectedContentColor = Color.Transparent,
+                                        icon = {
+                                            Icon(
+                                                painter = painterResource(id = item.icon),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(18.dp),
+                                                tint = if (isSelected) Black else Color.Gray
+                                            )
+                                        }
+                                    )
+                                }
+                            }
+
+                            HorizontalPager(
+                                state = pagerState,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+                            ) { page ->
+                                when (page) {
+                                    0 -> PublicVideoTab(
+                                        viewModel = viewModel,
+                                        scrollState = scrollState,
+                                        onClickVideo = onClickVideo
+                                    )
+
+                                    1 -> LikeVideoTab(viewModel = viewModel)
+                                }
+                            }
                         }
                     }
                 }
-
 
             } else {
 
@@ -329,5 +408,5 @@ fun ProfileScreen(
 @Composable
 @Preview(showSystemUi = true)
 fun ProfileViewPreview() {
-    ProfileScreen()
+//    ProfileScreen()
 }

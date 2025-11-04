@@ -32,6 +32,10 @@ class ProfileViewModel @Inject constructor(
     val uiState = _uiState
 
 
+    private val _publicVideos = MutableStateFlow<List<Post>>(emptyList())
+    val publicVideos: StateFlow<List<Post>> get() = _publicVideos
+
+
 
     init {
         fetchStoredUser()
