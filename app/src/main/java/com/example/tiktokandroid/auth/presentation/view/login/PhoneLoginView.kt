@@ -39,7 +39,7 @@ import com.example.tiktokandroid.core.presentation.components.ResendCodeTimer
 import com.example.tiktokandroid.core.presentation.model.Country
 import com.example.tiktokandroid.core.presentation.model.User
 import com.example.tiktokandroid.core.sharedpreferences.UserPreferences
-import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.theme.PrimaryColor
 import com.example.tiktokandroid.utils.Common
 
 @Composable
@@ -226,7 +226,7 @@ fun PhoneLoginView(
                         modifier = Modifier
                             .fillMaxWidth(),
                         text = errorMessage,
-                        color = TikTokRed
+                        color = PrimaryColor
                     )
                 }
 
@@ -274,7 +274,7 @@ fun PhoneLoginView(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             text = errorMessage,
-                            color = TikTokRed
+                            color = PrimaryColor
                         )
                     }
 
@@ -342,7 +342,7 @@ fun PhoneLoginView(
                         .height(70.dp)
                         .padding(top = 20.dp),
                     text = "Continue",
-                    containerColor = TikTokRed,
+                    containerColor = PrimaryColor,
                     contentColor = Color.White,
                     loading = loading,
                     onClick = {

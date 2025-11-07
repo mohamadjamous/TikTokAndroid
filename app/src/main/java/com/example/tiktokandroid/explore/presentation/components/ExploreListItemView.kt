@@ -15,7 +15,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tiktokandroid.core.presentation.components.CircularGlideImage
 import com.example.tiktokandroid.explore.data.model.ExploreItem
-import com.example.tiktokandroid.feed.presentation.view.theme.Typography
 
 @Composable
 fun ExploreListItemView(

@@ -27,7 +27,7 @@ import com.example.tiktokandroid.auth.presentation.viewmodel.SignupViewModel
 import com.example.tiktokandroid.core.presentation.components.BackButton
 import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.core.presentation.components.CustomTextField
-import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.theme.PrimaryColor
 
 @Composable
 fun EmailView(
@@ -93,7 +93,7 @@ fun EmailView(
                     .fillMaxWidth()
                     .padding(start = 30.dp),
                 text = "email address not valid",
-                color = TikTokRed
+                color = PrimaryColor
             )
         }
 
@@ -115,7 +115,7 @@ fun EmailView(
                 .fillMaxWidth()
                 .padding(start = 20.dp, end = 20.dp, bottom = 65.dp),
             text = "Continue",
-            containerColor = TikTokRed,
+            containerColor = PrimaryColor,
             contentColor = Color.White,
             loading = loading,
             onClick = {

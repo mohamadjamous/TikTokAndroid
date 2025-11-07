@@ -34,14 +34,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
-import com.example.tiktokandroid.R
 import com.example.tiktokandroid.auth.data.model.AuthUiState
 import com.example.tiktokandroid.auth.presentation.viewmodel.SignupViewModel
 import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.core.presentation.components.LoginButton
 import com.example.tiktokandroid.core.presentation.components.PhoneNumberTextField
 import com.example.tiktokandroid.core.presentation.model.Country
-import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.R
+import com.example.tiktokandroid.theme.PrimaryColor
 
 
 @OptIn(UnstableApi::class)
@@ -158,7 +158,7 @@ fun SignupScreen(
                         modifier = Modifier
                             .fillMaxWidth(),
                         text = errorMessage,
-                        color = TikTokRed
+                        color = PrimaryColor
                     )
 
                     Spacer(modifier = Modifier.height(15.dp))
@@ -183,7 +183,7 @@ fun SignupScreen(
                         .height(70.dp)
                         .padding(top = 20.dp),
                     text = "Continue",
-                    containerColor = TikTokRed,
+                    containerColor = PrimaryColor,
                     contentColor = Color.White,
                     loading = loading,
                     onClick = {

@@ -58,6 +58,7 @@ dependencies {
     implementation libs.firebase.auth
     implementation libs.firebase.firestore
     implementation libs.firebase.storage
+    implementation libs.androidx.constraintlayout.compose
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
@@ -114,5 +115,19 @@ dependencies {
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.28-alpha")
 
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+
+    implementation("androidx.compose.material:material-navigation:1.9.4")
+
+    // Compose Material (needed for ModalBottomSheet, SwipeableDefaults, ExperimentalMaterialApi)
+    implementation("androidx.compose.material:material:1.7.0")
+
+    // Accompanist System UI Controller
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.34.0")
+
+    // Accompanist Material Navigation (BottomSheetNavigator)
+    implementation("com.google.accompanist:accompanist-navigation-material:0.34.0")
+
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
 
 }

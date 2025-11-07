@@ -12,7 +12,7 @@ import com.example.tiktokandroid.auth.presentation.view.SettingsScreen
 import com.example.tiktokandroid.auth.presentation.view.email_signup.EmailSignupScreen
 import com.example.tiktokandroid.auth.presentation.view.login.EmailPhoneLoginScreen
 import com.example.tiktokandroid.auth.presentation.view.phone_signup.PhoneNumberSignupScreen
-import com.example.tiktokandroid.core.presentation.view.Screen
+import com.example.tiktokandroid.core.presentation.model.Screen
 import com.example.tiktokandroid.explore.presentation.view.screens.ExploreScreen
 import com.example.tiktokandroid.feed.presentation.view.screens.FeedScreen
 import com.example.tiktokandroid.notifications.presentation.view.screens.NotificationsScreen
@@ -24,44 +24,44 @@ import com.example.tiktokandroid.uploadmedia.presentation.view.UploadScreen
 fun RootNavGraph(navController: NavHostController) {
 
     val graph =
-        navController.createGraph(startDestination = Screen.Home.rout) {
-            composable(route = Screen.Home.rout) {
+        navController.createGraph(startDestination = Screen.Home.route) {
+            composable(route = Screen.Home.route) {
                 FeedScreen()
             }
-            composable(route = Screen.Friends.rout) {
+            composable(route = Screen.Friends.route) {
                 ExploreScreen()
             }
-            composable(route = Screen.Upload.rout) {
+            composable(route = Screen.Upload.route) {
                 UploadScreen(
                     navigateToPostScreen = { videoUri ->
                         val encodedUri = Uri.encode(videoUri.toString())
                         navController.navigate(Screen.Post.createRoute(encodedUri))
                     },
                     navigateToProfileScreen = {
-                        navController.navigate(Screen.Profile.rout)
+                        navController.navigate(Screen.Profile.route)
                     }
                 )
             }
-            composable(route = Screen.Notifications.rout) {
+            composable(route = Screen.Notifications.route) {
                 NotificationsScreen()
             }
-            composable(route = Screen.Profile.rout) {
+            composable(route = Screen.Profile.route) {
                 ProfileScreen(
                     navigateToEmailSignup = {
                         navController.navigate(
-                            Screen.EmailSignup.rout
+                            Screen.EmailSignup.route
                         )
                     },
                     navigateToSettings = {
                         navController.navigate(
-                            Screen.Settings.rout
+                            Screen.Settings.route
                         )
                     },
                     navigateToPhoneSignup = { phoneNumber ->
                         navController.navigate(Screen.PhoneNumberSignup.createRoute(phoneNumber))
                     },
                     navigateToEmailPhoneLogin = {
-                        navController.navigate(Screen.EmailPhoneLogin.rout)
+                        navController.navigate(Screen.EmailPhoneLogin.route)
                     },
                     onClickVideo = { post, index ->
 //                        navController.navigate("$CREATOR_VIDEO_ROUTE/${viewModel.userId}/$index")
@@ -69,7 +69,7 @@ fun RootNavGraph(navController: NavHostController) {
                 )
             }
 
-            composable(route = Screen.EmailSignup.rout) {
+            composable(route = Screen.EmailSignup.route) {
                 EmailSignupScreen(
                     onBackPressed = {
                         navController.popBackStack()
@@ -77,7 +77,7 @@ fun RootNavGraph(navController: NavHostController) {
                 )
             }
 
-            composable(route = Screen.Settings.rout) {
+            composable(route = Screen.Settings.route) {
                 SettingsScreen(
                     onBackPressed = {
                         navController.popBackStack()
@@ -86,7 +86,7 @@ fun RootNavGraph(navController: NavHostController) {
             }
 
             composable(
-                route = Screen.PhoneNumberSignup.rout,
+                route = Screen.PhoneNumberSignup.route,
                 arguments = listOf(navArgument("phoneNumber") { type = NavType.StringType })
             ) { backStackEntry ->
                 val phoneNumber = backStackEntry.arguments?.getString("phoneNumber") ?: ""
@@ -98,7 +98,7 @@ fun RootNavGraph(navController: NavHostController) {
                 )
             }
 
-            composable(route = Screen.EmailPhoneLogin.rout) {
+            composable(route = Screen.EmailPhoneLogin.route) {
                 EmailPhoneLoginScreen(
                     onBackPressed = {
                         navController.popBackStack()
@@ -107,7 +107,7 @@ fun RootNavGraph(navController: NavHostController) {
             }
 
             composable(
-                route = Screen.Post.rout,
+                route = Screen.Post.route,
                 arguments = listOf(navArgument("videoUri") { type = NavType.StringType })
             ) { backStackEntry ->
                 val videoUriString = backStackEntry.arguments?.getString("videoUri")

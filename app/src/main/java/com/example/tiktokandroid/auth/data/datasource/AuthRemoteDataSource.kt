@@ -1,10 +1,8 @@
 package com.example.tiktokandroid.auth.data.datasource
 
 import android.content.Context
-import android.net.Uri
-import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.core.presentation.model.User
-import com.example.tiktokandroid.feed.presentation.view.MainActivity
+import com.example.tiktokandroid.core.presentation.view.MainActivity
 import com.google.firebase.FirebaseException
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -18,7 +16,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.resume

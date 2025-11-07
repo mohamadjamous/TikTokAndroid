@@ -32,7 +32,7 @@ import com.example.tiktokandroid.core.presentation.components.BackButton
 import com.example.tiktokandroid.core.presentation.components.CustomLoadingView
 import com.example.tiktokandroid.core.presentation.components.OtpTextField
 import com.example.tiktokandroid.core.presentation.components.ResendCodeTimer
-import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.theme.PrimaryColor
 import kotlinx.coroutines.delay
 
 @Composable
@@ -168,7 +168,7 @@ fun OTPView(
                         .fillMaxWidth()
                         .padding(start = 30.dp),
                     text = "otp not valid",
-                    color = TikTokRed
+                    color = PrimaryColor
                 )
             }
 

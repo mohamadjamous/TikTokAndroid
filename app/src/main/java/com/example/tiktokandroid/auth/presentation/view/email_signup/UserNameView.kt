@@ -30,7 +30,7 @@ import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.core.presentation.components.CustomTextField
 import com.example.tiktokandroid.core.presentation.model.User
 import com.example.tiktokandroid.core.sharedpreferences.UserPreferences
-import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.theme.PrimaryColor
 import com.example.tiktokandroid.utils.Common
 
 @Composable
@@ -119,7 +119,7 @@ fun UserNameView(
                     .fillMaxWidth()
                     .padding(start = 30.dp),
                 text = "error creating new user, try again!",
-                color = TikTokRed
+                color = PrimaryColor
             )
         }
 
@@ -141,7 +141,7 @@ fun UserNameView(
                 .fillMaxWidth()
                 .padding(start = 20.dp, end = 20.dp, bottom = 65.dp),
             text = "Continue",
-            containerColor = TikTokRed,
+            containerColor = PrimaryColor,
             contentColor = Color.White,
             loading = loading,
             onClick = {

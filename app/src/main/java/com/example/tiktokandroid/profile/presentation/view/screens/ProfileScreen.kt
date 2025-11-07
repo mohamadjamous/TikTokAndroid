@@ -76,12 +76,13 @@ import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.core.presentation.components.LoadingEffect
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.feed.data.model.FeedUiState
-import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+
 import com.example.tiktokandroid.profile.data.model.ProfilePagerTabs
 import com.example.tiktokandroid.profile.presentation.components.PostRowItem
 import com.example.tiktokandroid.profile.presentation.components.tabs.LikeVideoTab
 import com.example.tiktokandroid.profile.presentation.components.tabs.PublicVideoTab
 import com.example.tiktokandroid.profile.presentation.viewmodel.ProfileViewModel
+import com.example.tiktokandroid.theme.PrimaryColor
 import kotlinx.coroutines.launch
 
 
@@ -320,7 +321,7 @@ fun ProfileScreen(
                             .height(65.dp)
                             .padding(top = 20.dp),
                         text = "Login",
-                        containerColor = TikTokRed,
+                        containerColor = PrimaryColor,
                         contentColor = Color.White,
                         onClick = {
                             showBottomSheet = !showBottomSheet

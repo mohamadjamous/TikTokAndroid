@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tiktokandroid.core.presentation.components.CustomButton
-import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.theme.PrimaryColor
 import com.example.tiktokandroid.uploadmedia.presentation.components.VideoListItem
 import com.example.tiktokandroid.uploadmedia.presentation.viewmodel.UploadViewModel
 
@@ -134,7 +134,7 @@ fun UploadScreen(
                     .height(65.dp)
                     .padding(top = 20.dp),
                 text = "Select Video",
-                containerColor = TikTokRed,
+                containerColor = PrimaryColor,
                 contentColor = Color.White,
                 onClick = {
 

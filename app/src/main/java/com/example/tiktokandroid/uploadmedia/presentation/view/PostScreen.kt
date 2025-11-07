@@ -40,7 +40,7 @@ import com.example.tiktokandroid.core.presentation.components.BackButton
 import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.core.presentation.components.CustomLoadingView
 import com.example.tiktokandroid.core.presentation.model.Post
-import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.theme.PrimaryColor
 import com.example.tiktokandroid.uploadmedia.data.model.PostUiState
 import com.example.tiktokandroid.uploadmedia.presentation.components.PostOptionItem
 import com.example.tiktokandroid.uploadmedia.presentation.components.VideoThumbnailWithPreview
@@ -200,7 +200,7 @@ fun PostScreen(
                         .weight(1f)
                         .padding(horizontal = 5.dp),
                     text = "Post",
-                    containerColor = TikTokRed,
+                    containerColor = PrimaryColor,
                     contentColor = Color.White,
                     onClick = {
                         if (description.isEmpty()) {

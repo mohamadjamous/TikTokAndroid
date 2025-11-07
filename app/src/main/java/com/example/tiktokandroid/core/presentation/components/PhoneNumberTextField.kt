@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.tiktokandroid.core.presentation.model.Country
-import com.example.tiktokandroid.feed.presentation.view.theme.TikTokLightGray
+import com.example.tiktokandroid.theme.Gray
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 fun PhoneNumberTextField(
     modifier: Modifier = Modifier,
     hint: String = "Phone number",
-    backgroundColor: Color = TikTokLightGray,
+    backgroundColor: Color = Gray,
     onTextChange: (String) -> Unit = {},
     onCountryChange: (Country) -> Unit = {},
     countries: List<Country>

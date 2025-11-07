@@ -17,7 +17,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tiktokandroid.auth.presentation.viewmodel.SettingsViewModel
 import com.example.tiktokandroid.core.presentation.components.BackButton
-import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.theme.PrimaryColor
+
 import com.example.tiktokandroid.utils.Common
 
 @Composable
@@ -60,7 +61,7 @@ fun SettingsScreen(
                     Common.restartApp(context)
                 },
                 text = "Logout",
-                color = TikTokRed,
+                color = PrimaryColor,
             )
         }
 

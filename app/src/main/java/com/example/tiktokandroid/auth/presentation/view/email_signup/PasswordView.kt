@@ -28,7 +28,7 @@ import com.example.tiktokandroid.core.presentation.components.BackButton
 import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.core.presentation.components.CustomTextField
 import com.example.tiktokandroid.core.presentation.components.PasswordTextField
-import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.theme.PrimaryColor
 
 @Composable
 fun PasswordView(
@@ -78,7 +78,7 @@ fun PasswordView(
                 .fillMaxWidth()
                 .padding(start = 20.dp, end = 20.dp, bottom = 65.dp),
             text = "Continue",
-            containerColor = TikTokRed,
+            containerColor = PrimaryColor,
             contentColor = Color.White,
             loading = loading,
             onClick = {

@@ -33,7 +33,7 @@ import com.example.tiktokandroid.auth.presentation.viewmodel.SignupViewModel
 import com.example.tiktokandroid.core.presentation.components.BackButton
 import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.core.presentation.components.Picker
-import com.example.tiktokandroid.feed.presentation.view.theme.TikTokRed
+import com.example.tiktokandroid.theme.PrimaryColor
 
 @Composable
 fun DobView(
@@ -113,7 +113,7 @@ fun DobView(
                     .fillMaxWidth()
                     .padding(start = 30.dp),
                 text = "please provide birthday",
-                color = TikTokRed
+                color = PrimaryColor
             )
         }
 
@@ -133,7 +133,7 @@ fun DobView(
                 .fillMaxWidth()
                 .padding(20.dp),
             text = "Next",
-            containerColor = TikTokRed,
+            containerColor = PrimaryColor,
             contentColor = Color.White,
             loading = loading,
             onClick = {
