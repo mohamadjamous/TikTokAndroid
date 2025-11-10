@@ -89,13 +89,13 @@ fun VideoOverlay(
                     // Like Button
                     IconTextButton(
                         icon = Icons.Filled.Favorite,
-                        count = post.likes.toInt()
+                        count = post.videoStats.likes.toInt()
                     )
 
                     // Comment Button
                     IconTextButton(
                         icon = Icons.Filled.ChatBubble,
-                        count = post.comments.toInt()
+                        count = post.videoStats.comments.toInt()
                     )
 
                     // Bookmark Button

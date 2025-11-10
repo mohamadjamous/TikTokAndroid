@@ -12,6 +12,6 @@ import com.example.tiktokandroid.feed.presentation.view.screens.FeedScreen
 
 fun NavGraphBuilder.homeNavGraph(navController: NavController) {
     composable(route = Screen.Home.route) {
-        FeedScreen()
+//        FeedScreen()
     }
 }

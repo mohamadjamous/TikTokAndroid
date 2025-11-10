@@ -70,6 +70,9 @@ class AuthRemoteDataSource @Inject constructor(
                     followers = 0,
                     likes = 0,
                     profileImageUrl = "",
+                    fullName = "",
+                    bio = ""
+
                 )
             )
         } catch (e: Exception) {
@@ -199,6 +202,8 @@ class AuthRemoteDataSource @Inject constructor(
                     followers = 0,
                     likes = 0,
                     profileImageUrl = "",
+                    fullName = "",
+                    bio = ""
                 )
             )
         } catch (e: Exception) {

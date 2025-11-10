@@ -39,7 +39,7 @@ class PostViewModel @Inject constructor(
             _uiState.value = PostUiState.Loading
 
             // Set current date
-            post.datePosted = Date().time
+            post.createdAt = Date().time
 
             val result = postUseCase(post, videoUri)
             _uiState.value = result.fold(

@@ -19,6 +19,7 @@ sealed class Screen(val route: String) {
         fun createRoute(videoUri: String) = "post/$videoUri"
     }
 
+    object CommentBottomSheet : Screen("comment_bottom_sheet")
 }
 
 

@@ -114,7 +114,7 @@ fun ProfileHeaderView(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(all = 20.dp),
-            containerColor = Gray,
+            containerColor = Color(0xFFF5F5F5),
             text = "Edit Profile",
             height = 35,
             onClick = {

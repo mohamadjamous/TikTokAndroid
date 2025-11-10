@@ -1,0 +1,86 @@
+package com.example.tiktokandroid.feed.presentation.view.screens
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.media3.common.util.UnstableApi
+import androidx.navigation.NavController
+import com.example.tiktokandroid.core.presentation.components.CustomLoadingView
+import com.example.tiktokandroid.core.presentation.components.LoadingEffect
+import com.example.tiktokandroid.core.presentation.model.Screen
+import com.example.tiktokandroid.feed.data.model.FeedUiState
+import com.example.tiktokandroid.feed.presentation.components.TikTokVerticalVideoPager
+import com.example.tiktokandroid.feed.presentation.viewmodel.FeedViewModel
+import com.example.tiktokandroid.theme.DarkBlue
+import com.example.tiktokandroid.theme.DarkPink
+
+@androidx.annotation.OptIn(UnstableApi::class)
+@Composable
+fun ForYouTabScreen(
+    navController: NavController,
+    viewModel: FeedViewModel = hiltViewModel()
+) {
+    val videos by viewModel.videos.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+    var showInitialLoading by remember { mutableStateOf(true) }
+
+    // Handle UI state
+    LaunchedEffect(uiState) {
+        when (uiState) {
+            is FeedUiState.Idle -> Unit
+            is FeedUiState.Loading -> showInitialLoading = videos.isEmpty()
+            is FeedUiState.Success, is FeedUiState.Error -> showInitialLoading = false
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 84.dp)
+            .background(
+                brush = Brush.horizontalGradient(
+                    listOf(DarkPink, DarkBlue)
+                )
+            )
+    ) {
+
+        TikTokVerticalVideoPager(
+            videos = videos,
+            onclickComment = {
+                navController.navigate(Screen.CommentBottomSheet.route)
+            },
+            onClickLike = { s: String, b: Boolean -> },
+            onclickFavourite = {},
+            onClickAudio = {},
+            onClickUser = {
+//                    userId -> navController.navigate("$CREATOR_PROFILE_ROUTE/$userId")
+            },
+            onPageChanged = { index ->
+                // Fetch more when reaching near the end (e.g., last 2 items)
+                if (index >= videos.size - 2 && uiState !is FeedUiState.Loading) {
+                    viewModel.fetchMorePosts()
+                }
+            }
+        )
+
+        if (showInitialLoading) {
+            LoadingEffect()
+        }
+    }
+}

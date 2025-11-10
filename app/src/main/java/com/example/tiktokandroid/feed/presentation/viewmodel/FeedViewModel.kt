@@ -1,27 +1,26 @@
 package com.example.tiktokandroid.feed.presentation.viewmodel
 
 import android.content.Context
-import androidx.annotation.OptIn
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.DataSource
+import androidx.media3.database.StandaloneDatabaseProvider
 import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.CacheDataSource
-import com.example.tiktokandroid.auth.data.model.AuthUiState
+import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
+import androidx.media3.datasource.cache.SimpleCache
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.feed.domain.usecases.FetchPostsUseCase
-import com.example.tiktokandroid.feed.presentation.view.screens.MediaCacheSingleton
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
+import kotlin.OptIn
 
 @UnstableApi
 @HiltViewModel
@@ -106,7 +105,6 @@ class FeedViewModel @Inject constructor(
     }
 
 
-    @OptIn(UnstableApi::class)
     fun createSimpleCache(){
         val cache = MediaCacheSingleton.getInstance(context)
         val httpDataSourceFactory = DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true)
@@ -115,5 +113,21 @@ class FeedViewModel @Inject constructor(
             .setUpstreamDataSourceFactory(DefaultDataSource.Factory(context, httpDataSourceFactory))
             .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
     }
+
+    @UnstableApi
+    object MediaCacheSingleton {
+        private var simpleCache: SimpleCache? = null
+
+        fun getInstance(context: Context): SimpleCache {
+            if (simpleCache == null) {
+                val cacheDir = File(context.cacheDir, "media_cache")
+                val evictor = LeastRecentlyUsedCacheEvictor(50L * 1024L * 1024L) // 50 MB
+                val databaseProvider = StandaloneDatabaseProvider(context)
+                simpleCache = SimpleCache(cacheDir, evictor, databaseProvider)
+            }
+            return simpleCache!!
+        }
+    }
+
 
 }

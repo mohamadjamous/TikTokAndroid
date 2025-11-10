@@ -39,7 +39,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     NavigationBar(
         modifier = Modifier
             .fillMaxWidth()
-            .height(94.dp),
+            .height(85.dp),
         containerColor = if (selectedIndex.intValue == 0 || selectedIndex.intValue == 2) Black else White,
         tonalElevation = 4.dp
     ) {
@@ -59,15 +59,21 @@ fun BottomNavigationBar(navController: NavHostController) {
                 BottomBarDestination.values().forEachIndexed { index, screen ->
                     val isSelected = selectedIndex.intValue == index
 
-                    // Handle icon size for ADD button
-                    val (iconSize, offsetY) = if (screen == BottomBarDestination.UPLOAD) Pair(
-                        42.dp,
-                        (-8).dp
-                    )
-                    else Pair(22.dp, 0.dp)
+                    // Handle icon size for Post button
+                    val (iconSize, offsetY) = if (screen == BottomBarDestination.UPLOAD) {
+                        Pair(
+                            42.dp,
+                            (-8).dp
+                        )
+                    }
+                    else {
+                        Pair(22.dp, 0.dp)
+                    }
 
                     val iconRes = when {
-                        screen == BottomBarDestination.UPLOAD -> screen.unFilledIcon
+                        screen == BottomBarDestination.UPLOAD -> {
+                            if (selectedIndex.intValue == 0 || selectedIndex.intValue == 2) screen.unFilledIcon else screen.darkModeIcon
+                        }
                         isSelected -> screen.filledIcon ?: screen.unFilledIcon
                         else -> screen.unFilledIcon
                     }

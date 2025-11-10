@@ -12,12 +12,15 @@ import com.example.tiktokandroid.core.presentation.model.Screen
 import com.example.tiktokandroid.feed.presentation.view.graphs.RootNavGraph
 import com.example.tiktokandroid.theme.TikTokTheme
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.ModalBottomSheetLayout
+import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun RootView() {
 
-    val navController = rememberNavController()
+    val bottomSheetNavigator = rememberBottomSheetNavigator()
+    val navController = rememberNavController(bottomSheetNavigator)
 
     // Define the screens where the bottom nav should be visible
     val bottomNavScreens = listOf(
@@ -29,20 +32,24 @@ fun RootView() {
     )
 
 
+
     TikTokTheme(darkTheme = false) {
 
-        Scaffold(modifier = Modifier.fillMaxSize(),
-            bottomBar = {
-                val currentBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentRoute = currentBackStackEntry?.destination?.route
-                if (currentRoute in bottomNavScreens) {
-                    BottomNavigationBar(navController = navController)
+        ModalBottomSheetLayout(bottomSheetNavigator = bottomSheetNavigator) {
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                bottomBar = {
+                    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+                    val currentRoute = currentBackStackEntry?.destination?.route
+                    if (currentRoute in bottomNavScreens) {
+                        BottomNavigationBar(navController = navController)
+                    }
                 }
+            ) { innerPadding ->
+
+                RootNavGraph(navController = navController)
+
             }
-        ) { innerPadding ->
-
-            RootNavGraph(navController = navController)
-
         }
     }
 }

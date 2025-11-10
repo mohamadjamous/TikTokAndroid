@@ -32,8 +32,8 @@ enum class BottomBarDestination(
     // Upload (center button)
     UPLOAD(
         route = "upload",
-        unFilledIcon = R.drawable.ic_add_dark,
-        darkModeIcon = R.drawable.ic_add_light
+        unFilledIcon = R.drawable.ic_add_light,
+        darkModeIcon = R.drawable.ic_add_dark
     ),
 
     // Notifications
