@@ -213,35 +213,55 @@ class AuthRemoteDataSource @Inject constructor(
 
 
     suspend fun phoneLogin(phoneNumber: String): Result<User> {
-
         return try {
             val firebaseUser = firebaseAuth.currentUser
                 ?: throw Exception("User not authenticated")
 
-            // 🔹 Fetch user document from Firestore
+            // Fetch user document from Firestore
             val userDoc = firestore.collection("users")
                 .document(firebaseUser.uid)
                 .get()
                 .await()
 
-
             if (!userDoc.exists()) {
                 throw Exception("User not found in Firestore")
             }
 
-            val user = userDoc.toObject(User::class.java)
+            // Manually convert Firestore document to User
+            val data = userDoc.data ?: throw Exception("Empty user data")
 
-            if (user != null) {
-                Result.success(user)
-            } else {
-                Result.failure(Exception("Failed to parse user"))
+            // Convert dob from Timestamp to String
+            val dobString = when (val dobValue = data["dob"]) {
+                is com.google.firebase.Timestamp -> {
+                    SimpleDateFormat("d MMMM, yyyy", Locale.ENGLISH)
+                        .format(dobValue.toDate())
+                }
+                is String -> dobValue
+                else -> ""
             }
+
+            val user = User(
+                id = firebaseUser.uid,
+                phone = data["phone"] as? String ?: "",
+                username = data["username"] as? String ?: "",
+                email = data["email"] as? String ?: "",
+                dob = dobString,
+                following = (data["following"] as? Long)?.toInt() ?: 0,
+                followers = (data["followers"] as? Long)?.toInt() ?: 0,
+                likes = (data["likes"] as? Long)?.toInt() ?: 0,
+                profileImageUrl = data["profileImageUrl"] as? String ?: "",
+                fullName = data["fullName"] as? String ?: "",
+                bio = data["bio"] as? String ?: ""
+            )
+
+            Result.success(user)
 
         } catch (e: Exception) {
             println("ErrorMessage: ${e.message}")
             Result.failure(e)
         }
     }
+
 
 
     suspend fun emailLogin(email: String, password: String): Result<User> {

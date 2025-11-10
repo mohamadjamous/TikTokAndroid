@@ -62,7 +62,7 @@ di/ → Dagger Hilt modules and dependency graph
 
 ## Screenshots
 
-<img width="1920" height="1080" alt="tiktokandroidpng" src="https://github.com/user-attachments/assets/888b1a17-22fa-4c2b-9346-04d86b6b41a1" />
+![tiktokandroidscreenshot](https://github.com/user-attachments/assets/093d2e1a-8346-4fd4-806d-79c313b5fa71)
 
 
 ---
@@ -94,3 +94,5 @@ di/ → Dagger Hilt modules and dependency graph
 ---
 
 ⭐ If you like this project, consider giving it a star!
+
+

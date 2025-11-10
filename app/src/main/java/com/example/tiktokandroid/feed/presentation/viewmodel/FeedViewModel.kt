@@ -1,6 +1,7 @@
 package com.example.tiktokandroid.feed.presentation.viewmodel
 
 import android.content.Context
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,9 +13,12 @@ import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import com.example.tiktokandroid.core.presentation.model.Post
+import com.example.tiktokandroid.core.presentation.model.User
+import com.example.tiktokandroid.core.sharedpreferences.UserPreferences
 import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.feed.domain.usecases.FetchPostsUseCase
 import com.example.tiktokandroid.feed.domain.usecases.UpdateLikeStateUseCase
+import com.example.tiktokandroid.uploadmedia.data.model.PostUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
@@ -28,6 +32,7 @@ import kotlin.OptIn
 class FeedViewModel @Inject constructor(
     private val fetchPostsUseCase: FetchPostsUseCase,
     private val updateLikeStateUseCase: UpdateLikeStateUseCase,
+    private val userSharedPreferences: UserPreferences,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -66,7 +71,11 @@ class FeedViewModel @Inject constructor(
     var cacheDataSourceFactory : CacheDataSource.Factory? = null
         private set
 
+    private val _currentUser = mutableStateOf<User?>(null)
+    val currentUser: State<User?> = _currentUser
+
     init {
+        fetchStoredUser()
         fetchInitialPosts()
         createSimpleCache()
     }
@@ -141,6 +150,11 @@ class FeedViewModel @Inject constructor(
             return simpleCache!!
         }
     }
+
+    fun fetchStoredUser() {
+        _currentUser.value = userSharedPreferences.getUser()
+    }
+
 
 
 }

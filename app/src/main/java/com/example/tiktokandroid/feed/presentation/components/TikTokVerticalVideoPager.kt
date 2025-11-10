@@ -35,6 +35,7 @@ import com.example.tiktokandroid.theme.GrayLight
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.example.tiktokandroid.R
+import com.example.tiktokandroid.core.presentation.model.User
 import com.example.tiktokandroid.core.utils.IntentUtils.share
 import com.example.tiktokandroid.theme.White
 
@@ -57,6 +58,7 @@ fun TikTokVerticalVideoPager(
     onClickFavourite: (isFav: Boolean) -> Unit = {},
     onClickShare: (() -> Unit)? = null,
     onPageChanged: (Int) -> Unit,
+    currentUser: User
 ) {
     val pagerState = rememberPagerState(initialPage = initialPage ?: 0, pageCount = { videos.size })
     val coroutineScope = rememberCoroutineScope()

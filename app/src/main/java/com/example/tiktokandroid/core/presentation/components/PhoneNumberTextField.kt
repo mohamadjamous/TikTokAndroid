@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 fun PhoneNumberTextField(
     modifier: Modifier = Modifier,
     hint: String = "Phone number",
-    backgroundColor: Color = Gray,
+    backgroundColor: Color = Color(0xFFF5F5F5),
     onTextChange: (String) -> Unit = {},
     onCountryChange: (Country) -> Unit = {},
     countries: List<Country>

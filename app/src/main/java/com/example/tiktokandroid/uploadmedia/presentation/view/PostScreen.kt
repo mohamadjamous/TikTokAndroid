@@ -219,7 +219,8 @@ fun PostScreen(
                                         userId = currentUser?.id ?: "",
                                         allowComments = allowComments,
                                         username = currentUser?.username ?: "",
-                                        description = description
+                                        description = description,
+                                        authorDetails = currentUser!!
                                     ),
                                     videoUri = it
                                 )

@@ -40,6 +40,7 @@ fun ForYouTabScreen(
     val videos by viewModel.videos.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     var showInitialLoading by remember { mutableStateOf(true) }
+    val currentUser = viewModel.currentUser.value
 
     // Handle UI state
     LaunchedEffect(uiState) {
@@ -80,7 +81,8 @@ fun ForYouTabScreen(
                 if (index >= videos.size - 2 && uiState !is FeedUiState.Loading) {
                     viewModel.fetchMorePosts()
                 }
-            }
+            },
+            currentUser = currentUser!!
         )
 
         if (showInitialLoading) {

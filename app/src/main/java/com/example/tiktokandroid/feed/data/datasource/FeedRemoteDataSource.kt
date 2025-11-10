@@ -39,11 +39,11 @@ class FeedRemoteDataSource @Inject constructor(
 
             firestore.runTransaction { transaction ->
                 val snapshot = transaction.get(collectionRef)
-                val currentLikes = snapshot.getLong("likes") ?: 0L
+                val currentLikes = snapshot.getLong("videoStats.likes") ?: 0L
 
                 val newLikes = if (liked) currentLikes + 1 else maxOf(currentLikes - 1, 0L)
 
-                transaction.update(collectionRef, "likes", newLikes)
+                transaction.update(collectionRef, "videoStats.likes", newLikes)
             }.await()
 
             Result.success(Unit)

@@ -36,11 +36,11 @@ data class Post(
  */
 @Serializable
 data class VideoStats(
-    var likes: Long = 13,
-    var comments: Long = 50,
-    var shares: Long = 33,
-    var favourites: Long = 2,
-    var views: Long = (likes.plus(500)..likes.plus(100000)).random()
+    var likes: Long = 0,
+    var comments: Long = 0,
+    var shares: Long = 0,
+    var favourites: Long = 0,
+    var views: Long = 0
 )
 
 /**
