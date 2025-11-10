@@ -18,5 +18,14 @@ class FeedRepository @Inject constructor(
         return dataSource.fetchPosts(num  = num, lastVisibleId = lastVisibleId)
     }
 
+    override suspend fun updateLikeState(
+        videoId: String,
+        liked: Boolean
+    ): Result<Unit> {
+        return dataSource.updateLikeState(
+            videoId, liked
+        )
+    }
+
 
 }

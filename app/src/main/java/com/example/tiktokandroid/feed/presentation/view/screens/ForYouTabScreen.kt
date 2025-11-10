@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
@@ -57,7 +58,8 @@ fun ForYouTabScreen(
                 brush = Brush.horizontalGradient(
                     listOf(DarkPink, DarkBlue)
                 )
-            )
+            ),
+        contentAlignment = Alignment.Center
     ) {
 
         TikTokVerticalVideoPager(
@@ -65,7 +67,9 @@ fun ForYouTabScreen(
             onclickComment = {
                 navController.navigate(Screen.CommentBottomSheet.route)
             },
-            onClickLike = { s: String, b: Boolean -> },
+            onClickLike = { videoId, liked ->
+                viewModel.updateLikeState(videoId, liked)
+            },
             onclickFavourite = {},
             onClickAudio = {},
             onClickUser = {

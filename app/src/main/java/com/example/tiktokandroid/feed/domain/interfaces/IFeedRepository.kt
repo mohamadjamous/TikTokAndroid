@@ -6,4 +6,5 @@ import dagger.Provides
 
 interface IFeedRepository {
     suspend fun fetchPosts(num: Int, lastVisibleId: String?): Result<List<Post>>
+    suspend fun updateLikeState(videoId : String, liked: Boolean): Result<Unit>
 }

@@ -14,6 +14,7 @@ import androidx.media3.datasource.cache.SimpleCache
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.feed.domain.usecases.FetchPostsUseCase
+import com.example.tiktokandroid.feed.domain.usecases.UpdateLikeStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
@@ -26,6 +27,7 @@ import kotlin.OptIn
 @HiltViewModel
 class FeedViewModel @Inject constructor(
     private val fetchPostsUseCase: FetchPostsUseCase,
+    private val updateLikeStateUseCase: UpdateLikeStateUseCase,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -112,6 +114,17 @@ class FeedViewModel @Inject constructor(
             .setCache(cache)
             .setUpstreamDataSourceFactory(DefaultDataSource.Factory(context, httpDataSourceFactory))
             .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
+    }
+
+    /**
+     * Update like status of a video
+     */
+    fun updateLikeState(videoId: String, liked: Boolean) {
+        viewModelScope.launch {
+            updateLikeStateUseCase.updateLikeState(
+                videoId, liked
+            )
+        }
     }
 
     @UnstableApi

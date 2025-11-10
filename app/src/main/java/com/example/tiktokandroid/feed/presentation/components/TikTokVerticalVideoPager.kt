@@ -88,13 +88,15 @@ fun TikTokVerticalVideoPager(
         }
 
         Box(modifier = Modifier.fillMaxSize()) {
-            VideoPlayer(videos[it], pagerState, it, onSingleTap = {
-                pauseButtonVisibility = it.isPlaying
-                it.playWhenReady = !it.isPlaying
-            },
+            VideoPlayer(
+                videos[it], pagerState, it, onSingleTap = {
+                    pauseButtonVisibility = it.isPlaying
+                    it.playWhenReady = !it.isPlaying
+                },
                 onDoubleTap = { exoPlayer, offset ->
                     coroutineScope.launch {
                         videos[it].currentViewerInteraction.isLikedByYou = true
+                        onClickLike(videos[it].id, true)
                         val rotationAngle = (-10..10).random()
                         doubleTapState = Triple(offset, true, rotationAngle.toFloat())
                         delay(400)
@@ -119,7 +121,7 @@ fun TikTokVerticalVideoPager(
                             .fillMaxWidth()
                             .weight(1f),
                         item = videos[it],
-                        showUploadDate=showUploadDate,
+                        showUploadDate = showUploadDate,
                         onClickAudio = onClickAudio,
                         onClickUser = onClickUser,
                     )
@@ -131,7 +133,10 @@ fun TikTokVerticalVideoPager(
                         onclickComment = onclickComment,
                         onClickUser = onClickUser,
                         onClickFavourite = onClickFavourite,
-                        onClickShare = onClickShare
+                        onClickShare = onClickShare,
+                        onClickLike = { liked ->
+                            onClickLike(videos[it].id, liked)
+                        }
                     )
                 }
                 12.dp.Space()
@@ -153,7 +158,8 @@ fun TikTokVerticalVideoPager(
             }
 
             val iconSize = 110.dp
-            AnimatedVisibility(visible = doubleTapState.second,
+            AnimatedVisibility(
+                visible = doubleTapState.second,
                 enter = scaleIn(spring(Spring.DampingRatioMediumBouncy), initialScale = 1.3f),
                 exit = scaleOut(
                     tween(600), targetScale = 1.58f
@@ -187,268 +193,8 @@ fun TikTokVerticalVideoPager(
 
 }
 
-
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun SideItems(
-    modifier: Modifier,
-    item: Post,
-    doubleTabState: Triple<Offset, Boolean, Float>,
-    onclickComment: (videoId: String) -> Unit,
-    onClickUser: (userId: Long) -> Unit,
-    onClickShare: (() -> Unit)? = null,
-    onClickFavourite: (isFav: Boolean) -> Unit
-) {
-
-    val context = LocalContext.current
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        GlideImage(
-            model = item.authorDetails.profileImageUrl,
-            contentDescription = null,
-            modifier = Modifier
-                .size(50.dp)
-                .border(
-                    BorderStroke(width = 1.dp, color = White), shape = CircleShape
-                )
-                .clip(shape = CircleShape)
-                .clickable {
-//                    onClickUser.invoke(item.authorDetails.userId)
-                    onClickUser.invoke(123)
-                },
-            contentScale = ContentScale.Crop
-        )
-        Image(
-            painter = painterResource(id = R.drawable.ic_plus),
-            contentDescription = null,
-            modifier = Modifier
-                .offset(y = (-10).dp)
-                .size(20.dp)
-                .clip(CircleShape)
-                .background(color = MaterialTheme.colorScheme.primary)
-                .padding(5.5.dp),
-            colorFilter = ColorFilter.tint(Color.White)
-        )
-
-        12.dp.Space()
-
-        var isLiked by remember {
-            mutableStateOf(item.currentViewerInteraction.isLikedByYou)
-        }
-
-        LaunchedEffect(key1 = doubleTabState) {
-            if (doubleTabState.first != Offset.Unspecified && doubleTabState.second) {
-                isLiked = doubleTabState.second
-            }
-        }
-        LikeIconButton(isLiked = isLiked,
-            likeCount = item.videoStats.likes.toString(),
-            onLikedClicked = {
-                isLiked = it
-                item.currentViewerInteraction.isLikedByYou = it
-            })
-
-
-        Icon(painter = painterResource(id = R.drawable.ic_comment),
-            contentDescription = null,
-            tint = Color.Unspecified,
-            modifier = Modifier
-                .size(33.dp)
-                .clickable {
-//                    onclickComment(item.videoId)
-                    onclickComment("123")
-                })
-        Text(
-            text = item.videoStats.comments.toString(),
-            style = MaterialTheme.typography.labelMedium,
-            color = White
-        )
-        16.dp.Space()
-
-
-
-        Icon(
-            painter = painterResource(id = R.drawable.ic_bookmark),
-            contentDescription = null,
-            tint = Color.Unspecified,
-            modifier = Modifier.size(33.dp)
-        )
-        Text(
-            text = item.videoStats.favourites.toString(),
-            style = MaterialTheme.typography.labelMedium,
-            color = White
-        )
-        14.dp.Space()
-
-        Icon(
-            painter = painterResource(id = R.drawable.ic_share),
-            contentDescription = null,
-            tint = Color.Unspecified,
-            modifier = Modifier
-                .size(32.dp)
-                .clickable {
-                    onClickShare?.let { onClickShare.invoke() } ?: run {
-                        context.share(
-                            text = "https://github.com/puskal-khadka"
-                        )
-                    }
-                }
-        )
-        Text(
-            text = item.videoStats.shares.toString(),
-            style = MaterialTheme.typography.labelMedium,
-            color = White
-        )
-        20.dp.Space()
-
-        RotatingAudioView(item.authorDetails.profileImageUrl)
-
-    }
-}
-
-@Composable
-fun LikeIconButton(
-    isLiked: Boolean, likeCount: String, onLikedClicked: (Boolean) -> Unit
-) {
-
-    val maxSize = 38.dp
-    val iconSize by animateDpAsState(targetValue = if (isLiked) 33.dp else 32.dp,
-        animationSpec = keyframes {
-            durationMillis = 400
-            24.dp.at(50)
-            maxSize.at(190)
-            26.dp.at(330)
-            32.dp.at(400).with(FastOutLinearInEasing)
-        })
-
-    Box(
-        modifier = Modifier
-            .size(maxSize)
-            .clickable(interactionSource = MutableInteractionSource(), indication = null) {
-                onLikedClicked(!isLiked)
-            }, contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_heart),
-            contentDescription = null,
-            tint = if (isLiked) MaterialTheme.colorScheme.primary else Color.White,
-            modifier = Modifier.size(iconSize)
-        )
-    }
-
-    Text(text = likeCount, style = MaterialTheme.typography.labelMedium,
-        color = White)
-    16.dp.Space()
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun FooterUi(
-    modifier: Modifier,
-    item: Post,
-    showUploadDate: Boolean,
-    onClickAudio: (Post) -> Unit,
-    onClickUser: (userId: Long) -> Unit,
-) {
-    Column(modifier = modifier, verticalArrangement = Arrangement.Bottom) {
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
-//            onClickUser(item.authorDetails.userId)
-            onClickUser(0)
-        }) {
-            Text(
-//                text = item.authorDetails.username,
-                text = item.username,
-                style = MaterialTheme.typography.bodyMedium,
-                color = White
-            )
-            if (showUploadDate) {
-                Text(
-                    text = " . ${item.createdAt} ago",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = Color.White.copy(alpha = 0.6f)
-                )
-            }
-        }
-        5.dp.Space()
-        Text(
-            text = item.description,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.fillMaxWidth(0.85f),
-            color = White
-        )
-        10.dp.Space()
-        val audioInfo: String = item.audioModel?.run {
-            "Original sound - ${audioAuthor.username} - ${audioAuthor.fullName}"
-        }
-            ?: item.run { "Original sound - ${item.authorDetails.username} - ${item.authorDetails.fullName}" }
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.clickable {
-                onClickAudio(item)
-            }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_music_note),
-                contentDescription = null,
-                tint = Color.Unspecified,
-                modifier = Modifier.size(12.dp)
-            )
-            Text(
-                text = audioInfo,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier
-                    .fillMaxWidth(0.6f)
-                    .basicMarquee(),
-                color = White
-            )
-        }
-    }
-}
-
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun RotatingAudioView(img: String) {
-    val infiniteTransition = rememberInfiniteTransition()
-    val angle by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(animation = keyframes { durationMillis = 7000 })
-    )
-
-    Box(modifier = Modifier.rotate(angle)) {
-        Box(
-            modifier = Modifier
-                .background(
-                    brush = Brush.horizontalGradient(
-                        listOf(
-                            Gray20, Gray20, GrayLight, Gray20, Gray20,
-                        )
-                    ), shape = CircleShape
-                )
-                .size(46.dp), contentAlignment = Alignment.Center
-        ) {
-
-            GlideImage(
-                model = img,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(28.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-
-        }
-    }
-
-}
-
-
-@Composable
-fun Dp.Space() = Spacer(
-    modifier = Modifier
-        .height(this)
-)
+fun Dp.Space() = Spacer(modifier = Modifier.height(this))
 
 @Composable
 fun SmallSpace() = Spacer(modifier = Modifier.height(16.dp))
