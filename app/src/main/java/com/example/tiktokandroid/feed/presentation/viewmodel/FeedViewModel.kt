@@ -18,14 +18,12 @@ import com.example.tiktokandroid.core.sharedpreferences.UserPreferences
 import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.feed.domain.usecases.FetchPostsUseCase
 import com.example.tiktokandroid.feed.domain.usecases.UpdateLikeStateUseCase
-import com.example.tiktokandroid.uploadmedia.data.model.PostUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
-import kotlin.OptIn
 
 @UnstableApi
 @HiltViewModel

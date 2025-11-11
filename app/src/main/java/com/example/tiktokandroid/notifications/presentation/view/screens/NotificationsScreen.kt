@@ -2,6 +2,7 @@ package com.example.tiktokandroid.notifications.presentation.view.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.R
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,10 +11,12 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -149,32 +152,35 @@ fun NotificationsScreen(modifier: Modifier = Modifier) {
 
     )
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(bottom = 55.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Text(
-            text = "Notifications",
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 20.dp)
+    Scaffold {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(bottom = 55.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         )
+        {
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 55.dp)
-                .padding(top = 20.dp, start = 20.dp)
+            Text(
+                text = "Notifications",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 20.dp)
+            )
 
-        ){
-            items(notifications.size) { index ->
-                NotificationItem(
-                    modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
-                    notification = notifications[index]
-                )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 55.dp)
+                    .padding(top = 20.dp, start = 20.dp)
+
+            ) {
+                items(notifications.size) { index ->
+                    NotificationItem(
+                        modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
+                        notification = notifications[index]
+                    )
+                }
             }
         }
     }

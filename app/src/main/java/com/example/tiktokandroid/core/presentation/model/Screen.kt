@@ -20,6 +20,7 @@ sealed class Screen(val route: String) {
     }
 
     object CommentBottomSheet : Screen("comment_bottom_sheet")
+    object AuthBottomSheet : Screen("auth_bottom_sheet")
 }
 
 

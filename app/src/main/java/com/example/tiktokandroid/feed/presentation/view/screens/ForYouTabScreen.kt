@@ -82,7 +82,7 @@ fun ForYouTabScreen(
                     viewModel.fetchMorePosts()
                 }
             },
-            currentUser = currentUser!!
+            currentUser = currentUser
         )
 
         if (showInitialLoading) {

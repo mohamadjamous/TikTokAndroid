@@ -58,7 +58,7 @@ fun TikTokVerticalVideoPager(
     onClickFavourite: (isFav: Boolean) -> Unit = {},
     onClickShare: (() -> Unit)? = null,
     onPageChanged: (Int) -> Unit,
-    currentUser: User
+    currentUser: User?
 ) {
     val pagerState = rememberPagerState(initialPage = initialPage ?: 0, pageCount = { videos.size })
     val coroutineScope = rememberCoroutineScope()

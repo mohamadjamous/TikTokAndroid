@@ -1,13 +1,45 @@
 package com.example.tiktokandroid.feed.presentation.view.graphs
 
 import android.net.Uri
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.createGraph
 import androidx.navigation.navArgument
+import com.example.tiktokandroid.auth.presentation.components.LoginSignupSwitcher
 import com.example.tiktokandroid.auth.presentation.view.SettingsScreen
 import com.example.tiktokandroid.auth.presentation.view.email_signup.EmailSignupScreen
 import com.example.tiktokandroid.auth.presentation.view.login.EmailPhoneLoginScreen
@@ -18,12 +50,14 @@ import com.example.tiktokandroid.feed.presentation.components.CommentListScreen
 import com.example.tiktokandroid.feed.presentation.view.screens.FeedScreen
 import com.example.tiktokandroid.notifications.presentation.view.screens.NotificationsScreen
 import com.example.tiktokandroid.profile.presentation.view.screens.ProfileScreen
+import com.example.tiktokandroid.uploadmedia.presentation.view.CameraMediaScreen
 import com.example.tiktokandroid.uploadmedia.presentation.view.PostScreen
 import com.example.tiktokandroid.uploadmedia.presentation.view.UploadScreen
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialNavigationApi::class)
+@OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun RootNavGraph(navController: NavHostController) {
 
@@ -147,15 +181,25 @@ fun RootNavGraph(navController: NavHostController) {
 
 
         composable(route = Screen.Upload.route) {
-            UploadScreen(
+
+//            UploadScreen(
+//                navigateToPostScreen = { videoUri ->
+//                    val encodedUri = Uri.encode(videoUri.toString())
+//                    navController.navigate(Screen.Post.createRoute(encodedUri))
+//                },
+//                navigateToProfileScreen = {
+//                    navController.navigate(Screen.Profile.route)
+//                }
+//            )
+
+            CameraMediaScreen(
+                navController,
                 navigateToPostScreen = { videoUri ->
                     val encodedUri = Uri.encode(videoUri.toString())
                     navController.navigate(Screen.Post.createRoute(encodedUri))
                 },
-                navigateToProfileScreen = {
-                    navController.navigate(Screen.Profile.route)
-                }
             )
+
         }
 
 
@@ -246,5 +290,100 @@ fun RootNavGraph(navController: NavHostController) {
         ) {
             CommentListScreen(onClickCancel = { navController.navigateUp() })
         }
+
+        bottomSheet(
+            route = Screen.AuthBottomSheet.route
+        )
+        {
+
+            AuthBottomSheetContent(navController)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AuthBottomSheetContent(navController: NavController) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val scope = rememberCoroutineScope()
+    var showBottomSheet by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.96f)
+            .padding(horizontal = 28.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+    {
+
+        // Bottom sheet
+        ModalBottomSheet(
+            onDismissRequest = {
+                showBottomSheet = false
+            },
+            sheetState = sheetState,
+            containerColor = Color.White,
+            modifier = Modifier
+                .padding(top = 50.dp)
+                .fillMaxSize()
+                .navigationBarsPadding()
+        )
+        {
+            // Sheet content
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+
+                // Top bar
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                )
+                {
+
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                navController.popBackStack()
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "close"
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
+                ) {
+                    LoginSignupSwitcher(
+                        navigateToEmailSignup = {
+                            navController.navigate(
+                                Screen.EmailSignup.route
+                            )
+                        },
+                        navigateToPhoneSignup = { phoneNumber ->
+                            navController.navigate(Screen.PhoneNumberSignup.createRoute(phoneNumber))
+                        },
+                        navigateToEmailPhoneLogin = {
+                            navController.navigate(Screen.EmailPhoneLogin.route)
+                        },
+                    )
+                }
+
+
+            }
+        }
+
     }
 }
