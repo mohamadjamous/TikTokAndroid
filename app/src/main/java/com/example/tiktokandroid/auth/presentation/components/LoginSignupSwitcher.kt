@@ -48,7 +48,7 @@ fun LoginSignupSwitcher(
         // Content area (takes remaining space)
         Box(
             modifier = Modifier
-                .weight(1f) // ✅ makes space for bottom bar
+                .weight(1f) // makes space for bottom bar
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {

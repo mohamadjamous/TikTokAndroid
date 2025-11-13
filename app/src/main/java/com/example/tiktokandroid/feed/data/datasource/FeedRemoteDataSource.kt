@@ -1,6 +1,8 @@
 package com.example.tiktokandroid.feed.data.datasource
 
 import com.example.tiktokandroid.core.presentation.model.Post
+import com.example.tiktokandroid.core.presentation.model.User
+import com.example.tiktokandroid.feed.data.model.CommentList
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -53,6 +55,64 @@ class FeedRemoteDataSource @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun getCommentList(videoId: String): Result<CommentList> {
+        return try {
+            val postRef = firestore.collection("posts").document(videoId)
+
+            // Get all comment documents under "comments" subcollection
+            val commentsSnapshot = postRef.collection("comments").get().await()
+
+            // Map Firestore documents into Comment objects
+            val comments = commentsSnapshot.documents.mapNotNull { doc ->
+                try {
+                    val userMap = doc.get("commentBy") as? Map<*, *>
+                    val user = userMap?.let {
+                        User(
+                            id = it["id"] as? String ?: "",
+                            username = it["username"] as? String ?: "",
+                            email = it["email"] as? String ?: "",
+                            phone = it["phone"] as? String ?: "",
+                            profileImageUrl = it["profileImageUrl"] as? String ?: "",
+                            fullName = it["fullName"] as? String ?: "",
+                            bio = it["bio"] as? String ?: "",
+                            dob = it["dob"]?.toString() ?: "",
+                            followers = ((it["followers"] as? Long ?: 0L).toInt()),
+                            following = ((it["following"] as? Long ?: 0L).toInt()),
+                            likes = ((it["likes"] as? Long ?: 0L).toInt())
+                        )
+                    }
+
+                    CommentList.Comment(
+                        commentBy = user ?: User(),
+                        comment = doc.getString("comment"),
+                        createdAt = doc.getString("createdAt") ?: "",
+                        totalLike = doc.getLong("totalLike") ?: 0L,
+                        totalDisLike = doc.getLong("totalDisLike") ?: 0L,
+                        threadCount = doc.getLong("threadCount")?.toInt() ?: 0,
+                        thread = emptyList()
+                    )
+                } catch (e: Exception) {
+                    null
+                }
+            }
+
+            // Build CommentList object
+            val result = CommentList(
+                videoId = videoId,
+                totalComment = comments.size,
+                comments = comments,
+                isCommentPrivate = false
+            )
+
+            Result.success(result)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
+
+
 
 
 }

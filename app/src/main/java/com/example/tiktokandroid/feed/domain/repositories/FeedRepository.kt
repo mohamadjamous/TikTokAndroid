@@ -2,6 +2,7 @@ package com.example.tiktokandroid.feed.domain.repositories
 
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.feed.data.datasource.FeedRemoteDataSource
+import com.example.tiktokandroid.feed.data.model.CommentList
 import com.example.tiktokandroid.feed.domain.interfaces.IFeedRepository
 import javax.inject.Inject
 
@@ -25,6 +26,10 @@ class FeedRepository @Inject constructor(
         return dataSource.updateLikeState(
             videoId, liked
         )
+    }
+
+    override suspend fun getCommentList(videoId: String): Result<CommentList> {
+        return dataSource.getCommentList(videoId)
     }
 
 

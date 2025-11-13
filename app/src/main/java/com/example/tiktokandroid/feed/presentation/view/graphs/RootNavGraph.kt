@@ -286,9 +286,18 @@ fun RootNavGraph(navController: NavHostController) {
 
 
         bottomSheet(
-            route = Screen.CommentBottomSheet.route
-        ) {
-            CommentListScreen(onClickCancel = { navController.navigateUp() })
+            route = Screen.CommentBottomSheet.route,
+            arguments = listOf(navArgument("videoId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val videoId = backStackEntry.arguments?.getString("videoId")
+            videoId?.let {
+                if (navController.currentBackStackEntry != null) { // heck entry validity
+                    CommentListScreen(
+                        onClickCancel = { navController.navigateUp() },
+                        videoId = it
+                    )
+                }
+            }
         }
 
         bottomSheet(

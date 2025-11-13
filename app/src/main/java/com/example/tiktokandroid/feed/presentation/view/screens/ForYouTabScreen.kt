@@ -66,7 +66,7 @@ fun ForYouTabScreen(
         TikTokVerticalVideoPager(
             videos = videos,
             onclickComment = {
-                navController.navigate(Screen.CommentBottomSheet.route)
+                navController.navigate(Screen.CommentBottomSheet.createRoute(it))
             },
             onClickLike = { videoId, liked ->
                 viewModel.updateLikeState(videoId, liked)
