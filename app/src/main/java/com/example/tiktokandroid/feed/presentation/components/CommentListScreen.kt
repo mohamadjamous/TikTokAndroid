@@ -1,6 +1,5 @@
 package com.example.tiktokandroid.feed.presentation.components
 
-import android.R.id.message
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -32,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tiktokandroid.R
 import com.example.tiktokandroid.core.presentation.components.LoadingEffect
+import com.example.tiktokandroid.feed.data.model.CommentList
 import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.feed.presentation.viewmodel.CommentListViewModel
 
@@ -45,10 +45,15 @@ fun CommentListScreen(
     videoId : String
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
     val comments = viewModel.commentsList.collectAsState().value
 
     var errorMessage by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
+
+
+    val currentUser = viewModel.currentUser.value
+
 
     // Runs once when the composable first appears
     LaunchedEffect(Unit) {
@@ -74,6 +79,8 @@ fun CommentListScreen(
         }
     }
 
+
+
     Box(
         modifier = Modifier
             .fillMaxHeight(0.75f)
@@ -92,7 +99,7 @@ fun CommentListScreen(
                     .padding(horizontal = 16.dp)
             ) {
                 Text(
-                    text = "${comments?.totalComment ?: ""} ${stringResource(id = R.string.comments)}",
+                    text = "${comments.size} ${stringResource(id = R.string.comments)}",
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.align(Alignment.Center)
                 )
@@ -111,14 +118,30 @@ fun CommentListScreen(
                 contentPadding = PaddingValues(top = 4.dp),
                 modifier = Modifier.weight(1f)
             ) {
-                comments?.let {
-                    items(it.comments) { comment ->
-                        CommentItem(comment)
-                    }
+                items(comments) { comment ->
+                    CommentItem(comment)
                 }
             }
 
-            CommentUserField()
+            CommentUserField(
+                onClick = { comment ->
+                    if (currentUser != null){
+                        viewModel.uploadComment(
+                            CommentList.Comment(
+                                commentBy = currentUser,
+                                comment = comment,
+                                createdAt = "",
+                                totalLike = 0,
+                                totalDisLike = 0,
+                                threadCount = 0,
+                                thread = emptyList(),
+                                videoId = videoId
+                            )
+                        )
+                    }
+                },
+                viewModel = viewModel
+            )
         }
 
         // Loading indicator overlay

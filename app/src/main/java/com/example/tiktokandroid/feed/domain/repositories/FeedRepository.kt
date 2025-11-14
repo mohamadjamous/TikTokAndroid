@@ -32,5 +32,9 @@ class FeedRepository @Inject constructor(
         return dataSource.getCommentList(videoId)
     }
 
+    override suspend fun createComment(comment: CommentList.Comment): Result<CommentList.Comment> {
+        return dataSource.createComment(comment)
+    }
+
 
 }

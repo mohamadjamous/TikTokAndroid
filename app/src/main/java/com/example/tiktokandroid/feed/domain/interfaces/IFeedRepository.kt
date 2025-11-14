@@ -10,4 +10,5 @@ interface IFeedRepository {
     suspend fun updateLikeState(videoId : String, liked: Boolean): Result<Unit>
 
     suspend fun getCommentList(videoId: String) : Result<CommentList>
+    suspend fun createComment(comment: CommentList.Comment): Result<CommentList.Comment>
 }

@@ -23,7 +23,8 @@ data class CommentList(
         val totalLike: Long,
         val totalDisLike: Long,
         val threadCount: Int,
-        val thread: List<Comment>
+        val thread: List<Comment>,
+        val videoId: String = "",
     )
 }
 

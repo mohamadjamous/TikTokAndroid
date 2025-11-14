@@ -60,7 +60,6 @@ class FeedRemoteDataSource @Inject constructor(
         return try {
             val postRef = firestore.collection("posts").document(videoId)
 
-            // Get all comment documents under "comments" subcollection
             val commentsSnapshot = postRef.collection("comments").get().await()
 
             // Map Firestore documents into Comment objects
@@ -112,7 +111,39 @@ class FeedRemoteDataSource @Inject constructor(
         }
     }
 
+    suspend fun createComment(comment: CommentList.Comment): Result<CommentList.Comment> {
+        return try {
 
+            val commentsRef = firestore.collection("posts")
+                .document(comment.videoId)
+                .collection("comments")
+
+            val commentMap = hashMapOf(
+                "videoId" to comment.videoId,
+                "commentBy" to hashMapOf(
+                    "id" to comment.commentBy.id,
+                    "username" to comment.commentBy.username,
+                    "profileImageUrl" to comment.commentBy.profileImageUrl,
+                    "email" to comment.commentBy.email,
+                    "phone" to comment.commentBy.phone
+                ),
+                "comment" to comment.comment,
+                "createdAt" to comment.createdAt,
+                "totalLike" to comment.totalLike,
+                "totalDisLike" to comment.totalDisLike,
+                "threadCount" to comment.threadCount,
+                "thread" to comment.thread.map { it }
+            )
+
+            // Add the comment directly to the collection and await the result
+            commentsRef.add(commentMap).await()
+
+            Result.success(comment)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
 
 
 }

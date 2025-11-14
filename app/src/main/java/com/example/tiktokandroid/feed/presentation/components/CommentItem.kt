@@ -3,11 +3,14 @@ package com.example.tiktokandroid.feed.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,6 +38,7 @@ import com.example.tiktokandroid.theme.SubTextColor
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CommentItem(item: CommentList.Comment) {
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,23 +46,44 @@ fun CommentItem(item: CommentList.Comment) {
     ) {
         val (profileImg, name, comment, createdOn, reply, like, dislike) = createRefs()
 
-        GlideImage(
-            model = item.commentBy.profileImageUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(36.dp)
-                .clip(CircleShape)
-                .background(GrayMainColor)
-                .constrainAs(profileImg) {
-                    start.linkTo(parent.start)
-                    top.linkTo(parent.top)
-                }
-        )
+        if (item.commentBy.profileImageUrl.isEmpty()) {
+            // Default placeholder icon
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .background(Color.Gray.copy(alpha = 0.4f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "Default Profile",
+                    tint = Color.White,
+                    modifier = Modifier.size((36 * 0.6).dp)
+                )
+            }
+        }else{
+            GlideImage(
+                model = item.commentBy.profileImageUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .background(GrayMainColor)
+                    .constrainAs(profileImg) {
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                    }
+                ,
+            )
+
+        }
 
 
 
-        Text(text = item.commentBy.fullName,
+
+        Text(text = item.commentBy.username,
             style = MaterialTheme.typography.labelMedium,
             modifier = Modifier.constrainAs(name) {
                 start.linkTo(profileImg.end, margin = 12.dp)
