@@ -34,6 +34,9 @@ import com.example.tiktokandroid.core.presentation.components.LoadingEffect
 import com.example.tiktokandroid.feed.data.model.CommentList
 import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.feed.presentation.viewmodel.CommentListViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 /**
  * Created by Puskal Khadka on 3/22/2023.
@@ -50,6 +53,8 @@ fun CommentListScreen(
 
     var errorMessage by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
+    val currentDateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        .format(Date())
 
 
     val currentUser = viewModel.currentUser.value
@@ -130,7 +135,7 @@ fun CommentListScreen(
                             CommentList.Comment(
                                 commentBy = currentUser,
                                 comment = comment,
-                                createdAt = "",
+                                createdAt = currentDateTime,
                                 totalLike = 0,
                                 totalDisLike = 0,
                                 threadCount = 0,

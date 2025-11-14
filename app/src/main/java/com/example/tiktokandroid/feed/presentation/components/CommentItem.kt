@@ -52,7 +52,11 @@ fun CommentItem(item: CommentList.Comment) {
                 modifier = Modifier
                     .size(36.dp)
                     .clip(CircleShape)
-                    .background(Color.Gray.copy(alpha = 0.4f)),
+                    .background(Color.Gray.copy(alpha = 0.4f))
+                    .constrainAs(profileImg) {
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                    },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
