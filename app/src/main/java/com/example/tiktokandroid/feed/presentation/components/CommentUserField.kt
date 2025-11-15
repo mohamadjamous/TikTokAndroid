@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,7 +23,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,7 +46,6 @@ import com.example.tiktokandroid.feed.data.model.HighlightedEmoji
 import com.example.tiktokandroid.feed.presentation.viewmodel.CommentListViewModel
 import com.example.tiktokandroid.theme.GrayMainColor
 import com.example.tiktokandroid.theme.PrimaryColor
-import com.google.android.material.progressindicator.CircularProgressIndicator
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
@@ -134,8 +131,9 @@ fun CommentUserField(
                 Button(
                     onClick = {
                         if (input.isNotBlank() && !loading) {
+                            println("InputComment: $input")
                             onClick(input)
-                            input = "" // clear input
+                            input = ""
                         } else {
                             Toast.makeText(context, "Comment cannot be empty!", Toast.LENGTH_SHORT)
                                 .show()

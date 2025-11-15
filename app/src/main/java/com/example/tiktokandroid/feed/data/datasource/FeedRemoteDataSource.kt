@@ -3,7 +3,9 @@ package com.example.tiktokandroid.feed.data.datasource
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.core.presentation.model.User
 import com.example.tiktokandroid.feed.data.model.CommentList
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -59,10 +61,11 @@ class FeedRemoteDataSource @Inject constructor(
     suspend fun getCommentList(videoId: String): Result<CommentList> {
         return try {
             val postRef = firestore.collection("posts").document(videoId)
+            val commentsSnapshot = postRef.collection("comments")
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .get()
+                .await()
 
-            val commentsSnapshot = postRef.collection("comments").get().await()
-
-            // Map Firestore documents into Comment objects
             val comments = commentsSnapshot.documents.mapNotNull { doc ->
                 try {
                     val userMap = doc.get("commentBy") as? Map<*, *>
@@ -76,47 +79,46 @@ class FeedRemoteDataSource @Inject constructor(
                             fullName = it["fullName"] as? String ?: "",
                             bio = it["bio"] as? String ?: "",
                             dob = it["dob"]?.toString() ?: "",
-                            followers = ((it["followers"] as? Long ?: 0L).toInt()),
-                            following = ((it["following"] as? Long ?: 0L).toInt()),
-                            likes = ((it["likes"] as? Long ?: 0L).toInt())
+                            followers = (it["followers"] as? Long ?: 0L).toInt(),
+                            following = (it["following"] as? Long ?: 0L).toInt(),
+                            likes = (it["likes"] as? Long ?: 0L).toInt()
                         )
                     }
 
                     CommentList.Comment(
                         commentBy = user ?: User(),
-                        comment = doc.getString("comment"),
+                        comment = doc.getString("comment") ?: "",
                         createdAt = doc.getString("createdAt") ?: "",
                         totalLike = doc.getLong("totalLike") ?: 0L,
                         totalDisLike = doc.getLong("totalDisLike") ?: 0L,
                         threadCount = doc.getLong("threadCount")?.toInt() ?: 0,
                         thread = emptyList()
                     )
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     null
                 }
             }
 
-            // Build CommentList object
-            val result = CommentList(
-                videoId = videoId,
-                totalComment = comments.size,
-                comments = comments,
-                isCommentPrivate = false
+            Result.success(
+                CommentList(
+                    videoId = videoId,
+                    totalComment = comments.size,
+                    comments = comments,
+                    isCommentPrivate = false
+                )
             )
 
-            Result.success(result)
         } catch (e: Exception) {
             e.printStackTrace()
             Result.failure(e)
         }
     }
 
+
     suspend fun createComment(comment: CommentList.Comment): Result<CommentList.Comment> {
         return try {
-
-            val commentsRef = firestore.collection("posts")
-                .document(comment.videoId)
-                .collection("comments")
+            val postRef = firestore.collection("posts").document(comment.videoId)
+            val commentsRef = postRef.collection("comments")
 
             val commentMap = hashMapOf(
                 "videoId" to comment.videoId,
@@ -132,18 +134,25 @@ class FeedRemoteDataSource @Inject constructor(
                 "totalLike" to comment.totalLike,
                 "totalDisLike" to comment.totalDisLike,
                 "threadCount" to comment.threadCount,
-                "thread" to comment.thread.map { it }
+                "thread" to comment.thread
             )
 
-            // Add the comment directly to the collection and await the result
+            // ONLY add to subcollection
             commentsRef.add(commentMap).await()
 
+            // INCREMENT comment count INSIDE THE POST DOCUMENT
+            postRef.update("videoStats.comments", FieldValue.increment(1)).await()
+
+
             Result.success(comment)
+
         } catch (e: Exception) {
             e.printStackTrace()
             Result.failure(e)
         }
     }
+
+
 
 
 }

@@ -104,8 +104,7 @@ fun SideItems(
             modifier = Modifier
                 .size(33.dp)
                 .clickable {
-//                    onclickComment(item.videoId)
-                    onclickComment("123")
+                    onclickComment(post.id)
                 })
         Text(
             text = post.videoStats.comments.toString(),

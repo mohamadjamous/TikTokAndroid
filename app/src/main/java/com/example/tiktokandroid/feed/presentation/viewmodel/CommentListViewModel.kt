@@ -68,7 +68,7 @@ class CommentListViewModel @Inject constructor(
         viewModelScope.launch {
             _commentUiState.value = FeedUiState.Loading
             try {
-                val result = createCommentUseCase.createComment(comment) // suspend function
+                val result = createCommentUseCase.createComment(comment)
                 if (result.isSuccess) {
                     _commentsList.value = _commentsList.value + comment
                     _commentUiState.value = FeedUiState.Success(comment)
