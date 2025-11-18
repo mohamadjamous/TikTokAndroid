@@ -13,5 +13,6 @@ enum class ProfilePagerTabs(
     @DrawableRes val icon: Int
 ) {
     PUBLIC_VIDEO(icon = R.drawable.ic_list),
+    SAVED_VIDEO(icon = R.drawable.ic_bookmark),
     LIKED_VIDEO(icon = R.drawable.ic_private_like)
 }
