@@ -12,4 +12,6 @@ interface IFeedRepository {
 
     suspend fun getCommentList(videoId: String) : Result<CommentList>
     suspend fun createComment(comment: CommentList.Comment): Result<CommentList.Comment>
+    suspend fun isVideoLiked(videoId: String, userId: String): Boolean
+    suspend fun isVideoSaved(videoId: String, userId: String): Boolean
 }

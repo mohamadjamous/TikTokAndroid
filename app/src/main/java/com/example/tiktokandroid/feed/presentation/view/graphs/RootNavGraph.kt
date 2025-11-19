@@ -32,6 +32,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -48,6 +50,7 @@ import com.example.tiktokandroid.core.presentation.model.Screen
 import com.example.tiktokandroid.explore.presentation.view.screens.ExploreScreen
 import com.example.tiktokandroid.feed.presentation.components.CommentListScreen
 import com.example.tiktokandroid.feed.presentation.view.screens.FeedScreen
+import com.example.tiktokandroid.feed.presentation.viewmodel.FeedViewModel
 import com.example.tiktokandroid.notifications.presentation.view.screens.NotificationsScreen
 import com.example.tiktokandroid.profile.presentation.view.screens.ProfileScreen
 import com.example.tiktokandroid.uploadmedia.presentation.view.CameraMediaScreen
@@ -57,6 +60,7 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.bottomSheet
 import kotlinx.coroutines.launch
 
+@androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun RootNavGraph(navController: NavHostController) {
@@ -294,7 +298,10 @@ fun RootNavGraph(navController: NavHostController) {
                 if (navController.currentBackStackEntry != null) { // heck entry validity
                     CommentListScreen(
                         onClickCancel = { navController.navigateUp() },
-                        videoId = it
+                        videoId = it,
+                        onSuccess = {
+//                            feedViewModel.
+                        }
                     )
                 }
             }

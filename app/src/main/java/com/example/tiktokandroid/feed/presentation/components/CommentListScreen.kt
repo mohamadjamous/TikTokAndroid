@@ -47,12 +47,11 @@ import java.util.Locale
 fun CommentListScreen(
     viewModel: CommentListViewModel = hiltViewModel(),
     onClickCancel: () -> Unit,
+    onSuccess: () -> Unit,
     videoId : String
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
     val comments = viewModel.commentsList.collectAsState().value
-
     var errorMessage by remember { mutableStateOf("") }
     var loading by remember { mutableStateOf(false) }
     val currentDateTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
@@ -152,7 +151,10 @@ fun CommentListScreen(
                             .show()
                     }
                 },
-                viewModel = viewModel
+                viewModel = viewModel,
+                onSuccess = { it ->
+                    if (it) onSuccess
+                }
             )
         }
 

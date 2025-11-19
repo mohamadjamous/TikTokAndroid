@@ -19,10 +19,14 @@ import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.feed.domain.usecases.FetchPostsUseCase
 import com.example.tiktokandroid.feed.domain.usecases.UpdateLikeStateUseCase
 import com.example.tiktokandroid.feed.domain.usecases.UpdateSavedStateUseCase
+import com.example.tiktokandroid.feed.domain.usecases.VideoStatsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -33,6 +37,7 @@ class FeedViewModel @Inject constructor(
     private val updateLikeStateUseCase: UpdateLikeStateUseCase,
     private val updateSavedStateUseCase: UpdateSavedStateUseCase,
     private val userSharedPreferences: UserPreferences,
+    private val videoStatsUseCase : VideoStatsUseCase,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -41,6 +46,9 @@ class FeedViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<FeedUiState>(FeedUiState.Idle)
     val uiState get() = _uiState
+
+    private val statsCache = mutableMapOf<String, Pair<Boolean, Boolean>>()
+
 
 
     private val videoURLs = listOf(
@@ -73,6 +81,16 @@ class FeedViewModel @Inject constructor(
 
     private val _currentUser = mutableStateOf<User?>(null)
     val currentUser: State<User?> = _currentUser
+
+    private val _likedMap = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+    val likedMap = _likedMap.asStateFlow()
+
+    private val _savedMap = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+    val savedMap = _savedMap.asStateFlow()
+
+
+    private val newCommentCallbacks = mutableMapOf<String, () -> Unit>()
+
 
     init {
         fetchStoredUser()
@@ -165,6 +183,27 @@ class FeedViewModel @Inject constructor(
                 id, saved
             )
         }
+    }
+
+
+    /**
+     * Fetch video liked and saved state by user
+     */
+    fun fetchVideoStats(videoId: String) {
+        viewModelScope.launch {
+            val user = userSharedPreferences.getUser() ?: return@launch
+
+            val liked = videoStatsUseCase.getLikedState(videoId, user.id)
+            val saved = videoStatsUseCase.getSavedState(videoId, user.id)
+
+            _likedMap.update { it + (videoId to liked) }
+            _savedMap.update { it + (videoId to saved) }
+        }
+    }
+
+
+    fun incrementCommentCount(videoId: String) {
+
     }
 
 

@@ -6,8 +6,6 @@ import com.example.tiktokandroid.feed.data.model.CommentList
 import com.example.tiktokandroid.feed.domain.interfaces.IFeedRepository
 import javax.inject.Inject
 
-
-
 class FeedRepository @Inject constructor(
     private val dataSource: FeedRemoteDataSource
 ) : IFeedRepository {
@@ -45,5 +43,22 @@ class FeedRepository @Inject constructor(
         return dataSource.createComment(comment)
     }
 
+    override suspend fun isVideoLiked(
+        videoId: String,
+        userId: String
+    ): Boolean {
+        return dataSource.isVideoLiked(
+            videoId, userId
+        )
+    }
+
+    override suspend fun isVideoSaved(
+        videoId: String,
+        userId: String
+    ): Boolean {
+        return dataSource.isVideoSaved(
+            videoId, userId
+        )
+    }
 
 }

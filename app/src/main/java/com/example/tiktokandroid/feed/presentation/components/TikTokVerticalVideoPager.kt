@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 import com.example.tiktokandroid.R
 import com.example.tiktokandroid.core.presentation.model.User
 import com.example.tiktokandroid.core.utils.IntentUtils.share
+import com.example.tiktokandroid.feed.presentation.viewmodel.FeedViewModel
 import com.example.tiktokandroid.theme.White
 
 /**
@@ -50,7 +51,7 @@ fun TikTokVerticalVideoPager(
     videos: List<Post>,
     initialPage: Int? = 0,
     showUploadDate: Boolean = false,
-    onclickComment: (videoId: String) -> Unit,
+    onclickComment: (videoId: String, onNewComment: () -> Unit) -> Unit,
     onClickLike: (videoId: String, likeStatus: Boolean) -> Unit,
     onClickFavourite1: (videoId: String, likeStatus: Boolean) -> Unit,
     onClickAudio: (Post) -> Unit,
@@ -58,7 +59,8 @@ fun TikTokVerticalVideoPager(
     onClickFavourite: (isFav: Boolean) -> Unit = {},
     onClickShare: (() -> Unit)? = null,
     onPageChanged: (Int) -> Unit,
-    currentUser: User?
+    currentUser: User?,
+    viewModel : FeedViewModel
 ) {
     val pagerState = rememberPagerState(initialPage = initialPage ?: 0, pageCount = { videos.size })
     val coroutineScope = rememberCoroutineScope()
@@ -140,7 +142,8 @@ fun TikTokVerticalVideoPager(
                         onClickShare = onClickShare,
                         onClickLike = { liked ->
                             onClickLike(videos[it].id, liked)
-                        }
+                        },
+                        viewModel = viewModel
                     )
                 }
                 12.dp.Space()

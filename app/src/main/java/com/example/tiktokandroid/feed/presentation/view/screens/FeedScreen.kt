@@ -21,9 +21,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import com.example.tiktokandroid.R
+import com.example.tiktokandroid.feed.presentation.viewmodel.FeedViewModel
 import com.example.tiktokandroid.theme.White
 import kotlinx.coroutines.launch
 
@@ -33,7 +35,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FeedScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
 ) {
 
 

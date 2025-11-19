@@ -2,15 +2,18 @@ package com.example.tiktokandroid.feed.data.datasource
 
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.core.presentation.model.User
+import com.example.tiktokandroid.core.sharedpreferences.UserPreferences
 import com.example.tiktokandroid.feed.data.model.CommentList
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class FeedRemoteDataSource @Inject constructor(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val userPreferences: UserPreferences
 ) {
 
     suspend fun fetchPosts(num: Int, lastVisibleId: String? = null): Result<List<Post>> {
@@ -49,6 +52,9 @@ class FeedRemoteDataSource @Inject constructor(
 
                 transaction.update(collectionRef, "videoStats.likes", newLikes)
             }.await()
+
+            val user = userPreferences.getUser()
+            updateLikesCollection(videoId, user?.id.toString(), liked)
 
             Result.success(Unit)
 
@@ -165,6 +171,9 @@ class FeedRemoteDataSource @Inject constructor(
                 transaction.update(collectionRef, "videoStats.favourites", newLikes)
             }.await()
 
+            val user = userPreferences.getUser()
+            updateSavedCollection(videoId, user?.id.toString(), saved)
+
             Result.success(Unit)
 
         } catch (e: Exception) {
@@ -172,6 +181,75 @@ class FeedRemoteDataSource @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun updateLikesCollection(videoId: String, userId: String, liked: Boolean) {
+        val ref = firestore
+            .collection("likes")
+            .document(userId)
+            .collection("videos")
+            .document(videoId)
+
+        if (liked) {
+            // Add or update like
+            ref.set(
+                mapOf(
+                    "liked" to true,
+                    "timestamp" to FieldValue.serverTimestamp()
+                ),
+                SetOptions.merge()
+            ).await()
+        } else {
+            // Remove the like
+            ref.delete().await()
+        }
+    }
+
+    suspend fun updateSavedCollection(videoId: String, userId: String, saved: Boolean) {
+        val ref = firestore
+            .collection("saves")
+            .document(userId)
+            .collection("videos")
+            .document(videoId)
+
+        if (saved) {
+            // Add or update save entry
+            ref.set(
+                mapOf(
+                    "saved" to true,
+                    "timestamp" to FieldValue.serverTimestamp()
+                ),
+                SetOptions.merge()
+            ).await()
+        } else {
+            // Remove save entry
+            ref.delete().await()
+        }
+    }
+
+    suspend fun isVideoLiked(videoId: String, userId: String): Boolean {
+        val snapshot = firestore
+            .collection("likes")
+            .document(userId)
+            .collection("videos")
+            .document(videoId)
+            .get()
+            .await()
+
+        return snapshot.exists()
+    }
+
+    suspend fun isVideoSaved(videoId: String, userId: String): Boolean {
+        val snapshot = firestore
+            .collection("saves")
+            .document(userId)
+            .collection("videos")
+            .document(videoId)
+            .get()
+            .await()
+
+        return snapshot.exists()
+    }
+
 
 
 }

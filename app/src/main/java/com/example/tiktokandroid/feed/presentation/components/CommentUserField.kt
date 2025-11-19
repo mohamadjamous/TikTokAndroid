@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,13 +52,28 @@ import com.example.tiktokandroid.theme.PrimaryColor
 @Composable
 fun CommentUserField(
     onClick: (String) -> Unit = {},
+    onSuccess: (Boolean) -> Unit = {},
     viewModel: CommentListViewModel
 ) {
     var input by remember { mutableStateOf("") }
     val context = LocalContext.current
     val commentUiState by viewModel.commentUiState.collectAsState()
 
-    val loading = commentUiState is FeedUiState.Loading
+    var loading by remember { mutableStateOf(false) }
+
+    LaunchedEffect(commentUiState) {
+        when(commentUiState){
+            is FeedUiState.Error -> {
+                loading = false
+            }
+            FeedUiState.Idle -> {}
+            FeedUiState.Loading -> { loading = true }
+            is FeedUiState.Success -> {
+                loading = false
+                onSuccess(true)
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -131,7 +147,6 @@ fun CommentUserField(
                 Button(
                     onClick = {
                         if (input.isNotBlank() && !loading) {
-                            println("InputComment: $input")
                             onClick(input)
                             input = ""
                         } else {

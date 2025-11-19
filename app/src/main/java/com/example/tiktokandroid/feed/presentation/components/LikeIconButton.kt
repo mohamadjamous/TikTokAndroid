@@ -11,7 +11,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,7 +30,11 @@ fun LikeIconButton(
 ) {
 
     val maxSize = 38.dp
-    val iconSize by animateDpAsState(targetValue = if (isLiked) 33.dp else 32.dp,
+
+    // This remembers the previous click, NOT backend fetch
+    var animateTrigger by remember { mutableStateOf(false) }
+
+    val iconSize by animateDpAsState(targetValue = if (animateTrigger) maxSize else 32.dp,
         animationSpec = keyframes {
             durationMillis = 400
             24.dp.at(50)
@@ -39,6 +47,8 @@ fun LikeIconButton(
         modifier = Modifier
             .size(maxSize)
             .clickable(interactionSource = MutableInteractionSource(), indication = null) {
+                // Only trigger animation when user clicks
+                animateTrigger = true
                 onLikedClicked(!isLiked)
             }, contentAlignment = Alignment.Center
     ) {
@@ -53,4 +63,9 @@ fun LikeIconButton(
     Text(text = likeCount, style = MaterialTheme.typography.labelMedium,
         color = White)
     16.dp.Space()
+
+    // Reset animation trigger when state changes back to unliked
+    LaunchedEffect(isLiked) {
+        if (!isLiked) animateTrigger = false
+    }
 }
