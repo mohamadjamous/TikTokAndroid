@@ -18,6 +18,7 @@ import com.example.tiktokandroid.core.sharedpreferences.UserPreferences
 import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.feed.domain.usecases.FetchPostsUseCase
 import com.example.tiktokandroid.feed.domain.usecases.UpdateLikeStateUseCase
+import com.example.tiktokandroid.feed.domain.usecases.UpdateSavedStateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
@@ -30,6 +31,7 @@ import java.io.File
 class FeedViewModel @Inject constructor(
     private val fetchPostsUseCase: FetchPostsUseCase,
     private val updateLikeStateUseCase: UpdateLikeStateUseCase,
+    private val updateSavedStateUseCase: UpdateSavedStateUseCase,
     private val userSharedPreferences: UserPreferences,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
@@ -153,6 +155,17 @@ class FeedViewModel @Inject constructor(
         _currentUser.value = userSharedPreferences.getUser()
     }
 
+
+    /**
+     * Update video saved state
+     */
+    fun updateSavedState(id: String, saved: Boolean) {
+        viewModelScope.launch {
+            updateSavedStateUseCase.updateSavedState(
+                id, saved
+            )
+        }
+    }
 
 
 }

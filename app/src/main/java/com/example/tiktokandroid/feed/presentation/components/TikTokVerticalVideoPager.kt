@@ -52,7 +52,7 @@ fun TikTokVerticalVideoPager(
     showUploadDate: Boolean = false,
     onclickComment: (videoId: String) -> Unit,
     onClickLike: (videoId: String, likeStatus: Boolean) -> Unit,
-    onclickFavourite: (videoId: String) -> Unit,
+    onClickFavourite1: (videoId: String, likeStatus: Boolean) -> Unit,
     onClickAudio: (Post) -> Unit,
     onClickUser: (userId: Long) -> Unit,
     onClickFavourite: (isFav: Boolean) -> Unit = {},
@@ -134,7 +134,9 @@ fun TikTokVerticalVideoPager(
                         doubleTabState = doubleTapState,
                         onclickComment = onclickComment,
                         onClickUser = onClickUser,
-                        onClickFavourite = onClickFavourite,
+                        onClickFavourite = { saved ->
+                            onClickFavourite1(videos[it].id, saved)
+                        },
                         onClickShare = onClickShare,
                         onClickLike = { liked ->
                             onClickLike(videos[it].id, liked)

@@ -71,7 +71,9 @@ fun ForYouTabScreen(
             onClickLike = { videoId, liked ->
                 viewModel.updateLikeState(videoId, liked)
             },
-            onclickFavourite = {},
+            onClickFavourite1 = { id, saved ->
+                viewModel.updateSavedState(id, saved)
+            },
             onClickAudio = {},
             onClickUser = {
 //                    userId -> navController.navigate("$CREATOR_PROFILE_ROUTE/$userId")

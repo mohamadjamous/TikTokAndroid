@@ -8,6 +8,7 @@ import dagger.Provides
 interface IFeedRepository {
     suspend fun fetchPosts(num: Int, lastVisibleId: String?): Result<List<Post>>
     suspend fun updateLikeState(videoId : String, liked: Boolean): Result<Unit>
+    suspend fun updateSavedState(videoId : String, saved: Boolean): Result<Unit>
 
     suspend fun getCommentList(videoId: String) : Result<CommentList>
     suspend fun createComment(comment: CommentList.Comment): Result<CommentList.Comment>

@@ -28,6 +28,15 @@ class FeedRepository @Inject constructor(
         )
     }
 
+    override suspend fun updateSavedState(
+        videoId: String,
+        saved: Boolean
+    ): Result<Unit> {
+        return dataSource.updateSavedState(
+            videoId, saved
+        )
+    }
+
     override suspend fun getCommentList(videoId: String): Result<CommentList> {
         return dataSource.getCommentList(videoId)
     }

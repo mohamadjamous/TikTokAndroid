@@ -152,7 +152,26 @@ class FeedRemoteDataSource @Inject constructor(
         }
     }
 
+   suspend fun updateSavedState(videoId: String, saved: Boolean): Result<Unit> {
+        return try {
+            val collectionRef = firestore.collection("posts").document(videoId)
 
+            firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(collectionRef)
+                val currentLikes = snapshot.getLong("videoStats.favourites") ?: 0L
+
+                val newLikes = if (saved) currentLikes + 1 else maxOf(currentLikes - 1, 0L)
+
+                transaction.update(collectionRef, "videoStats.favourites", newLikes)
+            }.await()
+
+            Result.success(Unit)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Result.failure(e)
+        }
+    }
 
 
 }

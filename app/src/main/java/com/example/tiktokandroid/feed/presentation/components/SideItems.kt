@@ -50,6 +50,26 @@ fun SideItems(
 ) {
 
     val context = LocalContext.current
+    var isSaved by remember {
+        mutableStateOf(post.currentViewerInteraction.isAddedToFavourite)
+    }
+
+    var isLiked by remember {
+        mutableStateOf(post.currentViewerInteraction.isLikedByYou)
+    }
+
+    LaunchedEffect(key1 = doubleTabState) {
+        if (doubleTabState.first != Offset.Unspecified && doubleTabState.second) {
+            isLiked = doubleTabState.second
+        }
+    }
+
+    LaunchedEffect(key1 = doubleTabState) {
+        if (doubleTabState.first != Offset.Unspecified && doubleTabState.second) {
+            isLiked = doubleTabState.second
+        }
+    }
+
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         GlideImage(
             model = post.authorDetails.profileImageUrl,
@@ -80,15 +100,7 @@ fun SideItems(
 
         12.dp.Space()
 
-        var isLiked by remember {
-            mutableStateOf(post.currentViewerInteraction.isLikedByYou)
-        }
 
-        LaunchedEffect(key1 = doubleTabState) {
-            if (doubleTabState.first != Offset.Unspecified && doubleTabState.second) {
-                isLiked = doubleTabState.second
-            }
-        }
         LikeIconButton(isLiked = isLiked,
             likeCount = post.videoStats.likes.toString(),
             onLikedClicked = {
@@ -114,13 +126,14 @@ fun SideItems(
         16.dp.Space()
 
 
+        SaveButton(isSaved = isSaved,
+            saveCount = post.videoStats.favourites.toString(),
+            onSaveClick = {
+                isSaved = it
+                onClickFavourite(isSaved)
+                post.currentViewerInteraction.isAddedToFavourite = it
+            })
 
-        Icon(
-            painter = painterResource(id = R.drawable.ic_bookmark),
-            contentDescription = null,
-            tint = Color.Unspecified,
-            modifier = Modifier.size(33.dp)
-        )
         Text(
             text = post.videoStats.favourites.toString(),
             style = MaterialTheme.typography.labelMedium,
