@@ -30,5 +30,43 @@ class UserRemoteDataSource @Inject constructor(
         }
     }
 
+    suspend fun fetchSavedPosts(uid: String): Result<List<Post>> {
+        return try {
+
+            // Get all saved video IDs for the user
+            val savedSnapshot = firestore
+                .collection("saves")
+                .document(uid)
+                .collection("videos")
+                .get()
+                .await()
+
+            val savedVideoIds = savedSnapshot.documents.map { it.id }
+
+            if (savedVideoIds.isEmpty()) {
+                return Result.success(emptyList())
+            }
+
+            // Fetch posts with these IDs
+            // Firestore allows querying with 'whereIn' for up to 10 IDs at a time
+            val posts = mutableListOf<Post>()
+            val chunkedIds = savedVideoIds.chunked(10)
+
+            for (chunk in chunkedIds) {
+                val postSnapshot = firestore
+                    .collection("posts")
+                    .whereIn("id", chunk)
+                    .get()
+                    .await()
+
+                posts.addAll(postSnapshot.toObjects(Post::class.java))
+            }
+
+            Result.success(posts)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 
 }

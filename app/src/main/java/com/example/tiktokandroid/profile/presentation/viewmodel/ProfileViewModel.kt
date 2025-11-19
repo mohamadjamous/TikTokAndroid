@@ -9,6 +9,7 @@ import com.example.tiktokandroid.core.presentation.model.User
 import com.example.tiktokandroid.core.sharedpreferences.UserPreferences
 import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.profile.domain.usecases.FetchUserPostsUseCase
+import com.example.tiktokandroid.profile.domain.usecases.FetchUserSavedPostsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,11 +19,15 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val userSharedPreferences: UserPreferences,
-    private val fetchUserPostsUseCase: FetchUserPostsUseCase
+    private val fetchUserPostsUseCase: FetchUserPostsUseCase,
+    private val fetchUserSavedPostsUseCase: FetchUserSavedPostsUseCase,
 ) : ViewModel() {
 
     private val _posts = MutableStateFlow<List<Post>>(emptyList())
     val posts: StateFlow<List<Post>> get() = _posts
+
+    private val _savedVideos = MutableStateFlow<List<Post>>(emptyList())
+    val savedVideos: StateFlow<List<Post>> get() = _savedVideos
 
     private val _currentUser = mutableStateOf<User?>(null)
     val currentUser: State<User?> = _currentUser
@@ -69,5 +74,16 @@ class ProfileViewModel @Inject constructor(
     }
 
 
+
+    fun fetchSavedVideos(
+        uid : String = _currentUser.value?.id ?: ""
+    ){
+        viewModelScope.launch {
+            val result = fetchUserSavedPostsUseCase(uid)
+            val posts = result.getOrNull() ?: emptyList()
+
+            _savedVideos.value = posts
+        }
+    }
 
 }

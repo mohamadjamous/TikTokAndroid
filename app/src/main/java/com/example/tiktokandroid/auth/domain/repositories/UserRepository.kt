@@ -26,4 +26,8 @@ class UserRepository @Inject constructor(
         return dataSource.fetchUserPosts(uid)
     }
 
+    suspend fun fetchUserSavedPosts(uid: String) : Result<List<Post>> {
+        return dataSource.fetchSavedPosts(uid)
+    }
+
 }

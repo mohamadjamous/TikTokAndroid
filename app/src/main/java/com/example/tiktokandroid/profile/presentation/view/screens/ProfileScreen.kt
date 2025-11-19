@@ -81,6 +81,7 @@ import com.example.tiktokandroid.profile.data.model.ProfilePagerTabs
 import com.example.tiktokandroid.profile.presentation.components.PostRowItem
 import com.example.tiktokandroid.profile.presentation.components.tabs.LikeVideoTab
 import com.example.tiktokandroid.profile.presentation.components.tabs.PublicVideoTab
+import com.example.tiktokandroid.profile.presentation.components.tabs.SavedVideoTab
 import com.example.tiktokandroid.profile.presentation.viewmodel.ProfileViewModel
 import com.example.tiktokandroid.theme.PrimaryColor
 import kotlinx.coroutines.launch
@@ -280,6 +281,7 @@ fun ProfileScreen(
                                     .fillMaxWidth()
                                     .wrapContentHeight()
                             ) { page ->
+
                                 when (page) {
                                     0 -> PublicVideoTab(
                                         viewModel = viewModel,
@@ -287,7 +289,13 @@ fun ProfileScreen(
                                         onClickVideo = onClickVideo
                                     )
 
-                                    1 -> LikeVideoTab(viewModel = viewModel)
+                                    1 -> SavedVideoTab(
+                                        viewModel = viewModel,
+                                        scrollState,
+                                        onClickVideo = onClickVideo
+                                    )
+
+                                    2 -> LikeVideoTab(viewModel = viewModel)
                                 }
                             }
                         }
