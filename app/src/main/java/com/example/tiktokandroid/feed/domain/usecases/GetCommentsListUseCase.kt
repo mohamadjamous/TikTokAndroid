@@ -2,7 +2,6 @@ package com.example.tiktokandroid.feed.domain.usecases
 
 import com.example.tiktokandroid.feed.data.model.CommentList
 import com.example.tiktokandroid.feed.domain.interfaces.IFeedRepository
-import com.example.tiktokandroid.feed.domain.repositories.FeedRepository
 import javax.inject.Inject
 
 class GetCommentsListUseCase @Inject constructor(

@@ -1,7 +1,7 @@
 package com.example.tiktokandroid.core.di
 
 import com.example.tiktokandroid.feed.domain.interfaces.IFeedRepository
-import com.example.tiktokandroid.feed.domain.repositories.FeedRepository
+import com.example.tiktokandroid.feed.domain.repositories.FeedRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -16,6 +16,6 @@ abstract class FeedModule {
     @Binds
     @Singleton
     abstract fun bindFeedRepository(
-        impl: FeedRepository
+        impl: FeedRepositoryImpl
     ): IFeedRepository
 }

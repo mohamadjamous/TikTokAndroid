@@ -2,7 +2,6 @@ package com.example.tiktokandroid.feed.domain.usecases
 
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.feed.domain.interfaces.IFeedRepository
-import com.example.tiktokandroid.feed.domain.repositories.FeedRepository
 
 
 class FakeFeedRepository : IFeedRepository {

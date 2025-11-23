@@ -1,13 +1,17 @@
 package com.example.tiktokandroid.feed.domain.repositories
 
 import com.example.tiktokandroid.core.presentation.model.Post
-import com.example.tiktokandroid.feed.data.datasource.FeedRemoteDataSource
+import com.example.tiktokandroid.feed.data.datasource.local.FeedLocalDataSource
+import com.example.tiktokandroid.feed.data.datasource.remote.FeedRemoteDataSource
+import com.example.tiktokandroid.feed.data.datasource.remote.NetworkHandler
 import com.example.tiktokandroid.feed.data.model.CommentList
 import com.example.tiktokandroid.feed.domain.interfaces.IFeedRepository
 import javax.inject.Inject
 
-class FeedRepository @Inject constructor(
-    private val dataSource: FeedRemoteDataSource
+class FeedRepositoryImpl @Inject constructor(
+    private val dataSource: FeedRemoteDataSource,
+    private val local: FeedLocalDataSource,
+    private val networkHandler: NetworkHandler
 ) : IFeedRepository {
 
     override suspend fun fetchPosts(

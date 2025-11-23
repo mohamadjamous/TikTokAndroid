@@ -1,4 +1,4 @@
-package com.example.tiktokandroid.feed.data.datasource
+package com.example.tiktokandroid.feed.data.datasource.remote
 
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.core.presentation.model.User
@@ -10,6 +10,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import kotlin.collections.get
 
 class FeedRemoteDataSource @Inject constructor(
     private val firestore: FirebaseFirestore,

@@ -12,7 +12,7 @@ class FetchPostsUseCase @Inject constructor(
         num: Int = 3,
         lastVisibleId: String? = null
     ) : Result<List<Post>>{
-        return repository.fetchPosts(num = num, lastVisibleId = lastVisibleId)
+        return repository.fetchPosts(num, lastVisibleId)
     }
 
 }
