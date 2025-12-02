@@ -3,6 +3,7 @@ package com.example.tiktokandroid.feed.domain.interfaces
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.feed.data.model.CommentList
 import dagger.Provides
+import kotlinx.coroutines.flow.Flow
 
 
 interface IFeedRepository {
@@ -14,4 +15,7 @@ interface IFeedRepository {
     suspend fun createComment(comment: CommentList.Comment): Result<CommentList.Comment>
     suspend fun isVideoLiked(videoId: String, userId: String): Boolean
     suspend fun isVideoSaved(videoId: String, userId: String): Boolean
+    suspend fun fetchMorePosts(num: Int, lastVisibleId: String?): Result<List<Post>>
+
+    suspend fun cachePosts(posts: List<Post>)
 }

@@ -35,7 +35,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.tiktokandroid.auth.data.model.AuthUiState
 import com.example.tiktokandroid.core.presentation.components.BackButton
 import com.example.tiktokandroid.core.presentation.components.CustomButton
 import com.example.tiktokandroid.core.presentation.components.CustomLoadingView
@@ -220,7 +219,7 @@ fun PostScreen(
                                         allowComments = allowComments,
                                         username = currentUser?.username ?: "",
                                         description = description,
-                                        authorDetails = currentUser!!
+                                        author = currentUser!!
                                     ),
                                     videoUri = it
                                 )

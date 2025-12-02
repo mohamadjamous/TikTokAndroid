@@ -98,7 +98,7 @@ fun SideItems(
 
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         GlideImage(
-            model = post.authorDetails.profileImageUrl,
+            model = post.author.profileImageUrl,
             contentDescription = null,
             modifier = Modifier
                 .size(50.dp)
@@ -186,7 +186,7 @@ fun SideItems(
         )
         20.dp.Space()
 
-        RotatingAudioView(post.authorDetails.profileImageUrl)
+        RotatingAudioView(post.author.profileImageUrl)
 
     }
 }

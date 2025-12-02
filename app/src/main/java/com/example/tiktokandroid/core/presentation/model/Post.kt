@@ -7,7 +7,7 @@ data class Post(
     val id: String = "",
     val userId: String = "",
     val videoUrl: String = "",
-    val authorDetails: User = User(),
+    val author: User = User(),
     val videoStats: VideoStats = VideoStats(),
     val allowComments: Boolean = true,
     val username: String = "",
@@ -16,20 +16,20 @@ data class Post(
     val currentViewerInteraction: ViewerInteraction = ViewerInteraction(),
     val audioModel: AudioModel? = null,
     val hasTag: List<HasTag> = listOf(),
-) {
+)
 
-    @Serializable
-    data class HasTag(
-        val id: Long,
-        val title: String
-    )
 
-    @Serializable
-    data class ViewerInteraction(
-        var isLikedByYou: Boolean = false,
-        var isAddedToFavourite: Boolean = false
-    )
-}
+@Serializable
+data class HasTag(
+    val id: Long,
+    val title: String
+)
+
+@Serializable
+data class ViewerInteraction(
+    var isLikedByYou: Boolean = false,
+    var isAddedToFavourite: Boolean = false
+)
 
 /**
  * Created by Puskal Khadka on 3/18/2023.

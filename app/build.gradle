@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
     id("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -46,6 +47,10 @@ android {
 
     kapt {
         correctErrorTypes = true
+    }
+
+    ksp {
+        arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
     }
 
     // Declare flavor dimensions first
@@ -124,7 +129,7 @@ dependencies {
 
     // Dagger hilt
     implementation "com.google.dagger:hilt-android:2.57.1"
-    kapt("com.google.dagger:hilt-compiler:2.57.1")
+    kapt "com.google.dagger:hilt-android-compiler:2.57.1"
 
 
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
@@ -170,6 +175,15 @@ dependencies {
     implementation("androidx.camera:camera-extensions:$cameraxVersion")
     implementation("dev.chrisbanes.snapper:snapper:0.3.0")
 
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+    androidTestImplementation(libs.room.testing)
+
+
+    // Gson
+    implementation(libs.google.gson)
 
 
 }

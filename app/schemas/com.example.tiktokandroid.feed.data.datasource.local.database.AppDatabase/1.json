@@ -1,0 +1,214 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "68f4dd359f09f259fb0922ecf04856bf",
+    "entities": [
+      {
+        "tableName": "post_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`post_id` TEXT NOT NULL, `user_id` TEXT NOT NULL, `video_url` TEXT NOT NULL, `allow_comments` INTEGER NOT NULL, `username` TEXT NOT NULL, `description` TEXT NOT NULL, `created_at` INTEGER NOT NULL, `hashtags` TEXT NOT NULL, `authorid` TEXT NOT NULL, `authorusername` TEXT NOT NULL, `authorfullName` TEXT NOT NULL, `authorbio` TEXT NOT NULL, `authordob` TEXT NOT NULL, `authoremail` TEXT NOT NULL, `authorphone` TEXT NOT NULL, `authorfollowing` INTEGER NOT NULL, `authorfollowers` INTEGER NOT NULL, `authorlikes` INTEGER NOT NULL, `authorprofileImageUrl` TEXT NOT NULL, `likes` INTEGER NOT NULL, `comments` INTEGER NOT NULL, `shares` INTEGER NOT NULL, `favourites` INTEGER NOT NULL, `views` INTEGER NOT NULL, `isLikedByYou` INTEGER NOT NULL, `isAddedToFavourite` INTEGER NOT NULL, `audioaudioCoverImage` TEXT, `audioisOriginal` INTEGER, `audioaudioAuthor` TEXT, `audionumberOfPost` INTEGER, `audiooriginalVideoUrl` TEXT, PRIMARY KEY(`post_id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "post_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "user_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "videoUrl",
+            "columnName": "video_url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "allowComments",
+            "columnName": "allow_comments",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAt",
+            "columnName": "created_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasTags",
+            "columnName": "hashtags",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorDetails.id",
+            "columnName": "authorid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorDetails.username",
+            "columnName": "authorusername",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorDetails.fullName",
+            "columnName": "authorfullName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorDetails.bio",
+            "columnName": "authorbio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorDetails.dob",
+            "columnName": "authordob",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorDetails.email",
+            "columnName": "authoremail",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorDetails.phone",
+            "columnName": "authorphone",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorDetails.following",
+            "columnName": "authorfollowing",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorDetails.followers",
+            "columnName": "authorfollowers",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorDetails.likes",
+            "columnName": "authorlikes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "authorDetails.profileImageUrl",
+            "columnName": "authorprofileImageUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "videoStats.likes",
+            "columnName": "likes",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "videoStats.comments",
+            "columnName": "comments",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "videoStats.shares",
+            "columnName": "shares",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "videoStats.favourites",
+            "columnName": "favourites",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "videoStats.views",
+            "columnName": "views",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentViewerInteraction.isLikedByYou",
+            "columnName": "isLikedByYou",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentViewerInteraction.isAddedToFavourite",
+            "columnName": "isAddedToFavourite",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "audioModel.audioCoverImage",
+            "columnName": "audioaudioCoverImage",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "audioModel.isOriginal",
+            "columnName": "audioisOriginal",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "audioModel.audioAuthor",
+            "columnName": "audioaudioAuthor",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "audioModel.numberOfPost",
+            "columnName": "audionumberOfPost",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "audioModel.originalVideoUrl",
+            "columnName": "audiooriginalVideoUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "post_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '68f4dd359f09f259fb0922ecf04856bf')"
+    ]
+  }
+}

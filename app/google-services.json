@@ -1,29 +1,29 @@
-{
-  "project_info": {
-    "project_number": "50076423393",
-    "project_id": "tiktokandroid-1ab28",
-    "storage_bucket": "tiktokandroid-1ab28.firebasestorage.app"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:50076423393:android:3777dab6dc3334b260d3a0",
-        "android_client_info": {
-          "package_name": "com.example.tiktokandroid"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBCp4KtEisj9qvoluhpaZMg4cVYMM_u_nk"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
+  {
+    "project_info": {
+      "project_number": "50076423393",
+      "project_id": "tiktokandroid-1ab28",
+      "storage_bucket": "tiktokandroid-1ab28.firebasestorage.app"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:50076423393:android:634d306956a793a260d3a0",
+          "android_client_info": {
+            "package_name": "com.example.tiktokandroid.dev"
+          }
+        },
+        "oauth_client": [],
+        "api_key": [
+          {
+            "current_key": "AIzaSyBCp4KtEisj9qvoluhpaZMg4cVYMM_u_nk"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": []
+          }
         }
       }
-    }
-  ],
-  "configuration_version": "1"
-}
+    ],
+    "configuration_version": "1"
+  }

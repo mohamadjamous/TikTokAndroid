@@ -60,7 +60,7 @@ fun FooterUi(
         val audioInfo: String = item.audioModel?.run {
             "Original sound - ${audioAuthor.username} - ${audioAuthor.fullName}"
         }
-            ?: item.run { "Original sound - ${item.authorDetails.username} - ${item.authorDetails.fullName}" }
+            ?: item.run { "Original sound - ${item.author.username} - ${item.author.fullName}" }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),

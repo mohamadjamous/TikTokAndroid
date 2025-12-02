@@ -24,7 +24,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -37,7 +36,7 @@ class FeedViewModel @Inject constructor(
     private val updateLikeStateUseCase: UpdateLikeStateUseCase,
     private val updateSavedStateUseCase: UpdateSavedStateUseCase,
     private val userSharedPreferences: UserPreferences,
-    private val videoStatsUseCase : VideoStatsUseCase,
+    private val videoStatsUseCase: VideoStatsUseCase,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -48,7 +47,6 @@ class FeedViewModel @Inject constructor(
     val uiState get() = _uiState
 
     private val statsCache = mutableMapOf<String, Pair<Boolean, Boolean>>()
-
 
 
     private val videoURLs = listOf(
@@ -76,7 +74,7 @@ class FeedViewModel @Inject constructor(
     private val _loadMoreVideos = mutableStateOf(false)
     val loadMoreVideos = _loadMoreVideos
 
-    var cacheDataSourceFactory : CacheDataSource.Factory? = null
+    var cacheDataSourceFactory: CacheDataSource.Factory? = null
         private set
 
     private val _currentUser = mutableStateOf<User?>(null)
@@ -98,21 +96,40 @@ class FeedViewModel @Inject constructor(
         createSimpleCache()
     }
 
-    fun fetchInitialPosts() {
+    private fun fetchInitialPosts() {
+
+        if (isLoadingMore) return
+        isLoadingMore = true
+
         viewModelScope.launch {
             _uiState.value = FeedUiState.Loading
-            val result = fetchPostsUseCase.fetchPosts()
-            val posts = result.getOrNull() ?: emptyList()
 
-            _videos.value = posts
-            lastVisiblePostId = posts.lastOrNull()?.id
-
-            _uiState.value = result.fold(
-                onSuccess = { FeedUiState.Success(it) },
-                onFailure = { FeedUiState.Error(it.message ?: "Unknown error") }
+            // Try to fetch remote data
+            val result = fetchPostsUseCase.invoke(
+                num = 10,
+                lastVisibleId = null
             )
+
+            result
+                .onSuccess { posts ->
+
+                    // Save remote posts into cache
+                    fetchPostsUseCase.cachePosts(posts)
+
+                    _uiState.value = FeedUiState.Success(posts)
+                    _videos.value = posts
+                }
+                .onFailure { error ->
+                    _uiState.value = FeedUiState.Error(
+                        error.message ?: "Unknown error"
+                    )
+                }
+
+            isLoadingMore = false
         }
+
     }
+
 
     fun fetchMorePosts() {
         if (isLoadingMore || lastVisiblePostId == null) return
@@ -121,12 +138,16 @@ class FeedViewModel @Inject constructor(
             isLoadingMore = true
             _loadMoreVideos.value = true
 
-            val result = fetchPostsUseCase.fetchPosts(num = 3, lastVisibleId = lastVisiblePostId)
-            val newPosts = result.getOrNull() ?: emptyList()
+            val result = fetchPostsUseCase.invoke(num = 3, lastVisibleId = lastVisiblePostId)
 
-            // Append to current list
-            _videos.value = _videos.value + newPosts
-            lastVisiblePostId = newPosts.lastOrNull()?.id
+            result.onSuccess { newPosts ->
+
+                // Save to cache
+                fetchPostsUseCase.cachePosts(newPosts)
+
+                // Update last Id
+                lastVisiblePostId = newPosts.lastOrNull()?.id
+            }
 
             _loadMoreVideos.value = false
             isLoadingMore = false
@@ -134,9 +155,10 @@ class FeedViewModel @Inject constructor(
     }
 
 
-    fun createSimpleCache(){
+    fun createSimpleCache() {
         val cache = MediaCacheSingleton.getInstance(context)
-        val httpDataSourceFactory = DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true)
+        val httpDataSourceFactory =
+            DefaultHttpDataSource.Factory().setAllowCrossProtocolRedirects(true)
         cacheDataSourceFactory = CacheDataSource.Factory()
             .setCache(cache)
             .setUpstreamDataSourceFactory(DefaultDataSource.Factory(context, httpDataSourceFactory))

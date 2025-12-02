@@ -5,14 +5,20 @@ import com.example.tiktokandroid.feed.domain.interfaces.IFeedRepository
 import javax.inject.Inject
 
 class FetchPostsUseCase @Inject constructor(
-    private val repository: IFeedRepository
-){
+    private val repo: IFeedRepository
+) {
 
-    suspend fun fetchPosts(
+    suspend operator fun invoke(
         num: Int = 3,
         lastVisibleId: String? = null
-    ) : Result<List<Post>>{
-        return repository.fetchPosts(num, lastVisibleId)
+    ): Result<List<Post>> {
+        return repo.fetchPosts(num, lastVisibleId)
+            .map { posts ->
+                posts.sortedByDescending { it.createdAt }
+            }
     }
 
+
+    suspend fun cachePosts(posts: List<Post>) =
+        repo.cachePosts(posts)
 }
