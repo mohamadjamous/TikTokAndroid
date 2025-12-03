@@ -46,6 +46,7 @@ import com.example.tiktokandroid.auth.presentation.view.SettingsScreen
 import com.example.tiktokandroid.auth.presentation.view.email_signup.EmailSignupScreen
 import com.example.tiktokandroid.auth.presentation.view.login.EmailPhoneLoginScreen
 import com.example.tiktokandroid.auth.presentation.view.phone_signup.PhoneNumberSignupScreen
+import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.core.presentation.model.Screen
 import com.example.tiktokandroid.explore.presentation.view.screens.ExploreScreen
 import com.example.tiktokandroid.feed.presentation.components.CommentListScreen
@@ -63,12 +64,16 @@ import kotlinx.coroutines.launch
 @androidx.annotation.OptIn(UnstableApi::class)
 @OptIn(ExperimentalMaterialNavigationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun RootNavGraph(navController: NavHostController) {
+fun RootNavGraph(
+    navController: NavHostController,
+    onPrefetch: (index: Int, list: List<Post>) -> Unit
+) {
 
     val graph = navController.createGraph(startDestination = Screen.Home.route) {
         composable(route = Screen.Home.route) {
             FeedScreen(
-                navController = navController
+                navController = navController,
+                onPrefetch = onPrefetch
             )
         }
         composable(route = Screen.Friends.route) {
@@ -174,7 +179,8 @@ fun RootNavGraph(navController: NavHostController) {
 
         composable(route = Screen.Home.route) {
             FeedScreen(
-                navController = navController
+                navController = navController,
+                onPrefetch = onPrefetch
             )
         }
 

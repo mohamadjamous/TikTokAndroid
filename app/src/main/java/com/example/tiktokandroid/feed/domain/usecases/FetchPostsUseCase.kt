@@ -19,6 +19,8 @@ class FetchPostsUseCase @Inject constructor(
     }
 
 
-    suspend fun cachePosts(posts: List<Post>) =
+    suspend fun cachePosts(posts: List<Post>) {
+        println("CachePostsSize: ${posts.size}")
         repo.cachePosts(posts)
+    }
 }

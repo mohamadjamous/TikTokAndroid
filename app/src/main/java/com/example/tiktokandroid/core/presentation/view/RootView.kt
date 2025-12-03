@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.tiktokandroid.core.presentation.components.BottomNavigationBar
+import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.core.presentation.model.Screen
 import com.example.tiktokandroid.feed.presentation.view.graphs.RootNavGraph
 import com.example.tiktokandroid.theme.TikTokTheme
@@ -22,7 +23,9 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
-fun RootView() {
+fun RootView(
+    onPrefetch: (index: Int, list: List<Post>) -> Unit
+) {
 
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
@@ -61,7 +64,8 @@ fun RootView() {
                 }
             ) { innerPadding ->
 
-                RootNavGraph(navController = navController)
+                RootNavGraph(navController = navController,
+                    onPrefetch = onPrefetch)
 
             }
         }

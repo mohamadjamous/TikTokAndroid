@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import com.example.tiktokandroid.R
+import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.feed.presentation.viewmodel.FeedViewModel
 import com.example.tiktokandroid.theme.White
 import kotlinx.coroutines.launch
@@ -36,6 +37,7 @@ import kotlinx.coroutines.launch
 fun FeedScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
+    onPrefetch: (index: Int, list: List<Post>) -> Unit
 ) {
 
 
@@ -50,7 +52,8 @@ fun FeedScreen(
         ) {
             when (it) {
                 0 -> FollowingScreen(pagerState)
-                1 -> ForYouTabScreen(navController = navController)
+                1 -> ForYouTabScreen(navController = navController,
+                    onPrefetch = onPrefetch)
             }
         }
 

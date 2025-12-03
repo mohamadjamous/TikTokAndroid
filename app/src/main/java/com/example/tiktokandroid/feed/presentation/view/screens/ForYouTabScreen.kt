@@ -1,5 +1,8 @@
 package com.example.tiktokandroid.feed.presentation.view.screens
 
+import android.content.ComponentName
+import android.content.ServiceConnection
+import android.os.IBinder
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -24,7 +27,9 @@ import androidx.media3.common.util.UnstableApi
 import androidx.navigation.NavController
 import com.example.tiktokandroid.core.presentation.components.CustomLoadingView
 import com.example.tiktokandroid.core.presentation.components.LoadingEffect
+import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.core.presentation.model.Screen
+import com.example.tiktokandroid.core.service.VideoPrefetchService
 import com.example.tiktokandroid.feed.data.model.FeedUiState
 import com.example.tiktokandroid.feed.presentation.components.TikTokVerticalVideoPager
 import com.example.tiktokandroid.feed.presentation.viewmodel.FeedViewModel
@@ -35,12 +40,19 @@ import com.example.tiktokandroid.theme.DarkPink
 @Composable
 fun ForYouTabScreen(
     navController: NavController,
-    viewModel: FeedViewModel = hiltViewModel()
+    viewModel: FeedViewModel = hiltViewModel(),
+    onPrefetch: (index: Int, list: List<Post>) -> Unit
 ) {
     val videos by viewModel.videos.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     var showInitialLoading by remember { mutableStateOf(true) }
     val currentUser = viewModel.currentUser.value
+
+    lateinit var prefetchService: VideoPrefetchService
+
+
+
+
 
     // Handle UI state
     LaunchedEffect(uiState) {
@@ -83,6 +95,7 @@ fun ForYouTabScreen(
                 // Fetch more when reaching near the end (e.g., last 2 items)
                 if (index >= videos.size - 2 && uiState !is FeedUiState.Loading) {
                     viewModel.fetchMorePosts()
+                    onPrefetch(index, videos)
                 }
             },
             currentUser = currentUser,

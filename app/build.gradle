@@ -92,6 +92,7 @@ dependencies {
     implementation libs.firebase.firestore
     implementation libs.firebase.storage
     implementation libs.androidx.constraintlayout.compose
+    implementation libs.androidx.lifecycle.service
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
