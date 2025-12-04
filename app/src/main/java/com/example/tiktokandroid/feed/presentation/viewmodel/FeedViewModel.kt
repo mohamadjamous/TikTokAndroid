@@ -111,7 +111,7 @@ class FeedViewModel @Inject constructor(
 
             // Try to fetch remote data
             val result = fetchPostsUseCase.invoke(
-                num = 10,
+                num = 5,
                 lastVisibleId = null
             )
 
@@ -143,12 +143,9 @@ class FeedViewModel @Inject constructor(
             isLoadingMore = true
             _loadMoreVideos.value = true
 
-            val result = fetchPostsUseCase.invoke(num = 3, lastVisibleId = lastVisiblePostId)
+            val result = fetchPostsUseCase.fetchLocalPosts(num = 5, lastVisibleId = lastVisiblePostId)
 
             result.onSuccess { newPosts ->
-
-                // Save to cache
-                fetchPostsUseCase.cachePosts(newPosts)
 
                 // Update last Id
                 lastVisiblePostId = newPosts.lastOrNull()?.id

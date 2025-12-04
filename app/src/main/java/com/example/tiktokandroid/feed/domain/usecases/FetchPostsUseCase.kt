@@ -9,15 +9,21 @@ class FetchPostsUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(
-        num: Int = 3,
+        num: Int,
         lastVisibleId: String? = null
     ): Result<List<Post>> {
-        return repo.fetchPosts(num, lastVisibleId)
+        return repo.fetchRemotePosts(num, lastVisibleId)
             .map { posts ->
                 posts.sortedByDescending { it.createdAt }
             }
     }
 
+
+    suspend fun fetchLocalPosts(
+        num : Int,
+        lastVisibleId: String? = null): Result<List<Post>> {
+        return repo.fetchMorePosts(num, lastVisibleId)
+    }
 
     suspend fun cachePosts(posts: List<Post>) {
         println("CachePostsSize: ${posts.size}")

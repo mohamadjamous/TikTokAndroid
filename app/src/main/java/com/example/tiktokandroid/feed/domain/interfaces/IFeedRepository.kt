@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface IFeedRepository {
-    suspend fun fetchPosts(num: Int, lastVisibleId: String?): Result<List<Post>>
+    suspend fun fetchRemotePosts(num: Int, lastVisibleId: String?): Result<List<Post>>
     suspend fun updateLikeState(videoId : String, liked: Boolean): Result<Unit>
     suspend fun updateSavedState(videoId : String, saved: Boolean): Result<Unit>
 
@@ -18,4 +18,6 @@ interface IFeedRepository {
     suspend fun fetchMorePosts(num: Int, lastVisibleId: String?): Result<List<Post>>
 
     suspend fun cachePosts(posts: List<Post>)
+
+    suspend fun pruneOldPosts(maxSize: Int = 500)
 }

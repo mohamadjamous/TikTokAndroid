@@ -30,4 +30,24 @@ class FeedLocalDataSource @Inject constructor(private val postDao: PostDao) {
         postDao.insertAll(posts)
     }
 
+    suspend fun countAll() : Int
+    {
+        return postDao.countAll()
+    }
+
+    suspend fun getOldestIds(limit: Int): List<String> {
+        return postDao.getOldestIds(limit)
+            .map { it.id }   // extract the actual ID
+    }
+
+
+
+    suspend fun deleteByIds(list : List<String>){
+        postDao.deleteByIds(list)
+    }
+
+    suspend fun getNextPage(lastId: String?, num: Int) : List<PostEntity>{
+        return postDao.getNextPage(lastId, num)
+    }
+
 }

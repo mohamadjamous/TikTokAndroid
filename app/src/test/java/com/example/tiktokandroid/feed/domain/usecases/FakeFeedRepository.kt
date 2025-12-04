@@ -15,7 +15,7 @@ class FakeFeedRepository : IFeedRepository {
         postsToReturn = Result.failure(exception)
     }
 
-    override suspend fun fetchPosts(num: Int, lastVisibleId: String?): Result<List<Post>> {
+    override suspend fun fetchRemotePosts(num: Int, lastVisibleId: String?): Result<List<Post>> {
         return postsToReturn
     }
 }

@@ -2,16 +2,11 @@ package com.example.tiktokandroid.feed.domain.repositories
 
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.feed.data.datasource.local.FeedLocalDataSource
-import com.example.tiktokandroid.feed.data.datasource.local.entities.PostEntity
 import com.example.tiktokandroid.feed.data.datasource.remote.FeedRemoteDataSource
 import com.example.tiktokandroid.feed.data.datasource.remote.NetworkHandler
 import com.example.tiktokandroid.feed.data.model.CommentList
 import com.example.tiktokandroid.feed.domain.interfaces.IFeedRepository
 import com.example.tiktokandroid.feed.domain.utils.PostMapper
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class FeedRepositoryImpl @Inject constructor(
@@ -70,39 +65,28 @@ class FeedRepositoryImpl @Inject constructor(
     /**
      * Fetch from remote source (Firebase)
      */
-    override suspend fun fetchPosts(num: Int, lastVisibleId: String?): Result<List<Post>> {
-        // Load cached data
-        val cached = local.getAllPostsOnce()
+    override suspend fun fetchRemotePosts(num: Int, lastVisibleId: String?): Result<List<Post>> {
 
-        println("CachedListSize: ${cached.size}")
-
-        if (cached.isNotEmpty()) {
-            // Show cached first
-            refreshRemoteInBackground()
-            return Result.success(cached.map(postMapper::mapToDomain))
-        }
-
-        val result = remote.fetchPosts(num = 10, lastVisibleId = null)
-
-        return result.onSuccess { posts ->
-
-            local.insertPosts(posts.map(postMapper::mapToEntity))
-        }
+        return remote.fetchPosts(num = num, lastVisibleId = lastVisibleId)
     }
 
     /**
-     * Fetch more posts as per paging algorithm
+     * Fetch more posts as per paging algorithm from room
      */
     override suspend fun fetchMorePosts(
         num: Int,
         lastVisibleId: String?
     ): Result<List<Post>> {
-        val result = remote.fetchPosts(num, lastVisibleId)
 
-        return result.onSuccess { posts ->
-            local.insertPosts(posts.map(postMapper::mapToEntity))
-        }
+        // Try to load next chunk from ROOM
+        val cachedNext = local.getNextPage(lastVisibleId, num)
+
+        // Convert and return cached data
+        val mapped = cachedNext.map(postMapper::mapToDomain)
+
+        return Result.success(mapped)
     }
+
 
     /**
      * Insert posts into local cache
@@ -117,6 +101,19 @@ class FeedRepositoryImpl @Inject constructor(
             local.insertPosts(entities)
         }
     }
+
+    override suspend fun pruneOldPosts(maxSize: Int) {
+        val total = local.countAll()
+
+        if (total > maxSize) {
+            val numberToDelete = total - maxSize
+
+            val toDeleteIds = local.getOldestIds(numberToDelete)
+
+            local.deleteByIds(toDeleteIds)
+        }
+    }
+
 
 
     private suspend fun refreshRemoteInBackground() {

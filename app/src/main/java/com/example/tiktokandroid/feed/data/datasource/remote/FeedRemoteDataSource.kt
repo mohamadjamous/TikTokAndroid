@@ -17,7 +17,7 @@ class FeedRemoteDataSource @Inject constructor(
     private val userPreferences: UserPreferences
 ) {
 
-    suspend fun fetchPosts(num: Int, lastVisibleId: String? = null): Result<List<Post>> {
+    suspend fun fetchPosts(num: Int = 5, lastVisibleId: String? = null): Result<List<Post>> {
 
         return try {
             val collectionRef = firestore.collection("posts")

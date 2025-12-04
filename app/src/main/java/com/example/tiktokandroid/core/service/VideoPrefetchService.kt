@@ -42,7 +42,6 @@ class VideoPrefetchService : LifecycleService() {
 
         Log.d("PrefetchService", "Prefetch Called")
 
-
         // Don't prefetch if near the end or list too small
         if (index < 0 || currentList.isEmpty()) return
 

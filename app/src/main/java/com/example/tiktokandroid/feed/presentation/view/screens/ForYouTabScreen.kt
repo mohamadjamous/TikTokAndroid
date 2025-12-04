@@ -47,12 +47,7 @@ fun ForYouTabScreen(
     val uiState by viewModel.uiState.collectAsState()
     var showInitialLoading by remember { mutableStateOf(true) }
     val currentUser = viewModel.currentUser.value
-
     lateinit var prefetchService: VideoPrefetchService
-
-
-
-
 
     // Handle UI state
     LaunchedEffect(uiState) {
