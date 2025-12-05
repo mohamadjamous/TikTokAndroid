@@ -29,7 +29,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
@@ -94,6 +96,9 @@ class FeedViewModel @Inject constructor(
 
     private val newCommentCallbacks = mutableMapOf<String, () -> Unit>()
 
+    val videosObserved = fetchPostsUseCase.observePosts().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+
 
     init {
         fetchStoredUser()
@@ -118,11 +123,9 @@ class FeedViewModel @Inject constructor(
             result
                 .onSuccess { posts ->
 
-                    // Save remote posts into cache
+                    _uiState.value = FeedUiState.Success(posts)
                     fetchPostsUseCase.cachePosts(posts)
 
-                    _uiState.value = FeedUiState.Success(posts)
-                    _videos.value = posts
                 }
                 .onFailure { error ->
                     _uiState.value = FeedUiState.Error(
@@ -149,6 +152,8 @@ class FeedViewModel @Inject constructor(
 
                 // Update last Id
                 lastVisiblePostId = newPosts.lastOrNull()?.id
+
+                _videos.value = _videos.value + newPosts
             }
 
             _loadMoreVideos.value = false

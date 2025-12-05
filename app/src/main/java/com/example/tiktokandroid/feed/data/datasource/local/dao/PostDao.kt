@@ -56,5 +56,9 @@ interface PostDao{
     suspend fun getNextPage(lastId: String?, num: Int): List<PostEntity>
 
 
+    @Query("SELECT * FROM post_table ORDER BY created_at" +
+            " DESC")
+    fun observePosts(): Flow<List<PostEntity>>
+
 
 }

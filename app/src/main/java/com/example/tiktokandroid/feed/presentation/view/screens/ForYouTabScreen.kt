@@ -43,7 +43,7 @@ fun ForYouTabScreen(
     viewModel: FeedViewModel = hiltViewModel(),
     onPrefetch: (index: Int, list: List<Post>) -> Unit
 ) {
-    val videos by viewModel.videos.collectAsState()
+    val videos by viewModel.videosObserved.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     var showInitialLoading by remember { mutableStateOf(true) }
     val currentUser = viewModel.currentUser.value
@@ -88,8 +88,7 @@ fun ForYouTabScreen(
             },
             onPageChanged = { index ->
                 // Fetch more when reaching near the end (e.g., last 2 items)
-                if (index >= videos.size - 2 && uiState !is FeedUiState.Loading) {
-                    viewModel.fetchMorePosts()
+                if (index >= videos.size - 2 ) {
                     onPrefetch(index, videos)
                 }
             },

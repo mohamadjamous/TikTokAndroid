@@ -20,4 +20,6 @@ interface IFeedRepository {
     suspend fun cachePosts(posts: List<Post>)
 
     suspend fun pruneOldPosts(maxSize: Int = 500)
+
+    fun observePosts(): Flow<List<Post>>
 }

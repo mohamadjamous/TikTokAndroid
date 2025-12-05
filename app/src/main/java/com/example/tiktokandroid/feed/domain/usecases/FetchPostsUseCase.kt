@@ -2,6 +2,7 @@ package com.example.tiktokandroid.feed.domain.usecases
 
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.feed.domain.interfaces.IFeedRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class FetchPostsUseCase @Inject constructor(
@@ -28,5 +29,10 @@ class FetchPostsUseCase @Inject constructor(
     suspend fun cachePosts(posts: List<Post>) {
         println("CachePostsSize: ${posts.size}")
         repo.cachePosts(posts)
+    }
+
+
+    fun observePosts(): Flow<List<Post>>{
+        return repo.observePosts()
     }
 }

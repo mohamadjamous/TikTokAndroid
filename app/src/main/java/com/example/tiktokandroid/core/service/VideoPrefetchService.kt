@@ -45,11 +45,10 @@ class VideoPrefetchService : LifecycleService() {
         // Don't prefetch if near the end or list too small
         if (index < 0 || currentList.isEmpty()) return
 
-        val remaining = currentList.size - index
-
+//        val remaining = currentList.size - index
 
         // We still have many local items, no need to fetch
-        if (remaining > 5) return
+//        if (remaining > 5) return
 
         val lastId = currentList.lastOrNull()?.id ?: return
 

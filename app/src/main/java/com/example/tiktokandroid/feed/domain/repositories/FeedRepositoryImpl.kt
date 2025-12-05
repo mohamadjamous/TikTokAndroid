@@ -7,6 +7,8 @@ import com.example.tiktokandroid.feed.data.datasource.remote.NetworkHandler
 import com.example.tiktokandroid.feed.data.model.CommentList
 import com.example.tiktokandroid.feed.domain.interfaces.IFeedRepository
 import com.example.tiktokandroid.feed.domain.utils.PostMapper
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class FeedRepositoryImpl @Inject constructor(
@@ -124,5 +126,11 @@ class FeedRepositoryImpl @Inject constructor(
             local.deletePosts(posts.map { it.id })
         }
     }
+
+    override fun observePosts(): Flow<List<Post>> =
+        local.observePosts().map { list ->
+            list.map(postMapper::mapToDomain)
+        }
+
 
 }

@@ -50,4 +50,8 @@ class FeedLocalDataSource @Inject constructor(private val postDao: PostDao) {
         return postDao.getNextPage(lastId, num)
     }
 
+    fun observePosts() : Flow<List<PostEntity>>{
+        return postDao.observePosts()
+    }
+
 }
