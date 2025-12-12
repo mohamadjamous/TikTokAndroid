@@ -43,7 +43,7 @@ fun ForYouTabScreen(
     viewModel: FeedViewModel = hiltViewModel(),
     onPrefetch: (index: Int, list: List<Post>) -> Unit
 ) {
-    val videos by viewModel.videosObserved.collectAsState()
+    val videos by viewModel.videos.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     var showInitialLoading by remember { mutableStateOf(true) }
     val currentUser = viewModel.currentUser.value
@@ -87,9 +87,12 @@ fun ForYouTabScreen(
 //                    userId -> navController.navigate("$CREATOR_PROFILE_ROUTE/$userId")
             },
             onPageChanged = { index ->
-                // Fetch more when reaching near the end (e.g., last 2 items)
-                if (index >= videos.size - 2 ) {
-                    onPrefetch(index, videos)
+
+                // Fetch more when reaching near the end (last 2 items)
+
+                println("CurrentIndex: $index")
+                if (index >= videos.size - 2) {
+//                    onPrefetch(index, videos)
                 }
             },
             currentUser = currentUser,

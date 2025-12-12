@@ -18,7 +18,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class VideoPrefetchService : LifecycleService() {
 
-
     @Inject lateinit var fetchPostsUseCase : FetchPostsUseCase
     private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -38,31 +37,28 @@ class VideoPrefetchService : LifecycleService() {
         Log.d("PrefetchService", "Prefetch Service Started")
     }
 
-    fun prefetch(index: Int, currentList: List<Post>){
-
-        Log.d("PrefetchService", "Prefetch Called")
+    fun prefetch(index: Int, currentList: List<Post>) {
 
         // Don't prefetch if near the end or list too small
-        if (index < 0 || currentList.isEmpty()) return
+        if (index < currentList.size - 2) return
 
-//        val remaining = currentList.size - index
+//        Log.d("PrefetchService", "Prefetch Called $index ${currentList.size}")
+//
+//        val lastVisibleId = currentList.lastOrNull()?.id ?: return emptyList()
+//
+//        serviceScope.launch {
+//
+//            val result = fetchPostsUseCase.invoke(num = 5, lastVisibleId = lastVisibleId)
+//
+//            result.onSuccess{ posts ->
+//
+//                // store in cache only
+//                Log.d("PrefetchService", "Prefetch Service cached ${posts.size} posts")
+//                return@launch posts
+//
+//            }
+//        }
 
-        // We still have many local items, no need to fetch
-//        if (remaining > 5) return
-
-        val lastId = currentList.lastOrNull()?.id ?: return
-
-        serviceScope.launch {
-            val result = fetchPostsUseCase.invoke(num = 5, lastVisibleId = lastId)
-
-            result.onSuccess{ posts ->
-
-                // store in cache only
-                fetchPostsUseCase.cachePosts(posts)
-                Log.d("PrefetchService", "Prefetch Service cached ${posts.size} posts")
-
-            }
-        }
 
     }
 
