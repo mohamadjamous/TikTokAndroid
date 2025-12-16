@@ -1,5 +1,6 @@
 package com.example.tiktokandroid.auth.presentation.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,11 +10,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bedtime
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +31,12 @@ import com.example.tiktokandroid.auth.presentation.components.SettingItem
 import com.example.tiktokandroid.auth.presentation.viewmodel.SettingsViewModel
 import com.example.tiktokandroid.core.presentation.components.BackButton
 import com.example.tiktokandroid.theme.Gray
+import com.example.tiktokandroid.theme.OverlayWhiteColor
 import com.example.tiktokandroid.theme.PrimaryColor
+import com.example.tiktokandroid.theme.SeparatorColor
+import com.example.tiktokandroid.theme.WhiteAlpha60
+import com.example.tiktokandroid.theme.WhiteAlpha95
+import com.example.tiktokandroid.theme.WhiteAlphaAA
 
 import com.example.tiktokandroid.utils.Common
 
@@ -35,14 +45,14 @@ import com.example.tiktokandroid.utils.Common
 fun SettingsScreen(
     modifier: Modifier = Modifier,
     onBackPressed: () -> Unit = {},
-//    viewModel: SettingsViewModel = hiltViewModel()
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
     val scrollState = rememberScrollState()
 
     Column(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize().background(OverlayWhiteColor)
     ) {
 
         BackButton(
@@ -64,8 +74,10 @@ fun SettingsScreen(
 
 
         Column(
-            modifier = Modifier.verticalScroll(state = scrollState)
-                .padding(horizontal = 10.dp),
+            modifier = Modifier
+                .verticalScroll(state = scrollState)
+                .padding(horizontal = 10.dp)
+                .fillMaxSize()
         ) {
 
             Text(
@@ -85,6 +97,60 @@ fun SettingsScreen(
 
                 }
             )
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+
+            Text(
+                modifier = Modifier.padding(start = 15.dp),
+                text = stringResource(R.string.content_display),
+                color = Gray
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            SettingItem(
+                text = stringResource(R.string.display),
+                icon = Icons.Filled.Bedtime,
+                buttonVisible = false,
+                onItemClick = {
+
+                }
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            SettingItem(
+                text = stringResource(R.string.language),
+                icon = Icons.Filled.Language,
+                buttonVisible = false,
+                onItemClick = {
+
+                }
+            )
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            Text(
+                modifier = Modifier.padding(start = 15.dp),
+                text = stringResource(R.string.other),
+                color = Gray
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            SettingItem(
+                text = stringResource(R.string.logout),
+                icon = Icons.Filled.Logout,
+                buttonVisible = false,
+                onItemClick = {
+                    
+                    viewModel.logout()
+                    Common.restartApp(context)
+                }
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
 
         }
 

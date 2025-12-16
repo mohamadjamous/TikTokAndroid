@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,12 +46,13 @@ fun SettingItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(shape = RoundedCornerShape(8.dp))
-            .background(White)
-            .padding(10.dp)
-            .clickable{
+            .shadow(1.dp)
+            .clickable {
                 onItemClick
-            },
+            }
+            .background(White)
+            .clip(shape = RoundedCornerShape(8.dp))
+            .padding(10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -81,6 +84,13 @@ fun SettingItem(
                 modifier = Modifier.height(35.dp)
             ) { onButtonClick }
 
+        } else {
+            Icon(
+                modifier = Modifier.size(15.dp),
+                imageVector = Icons.Filled.ArrowForwardIos,
+                contentDescription = null,
+                tint = Gray
+            )
         }
 
     }
