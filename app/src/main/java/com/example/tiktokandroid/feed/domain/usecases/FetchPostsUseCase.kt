@@ -19,20 +19,4 @@ class FetchPostsUseCase @Inject constructor(
             }
     }
 
-
-    suspend fun fetchLocalPosts(
-        num : Int,
-        lastVisibleId: String? = null): Result<List<Post>> {
-        return repo.fetchMorePosts(num, lastVisibleId)
-    }
-
-    suspend fun cachePosts(posts: List<Post>) {
-        println("CachePostsSize: ${posts.size}")
-        repo.cachePosts(posts)
-    }
-
-
-    fun observePosts(): Flow<List<Post>>{
-        return repo.observePosts()
-    }
 }

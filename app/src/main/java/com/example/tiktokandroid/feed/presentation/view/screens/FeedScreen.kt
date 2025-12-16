@@ -37,7 +37,6 @@ import kotlinx.coroutines.launch
 fun FeedScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    onPrefetch: (index: Int, list: List<Post>) -> Unit
 ) {
 
 
@@ -52,8 +51,7 @@ fun FeedScreen(
         ) {
             when (it) {
                 0 -> FollowingScreen(pagerState)
-                1 -> ForYouTabScreen(navController = navController,
-                    onPrefetch = onPrefetch)
+                1 -> ForYouTabScreen(navController = navController)
             }
         }
 

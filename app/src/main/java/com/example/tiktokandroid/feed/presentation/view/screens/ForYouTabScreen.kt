@@ -41,7 +41,6 @@ import com.example.tiktokandroid.theme.DarkPink
 fun ForYouTabScreen(
     navController: NavController,
     viewModel: FeedViewModel = hiltViewModel(),
-    onPrefetch: (index: Int, list: List<Post>) -> Unit
 ) {
     val videos by viewModel.videos.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
@@ -92,7 +91,7 @@ fun ForYouTabScreen(
 
                 println("CurrentIndex: $index")
                 if (index >= videos.size - 2) {
-//                    onPrefetch(index, videos)
+                   viewModel.fetchMorePosts()
                 }
             },
             currentUser = currentUser,

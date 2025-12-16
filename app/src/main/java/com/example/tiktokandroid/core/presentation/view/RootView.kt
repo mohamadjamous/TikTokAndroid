@@ -64,8 +64,7 @@ fun RootView(
                 }
             ) { innerPadding ->
 
-                RootNavGraph(navController = navController,
-                    onPrefetch = onPrefetch)
+                RootNavGraph(navController = navController)
 
             }
         }

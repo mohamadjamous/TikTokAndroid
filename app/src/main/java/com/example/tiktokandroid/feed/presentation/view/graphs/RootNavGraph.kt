@@ -66,14 +66,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun RootNavGraph(
     navController: NavHostController,
-    onPrefetch: (index: Int, list: List<Post>) -> Unit
 ) {
 
     val graph = navController.createGraph(startDestination = Screen.Home.route) {
         composable(route = Screen.Home.route) {
             FeedScreen(
-                navController = navController,
-                onPrefetch = onPrefetch
+                navController = navController
             )
         }
         composable(route = Screen.Friends.route) {
@@ -179,9 +177,7 @@ fun RootNavGraph(
 
         composable(route = Screen.Home.route) {
             FeedScreen(
-                navController = navController,
-                onPrefetch = onPrefetch
-            )
+                navController = navController)
         }
 
 

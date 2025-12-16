@@ -136,18 +136,24 @@ class FeedViewModel @Inject constructor(
     fun fetchMorePosts() {
         if (isLoadingMore || lastVisiblePostId == null) return
 
+        println("FetchingMoreVideos...")
+
         viewModelScope.launch {
             isLoadingMore = true
             _loadMoreVideos.value = true
 
-            val result = fetchPostsUseCase.fetchLocalPosts(num = 5, lastVisibleId = lastVisiblePostId)
+            val result = fetchPostsUseCase.invoke(num = 5, lastVisibleId = lastVisiblePostId)
 
             result.onSuccess { newPosts ->
 
                 // Update last Id
                 lastVisiblePostId = newPosts.lastOrNull()?.id
-
                 _videos.value = _videos.value + newPosts
+                
+                _videos.value.distinctBy {
+                    Pair(it.id, it.userId)
+                }
+
             }
 
             _loadMoreVideos.value = false
