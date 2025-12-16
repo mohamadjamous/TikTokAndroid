@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.tiktokandroid.theme.PrimaryColor
 
 /**
  * Created by Puskal Khadka on 3/24/2023.
@@ -23,9 +24,9 @@ fun CustomButton(
     modifier: Modifier = Modifier,
     buttonText: String,
     style: TextStyle = MaterialTheme.typography.labelLarge,
-    shape: Shape = RoundedCornerShape(2.dp),
+    shape: Shape = RoundedCornerShape(5.dp),
     height: Dp = 44.dp,
-    containerColor: Color = MaterialTheme.colorScheme.primary,
+    containerColor: Color = PrimaryColor,
     isEnabled: Boolean = true,
     onClickButton: () -> Unit
 ) {

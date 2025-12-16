@@ -6,29 +6,40 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.tiktokandroid.R
+import com.example.tiktokandroid.auth.presentation.components.SettingItem
 import com.example.tiktokandroid.auth.presentation.viewmodel.SettingsViewModel
 import com.example.tiktokandroid.core.presentation.components.BackButton
+import com.example.tiktokandroid.theme.Gray
 import com.example.tiktokandroid.theme.PrimaryColor
 
 import com.example.tiktokandroid.utils.Common
 
+@Preview(showSystemUi = true)
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
     onBackPressed: () -> Unit = {},
-    viewModel: SettingsViewModel = hiltViewModel()
+//    viewModel: SettingsViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -40,7 +51,7 @@ fun SettingsScreen(
             onBackPressed()
         }
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Text(
             modifier = Modifier.padding(start = 30.dp),
@@ -53,24 +64,32 @@ fun SettingsScreen(
 
 
         Column(
-            modifier = Modifier.padding(start = 30.dp),
+            modifier = Modifier.verticalScroll(state = scrollState)
+                .padding(horizontal = 10.dp),
         ) {
+
             Text(
-                modifier = Modifier.clickable{
-                    viewModel.logout()
-                    Common.restartApp(context)
-                },
-                text = "Logout",
-                color = PrimaryColor,
+                modifier = Modifier.padding(start = 15.dp),
+                text = stringResource(R.string.account),
+                color = Gray
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            SettingItem(
+                text = stringResource(R.string.my_account),
+                icon = Icons.Filled.Person,
+                buttonText = stringResource(R.string.sign_up),
+                buttonVisible = true,
+                onButtonClick = {
+
+                }
+            )
+
         }
 
     }
 
 }
 
-@Preview(showSystemUi = true)
-@Composable
-private fun SettingsScreenPreview() {
-    SettingsScreen()
-}
+

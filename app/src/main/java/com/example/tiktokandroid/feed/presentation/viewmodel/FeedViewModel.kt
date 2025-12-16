@@ -149,7 +149,7 @@ class FeedViewModel @Inject constructor(
                 // Update last Id
                 lastVisiblePostId = newPosts.lastOrNull()?.id
                 _videos.value = _videos.value + newPosts
-                
+
                 _videos.value.distinctBy {
                     Pair(it.id, it.userId)
                 }
