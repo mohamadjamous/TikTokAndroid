@@ -46,6 +46,7 @@ import com.example.tiktokandroid.auth.presentation.view.SettingsScreen
 import com.example.tiktokandroid.auth.presentation.view.email_signup.EmailSignupScreen
 import com.example.tiktokandroid.auth.presentation.view.login.EmailPhoneLoginScreen
 import com.example.tiktokandroid.auth.presentation.view.phone_signup.PhoneNumberSignupScreen
+import com.example.tiktokandroid.auth.presentation.view.screens.DisplayScreen
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.core.presentation.model.Screen
 import com.example.tiktokandroid.explore.presentation.view.screens.ExploreScreen
@@ -66,6 +67,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun RootNavGraph(
     navController: NavHostController,
+    darkMode: Boolean,
+    onThemeChange: (Boolean) -> Unit
 ) {
 
     val graph = navController.createGraph(startDestination = Screen.Home.route) {
@@ -125,8 +128,23 @@ fun RootNavGraph(
 
         composable(route = Screen.Settings.route) {
             SettingsScreen(
+                onDisplayPressed = {
+                    navController.navigate(Screen.Display.route)
+                },
                 onBackPressed = {
                     navController.popBackStack()
+                }
+            )
+        }
+
+        composable(route = Screen.Display.route) {
+            DisplayScreen(
+                onBackPressed = {
+                    navController.popBackStack()
+                },
+                darkMode = darkMode,
+                onThemeChange = {
+                    onThemeChange(it)
                 }
             )
         }
@@ -248,8 +266,23 @@ fun RootNavGraph(
 
         composable(route = Screen.Settings.route) {
             SettingsScreen(
+                onDisplayPressed = {
+                    navController.navigate(Screen.Display.route)
+                },
                 onBackPressed = {
                     navController.popBackStack()
+                }
+            )
+        }
+
+        composable(route = Screen.Display.route) {
+            DisplayScreen(
+                onBackPressed = {
+                    navController.popBackStack()
+                },
+                darkMode = darkMode,
+                onThemeChange = {
+                    onThemeChange(it)
                 }
             )
         }

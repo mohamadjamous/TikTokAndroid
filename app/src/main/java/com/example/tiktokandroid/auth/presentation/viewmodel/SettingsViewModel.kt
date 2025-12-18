@@ -17,4 +17,5 @@ class SettingsViewModel @Inject constructor(
         userPreferences.clearUser()
     }
 
+
 }

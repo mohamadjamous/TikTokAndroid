@@ -42,17 +42,16 @@ fun SettingItem(
     onItemClick: () -> Unit = {},
 ) {
 
-
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(1.dp)
             .clickable {
-                onItemClick
+                onItemClick()
             }
-            .background(White)
             .clip(shape = RoundedCornerShape(8.dp))
-            .padding(10.dp),
+            .background(White)
+            .padding(10.dp)
+            ,
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -73,7 +72,7 @@ fun SettingItem(
             Text(
                 text,
                 color = Black,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleSmall
             )
         }
 

@@ -23,9 +23,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
-fun RootView(
-    onPrefetch: (index: Int, list: List<Post>) -> Unit
-) {
+fun RootView() {
 
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val navController = rememberNavController(bottomSheetNavigator)
@@ -41,10 +39,11 @@ fun RootView(
     val currentBackStackEntryAsState by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntryAsState?.destination
 
-    val darkMode = when (currentDestination?.route) {
+    var darkMode = when (currentDestination?.route) {
         Screen.Home.route,
         Screen.Upload.route,
         null -> true
+
         else -> false
     }
 
@@ -64,12 +63,17 @@ fun RootView(
                 }
             ) { innerPadding ->
 
-                RootNavGraph(navController = navController)
+                RootNavGraph(
+                    navController = navController, darkMode = darkMode,
+                    onThemeChange = {
+                        darkMode = it
+                    })
 
             }
         }
     }
 }
+
 @Composable
 fun SetupSystemUi(
     systemUiController: SystemUiController,

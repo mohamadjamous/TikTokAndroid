@@ -39,9 +39,7 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-            RootView(onPrefetch = { index, list ->
-                prefetchService?.prefetch(index, list)
-            })
+            RootView()
         }
     }
 

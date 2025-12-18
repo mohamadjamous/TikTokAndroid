@@ -31,12 +31,15 @@ import com.example.tiktokandroid.auth.presentation.components.SettingItem
 import com.example.tiktokandroid.auth.presentation.viewmodel.SettingsViewModel
 import com.example.tiktokandroid.core.presentation.components.BackButton
 import com.example.tiktokandroid.theme.Gray
+import com.example.tiktokandroid.theme.LightGreenColor
 import com.example.tiktokandroid.theme.OverlayWhiteColor
 import com.example.tiktokandroid.theme.PrimaryColor
 import com.example.tiktokandroid.theme.SeparatorColor
+import com.example.tiktokandroid.theme.TealColor
 import com.example.tiktokandroid.theme.WhiteAlpha60
 import com.example.tiktokandroid.theme.WhiteAlpha95
 import com.example.tiktokandroid.theme.WhiteAlphaAA
+import com.example.tiktokandroid.theme.WhiteLightDimBg
 
 import com.example.tiktokandroid.utils.Common
 
@@ -45,6 +48,7 @@ import com.example.tiktokandroid.utils.Common
 fun SettingsScreen(
     modifier: Modifier = Modifier,
     onBackPressed: () -> Unit = {},
+    onDisplayPressed: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
 
@@ -52,7 +56,9 @@ fun SettingsScreen(
     val scrollState = rememberScrollState()
 
     Column(
-        modifier = modifier.fillMaxSize().background(OverlayWhiteColor)
+        modifier = modifier
+            .fillMaxSize()
+            .background(WhiteLightDimBg)
     ) {
 
         BackButton(
@@ -61,11 +67,11 @@ fun SettingsScreen(
             onBackPressed()
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(15.dp))
 
         Text(
-            modifier = Modifier.padding(start = 30.dp),
-            text = "Settings and privacy",
+            modifier = Modifier.padding(start = 40.dp),
+            text = stringResource(R.string.settings_and_privacy),
             fontWeight = FontWeight.Bold,
             fontSize = 30.sp
         )
@@ -114,7 +120,7 @@ fun SettingsScreen(
                 icon = Icons.Filled.Bedtime,
                 buttonVisible = false,
                 onItemClick = {
-
+                    onDisplayPressed()
                 }
             )
 
@@ -144,7 +150,7 @@ fun SettingsScreen(
                 icon = Icons.Filled.Logout,
                 buttonVisible = false,
                 onItemClick = {
-                    
+                    println("OnLogoutClick")
                     viewModel.logout()
                     Common.restartApp(context)
                 }

@@ -105,4 +105,7 @@
     <string name="display">Display</string>
     <string name="logout">Logout</string>
     <string name="other">Other</string>
+    <string name="appearance">Appearance</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
 </resources>
