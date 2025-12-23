@@ -28,14 +28,14 @@ class MainActivity : ComponentActivity() {
         instance = this
         context = this
 
-        // Start service once
-        val intent = Intent(this, VideoPrefetchService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
-        }
-        bindService(intent, connection, Context.BIND_AUTO_CREATE)
+//        // Start service once
+//        val intent = Intent(this, VideoPrefetchService::class.java)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            startForegroundService(intent)
+//        } else {
+//            startService(intent)
+//        }
+//        bindService(intent, connection, Context.BIND_AUTO_CREATE)
 
 
         setContent {

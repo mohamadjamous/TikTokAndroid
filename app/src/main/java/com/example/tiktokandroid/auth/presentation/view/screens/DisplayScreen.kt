@@ -127,7 +127,7 @@ fun DisplayScreen(
 
 
             Spacer(modifier = Modifier.width(80.dp))
-            
+
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
