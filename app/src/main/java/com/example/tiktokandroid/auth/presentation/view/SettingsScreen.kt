@@ -1,7 +1,6 @@
 package com.example.tiktokandroid.auth.presentation.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,11 +13,10 @@ import androidx.compose.material.icons.filled.Bedtime
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,16 +29,7 @@ import com.example.tiktokandroid.auth.presentation.components.SettingItem
 import com.example.tiktokandroid.auth.presentation.viewmodel.SettingsViewModel
 import com.example.tiktokandroid.core.presentation.components.BackButton
 import com.example.tiktokandroid.theme.Gray
-import com.example.tiktokandroid.theme.LightGreenColor
-import com.example.tiktokandroid.theme.OverlayWhiteColor
-import com.example.tiktokandroid.theme.PrimaryColor
-import com.example.tiktokandroid.theme.SeparatorColor
-import com.example.tiktokandroid.theme.TealColor
-import com.example.tiktokandroid.theme.WhiteAlpha60
-import com.example.tiktokandroid.theme.WhiteAlpha95
-import com.example.tiktokandroid.theme.WhiteAlphaAA
 import com.example.tiktokandroid.theme.WhiteLightDimBg
-
 import com.example.tiktokandroid.utils.Common
 
 @Preview(showSystemUi = true)
@@ -54,6 +43,8 @@ fun SettingsScreen(
 
     val context = LocalContext.current
     val scrollState = rememberScrollState()
+
+    val currentUser by viewModel.currentUser
 
     Column(
         modifier = modifier
@@ -137,26 +128,32 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            Text(
-                modifier = Modifier.padding(start = 15.dp),
-                text = stringResource(R.string.other),
-                color = Gray
-            )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            if (currentUser != null) {
 
-            SettingItem(
-                text = stringResource(R.string.logout),
-                icon = Icons.Filled.Logout,
-                buttonVisible = false,
-                onItemClick = {
-                    println("OnLogoutClick")
-                    viewModel.logout()
-                    Common.restartApp(context)
-                }
-            )
+                Text(
+                    modifier = Modifier.padding(start = 15.dp),
+                    text = stringResource(R.string.other),
+                    color = Gray
+                )
 
-            Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+
+
+                SettingItem(
+                    text = stringResource(R.string.logout),
+                    icon = Icons.Filled.Logout,
+                    buttonVisible = false,
+                    onItemClick = {
+                        println("OnLogoutClick")
+                        viewModel.logout()
+                        Common.restartApp(context)
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+
 
         }
 

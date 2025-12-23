@@ -69,8 +69,6 @@ class ProfileViewModel @Inject constructor(
 
     fun fetchStoredUser() {
         _currentUser.value = userSharedPreferences.getUser()
-        println("Debug: ${_currentUser.value?.id}")
-        println("Debug: ${_currentUser.value?.username}")
     }
 
 
