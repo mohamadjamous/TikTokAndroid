@@ -47,6 +47,7 @@ import com.example.tiktokandroid.auth.presentation.view.email_signup.EmailSignup
 import com.example.tiktokandroid.auth.presentation.view.login.EmailPhoneLoginScreen
 import com.example.tiktokandroid.auth.presentation.view.phone_signup.PhoneNumberSignupScreen
 import com.example.tiktokandroid.auth.presentation.view.screens.DisplayScreen
+import com.example.tiktokandroid.auth.presentation.view.screens.LanguageScreen
 import com.example.tiktokandroid.core.presentation.model.Post
 import com.example.tiktokandroid.core.presentation.model.Screen
 import com.example.tiktokandroid.explore.presentation.view.screens.ExploreScreen
@@ -271,6 +272,9 @@ fun RootNavGraph(
                 },
                 onBackPressed = {
                     navController.popBackStack()
+                },
+                onLanguagePressed = {
+                    navController.navigate(Screen.Language.route)
                 }
             )
         }
@@ -283,6 +287,14 @@ fun RootNavGraph(
                 darkMode = darkMode,
                 onThemeChange = {
                     onThemeChange(it)
+                }
+            )
+        }
+
+        composable(route = Screen.Language.route) {
+            LanguageScreen(
+                onBackPressed = {
+                    navController.popBackStack()
                 }
             )
         }

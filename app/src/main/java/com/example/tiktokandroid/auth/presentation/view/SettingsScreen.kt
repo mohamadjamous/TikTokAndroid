@@ -38,6 +38,7 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
     onBackPressed: () -> Unit = {},
     onDisplayPressed: () -> Unit = {},
+    onLanguagePressed: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
 
@@ -122,7 +123,7 @@ fun SettingsScreen(
                 icon = Icons.Filled.Language,
                 buttonVisible = false,
                 onItemClick = {
-
+                    onLanguagePressed()
                 }
             )
 
