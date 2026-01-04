@@ -1,7 +1,9 @@
 package com.example.tiktokandroid.auth.presentation.components
 
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +20,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,10 +40,17 @@ fun SettingItem(
     text: String = "text",
     buttonText: String = "text",
     icon: ImageVector = Icons.Default.Person,
+    iconVisible: Boolean = false,
     buttonVisible: Boolean = true,
     onButtonClick: () -> Unit = {},
     onItemClick: () -> Unit = {},
+    clickableItem: Boolean = true,
+    secondTextVisible: Boolean = false,
+    secondText: String = ""
 ) {
+
+    val interactionSource = remember { MutableInteractionSource() }
+
 
     Row(
         modifier = modifier
@@ -51,7 +61,13 @@ fun SettingItem(
             .clip(shape = RoundedCornerShape(8.dp))
             .background(White)
             .padding(10.dp)
-            ,
+            .clickable(
+                enabled = clickableItem,
+                interactionSource = interactionSource,
+                indication = if (clickableItem) LocalIndication.current else null
+            ) {
+                onItemClick()
+            },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -59,15 +75,18 @@ fun SettingItem(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                modifier = Modifier.size(30.dp),
-                imageVector = icon,
-                contentDescription = null,
-                tint = Gray
-            )
+
+            if (iconVisible) {
+                Icon(
+                    modifier = Modifier.size(30.dp),
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = Gray
+                )
 
 
-            Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.width(10.dp))
+            }
 
             Text(
                 text,
@@ -81,16 +100,29 @@ fun SettingItem(
             CustomButton(
                 buttonText = buttonText,
                 modifier = Modifier.height(35.dp)
-            ) { onButtonClick }
+            ) { onButtonClick() }
 
         } else {
-            Icon(
-                modifier = Modifier.size(15.dp),
-                imageVector = Icons.Filled.ArrowForwardIos,
-                contentDescription = null,
-                tint = Gray
-            )
+
+            Row {
+                if (secondTextVisible) {
+                    Text(
+                        secondText,
+                        color = Gray,
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                }
+
+                Icon(
+                    modifier = Modifier.size(15.dp),
+                    imageVector = Icons.Filled.ArrowForwardIos,
+                    contentDescription = null,
+                    tint = Gray
+                )
+            }
         }
+
 
     }
 

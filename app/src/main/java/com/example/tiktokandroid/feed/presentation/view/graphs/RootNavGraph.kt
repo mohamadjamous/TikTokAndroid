@@ -55,6 +55,7 @@ import com.example.tiktokandroid.feed.presentation.components.CommentListScreen
 import com.example.tiktokandroid.feed.presentation.view.screens.FeedScreen
 import com.example.tiktokandroid.feed.presentation.viewmodel.FeedViewModel
 import com.example.tiktokandroid.notifications.presentation.view.screens.NotificationsScreen
+import com.example.tiktokandroid.profile.presentation.view.screens.AccountScreen
 import com.example.tiktokandroid.profile.presentation.view.screens.ProfileScreen
 import com.example.tiktokandroid.uploadmedia.presentation.view.CameraMediaScreen
 import com.example.tiktokandroid.uploadmedia.presentation.view.PostScreen
@@ -72,122 +73,6 @@ fun RootNavGraph(
     onThemeChange: (Boolean) -> Unit
 ) {
 
-    val graph = navController.createGraph(startDestination = Screen.Home.route) {
-        composable(route = Screen.Home.route) {
-            FeedScreen(
-                navController = navController
-            )
-        }
-        composable(route = Screen.Friends.route) {
-            ExploreScreen()
-        }
-        composable(route = Screen.Upload.route) {
-            UploadScreen(
-                navigateToPostScreen = { videoUri ->
-                    val encodedUri = Uri.encode(videoUri.toString())
-                    navController.navigate(Screen.Post.createRoute(encodedUri))
-                },
-                navigateToProfileScreen = {
-                    navController.navigate(Screen.Profile.route)
-                }
-            )
-        }
-        composable(route = Screen.Notifications.route) {
-            NotificationsScreen()
-        }
-        composable(route = Screen.Profile.route) {
-            ProfileScreen(
-                navigateToEmailSignup = {
-                    navController.navigate(
-                        Screen.EmailSignup.route
-                    )
-                },
-                navigateToSettings = {
-                    navController.navigate(
-                        Screen.Settings.route
-                    )
-                },
-                navigateToPhoneSignup = { phoneNumber ->
-                    navController.navigate(Screen.PhoneNumberSignup.createRoute(phoneNumber))
-                },
-                navigateToEmailPhoneLogin = {
-                    navController.navigate(Screen.EmailPhoneLogin.route)
-                },
-                onClickVideo = { post, index ->
-//                        navController.navigate("$CREATOR_VIDEO_ROUTE/${viewModel.userId}/$index")
-                }
-            )
-        }
-
-        composable(route = Screen.EmailSignup.route) {
-            EmailSignupScreen(
-                onBackPressed = {
-                    navController.popBackStack()
-                }
-            )
-        }
-
-        composable(route = Screen.Settings.route) {
-            SettingsScreen(
-                onDisplayPressed = {
-                    navController.navigate(Screen.Display.route)
-                },
-                onBackPressed = {
-                    navController.popBackStack()
-                }
-            )
-        }
-
-        composable(route = Screen.Display.route) {
-            DisplayScreen(
-                onBackPressed = {
-                    navController.popBackStack()
-                },
-                darkMode = darkMode,
-                onThemeChange = {
-                    onThemeChange(it)
-                }
-            )
-        }
-
-        composable(
-            route = Screen.PhoneNumberSignup.route,
-            arguments = listOf(navArgument("phoneNumber") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val phoneNumber = backStackEntry.arguments?.getString("phoneNumber") ?: ""
-            PhoneNumberSignupScreen(
-                phoneNumber = phoneNumber,
-                onBackPressed = {
-                    navController.popBackStack()
-                }
-            )
-        }
-
-        composable(route = Screen.EmailPhoneLogin.route) {
-            EmailPhoneLoginScreen(
-                onBackPressed = {
-                    navController.popBackStack()
-                }
-            )
-        }
-
-        composable(
-            route = Screen.Post.route,
-            arguments = listOf(navArgument("videoUri") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val videoUriString = backStackEntry.arguments?.getString("videoUri")
-            val videoUri = videoUriString?.let { Uri.parse(Uri.decode(it)) }
-
-            PostScreen(
-                onBackPressed = {
-                    navController.popBackStack()
-                },
-                videoUri = videoUri
-            )
-        }
-
-    }
-
 
     NavHost(
         navController = navController,
@@ -196,7 +81,8 @@ fun RootNavGraph(
 
         composable(route = Screen.Home.route) {
             FeedScreen(
-                navController = navController)
+                navController = navController
+            )
         }
 
 
@@ -267,17 +153,28 @@ fun RootNavGraph(
 
         composable(route = Screen.Settings.route) {
             SettingsScreen(
-                onDisplayPressed = {
-                    navController.navigate(Screen.Display.route)
-                },
-                onBackPressed = {
-                    navController.popBackStack()
-                },
-                onLanguagePressed = {
-                    navController.navigate(Screen.Language.route)
-                }
+                navController = navController
             )
         }
+
+        composable(
+            route = Screen.Account.route,
+            arguments = listOf(
+                navArgument("email") { type = NavType.StringType; defaultValue = "" },
+                navArgument("phoneNumber") { type = NavType.StringType; defaultValue = "" },
+                navArgument("dob") { type = NavType.StringType; defaultValue = "" })
+        ) { backStackEntry ->
+
+            val email = backStackEntry.arguments?.getString("email") ?: ""
+            val phoneNumber = backStackEntry.arguments?.getString("phoneNumber") ?: ""
+            val dob = backStackEntry.arguments?.getString("dob") ?: ""
+
+            AccountScreen(
+                email = email, phoneNumber = phoneNumber, dob = dob,
+                onBackPressed = { navController.popBackStack() }
+            )
+        }
+
 
         composable(route = Screen.Display.route) {
             DisplayScreen(

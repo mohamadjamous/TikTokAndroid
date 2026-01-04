@@ -108,4 +108,8 @@
     <string name="appearance">Appearance</string>
     <string name="light">Light</string>
     <string name="dark">Dark</string>
+    <string name="info">Info</string>
+    <string name="account_information">Account Information</string>
+    <string name="email">Email</string>
+    <string name="dob">Date of birth</string>
 </resources>

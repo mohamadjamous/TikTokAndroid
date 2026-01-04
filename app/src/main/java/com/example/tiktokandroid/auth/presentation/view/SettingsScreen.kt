@@ -24,10 +24,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.tiktokandroid.R
 import com.example.tiktokandroid.auth.presentation.components.SettingItem
 import com.example.tiktokandroid.auth.presentation.viewmodel.SettingsViewModel
 import com.example.tiktokandroid.core.presentation.components.BackButton
+import com.example.tiktokandroid.core.presentation.model.Screen
 import com.example.tiktokandroid.theme.Gray
 import com.example.tiktokandroid.theme.WhiteLightDimBg
 import com.example.tiktokandroid.utils.Common
@@ -36,10 +39,8 @@ import com.example.tiktokandroid.utils.Common
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    onBackPressed: () -> Unit = {},
-    onDisplayPressed: () -> Unit = {},
-    onLanguagePressed: () -> Unit = {},
-    viewModel: SettingsViewModel = hiltViewModel()
+    navController: NavController = rememberNavController(),
+    viewModel: SettingsViewModel = hiltViewModel(),
 ) {
 
     val context = LocalContext.current
@@ -56,7 +57,7 @@ fun SettingsScreen(
         BackButton(
             modifier = Modifier.padding(top = 40.dp, start = 10.dp)
         ) {
-            onBackPressed()
+            navController.popBackStack()
         }
 
         Spacer(modifier = Modifier.height(15.dp))
@@ -89,11 +90,24 @@ fun SettingsScreen(
             SettingItem(
                 text = stringResource(R.string.my_account),
                 icon = Icons.Filled.Person,
-                buttonText = stringResource(R.string.sign_up),
+                buttonText = if (currentUser == null) stringResource(R.string.sign_up) else stringResource(R.string.info),
                 buttonVisible = true,
+                clickableItem = false,
                 onButtonClick = {
 
-                }
+                    println("UserNullability: ${currentUser == null}")
+
+                    if (currentUser == null){
+                        // Show auth bottom nav bar
+                    }else{
+                        // View account basic info
+                        navController.navigate(Screen.Account.createRoute(
+                            email = currentUser!!.email,
+                            phoneNumber = currentUser!!.phone,
+                            dob = currentUser!!.dob
+                        ))
+                    }
+                },
             )
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -112,7 +126,7 @@ fun SettingsScreen(
                 icon = Icons.Filled.Bedtime,
                 buttonVisible = false,
                 onItemClick = {
-                    onDisplayPressed()
+                    navController.navigate(Screen.Display.route)
                 }
             )
 
@@ -123,7 +137,7 @@ fun SettingsScreen(
                 icon = Icons.Filled.Language,
                 buttonVisible = false,
                 onItemClick = {
-                    onLanguagePressed()
+                    navController.navigate(Screen.Language.route)
                 }
             )
 

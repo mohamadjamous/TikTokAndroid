@@ -60,7 +60,7 @@ fun EmailPhoneLoginScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            BackButton() {
+            BackButton {
                 onBackPressed()
             }
 
@@ -81,10 +81,10 @@ fun EmailPhoneLoginScreen(
                 .wrapContentWidth(Alignment.CenterHorizontally)
                 .fillMaxWidth(),
             selectedTabIndex = selectedTabIndex,
-            edgePadding = 0.dp, // 👈 removes extra spacing
+            edgePadding = 0.dp,
             containerColor = Color.Transparent,
             contentColor = Color.Gray,
-            divider = {}, // optional: removes bottom divider
+            divider = {},
             indicator = { tabPositions ->
                 TabRowDefaults.Indicator(
                     color = Color.Black,
@@ -101,7 +101,7 @@ fun EmailPhoneLoginScreen(
                     onClick = { selectedTabIndex = index },
                     modifier = Modifier
                         .padding(horizontal = 12.dp, vertical = 8.dp)
-                        .height(48.dp) // 👈 makes tabs bigger
+                        .height(48.dp)
                         .widthIn(min = 170.dp)
 
                 ) {
